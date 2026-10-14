@@ -10,64 +10,178 @@
  * governing permissions and limitations under the License.
  */
 
+/*
+ * Thai Airways design tokens.
+ * Contrast ratios (WCAG 2.1) are noted where a pairing is relied upon.
+ * Breakpoints (custom properties cannot be used in media queries): 600px, 900px, 1200px.
+ */
 :root {
-  /* colors */
-  --background-color: white;
-  --light-color: #f8f8f8;
-  --dark-color: #505050;
-  --text-color: #131313;
-  --link-color: #3b63fb;
-  --link-hover-color: #1d3ecf;
+  /* palette: brand */
+  --color-purple-100: #f5efff;
+  --color-purple-200: #e3d4fe;
+  --color-purple-300: #cfb3ff;
+  --color-purple-500: #9373d2; /* focus ring: >= 3.3:1 on white, neutral-50, purple-100 and purple-900 */
+  --color-purple-700: #684b9b; /* 6.84:1 on white */
+  --color-purple-800: #503383;
+  --color-purple-900: #381b6b; /* white on it 13.66:1 */
+  --color-navy-900: #2c3059; /* 12.54:1 on white */
+  --color-gold-500: #bfa252; /* decorative only (2.47:1), never as text or a sole indicator */
+  --color-surface-dark: #1c110f;
 
-  /* fonts */
-  --body-font-family: roboto, roboto-fallback, sans-serif;
-  --heading-font-family: roboto-condensed, roboto-condensed-fallback, sans-serif;
+  /* palette: neutrals */
+  --color-neutral-0: #fff;
+  --color-neutral-25: #f9f9fc;
+  --color-neutral-50: #f2f2fa;
+  --color-neutral-200: #dfe0eb; /* decorative dividers only (1.31:1) */
+  --color-neutral-400: #9596ac;
+  --color-neutral-500: #86889f; /* control borders: 3.48:1 on white, 3.12:1 on neutral-50 */
+  --color-neutral-600: #6a6d87; /* body text: 5.06:1 on white, 4.54:1 on neutral-50 */
+  --color-neutral-800: #3a3b47;
+  --color-neutral-950: #202020;
+
+  /* palette: status (warning and success await brand values) */
+  --color-error: #ad0023; /* 7.5:1 on white; always pair with text and an icon */
+
+  /* colors (boilerplate names, mapped to brand tokens) */
+  --background-color: var(--color-neutral-0);
+  --light-color: var(--color-neutral-50);
+  --dark-color: var(--color-purple-900);
+  --text-color: var(--color-neutral-600);
+  --link-color: var(--color-purple-700);
+  --link-hover-color: var(--color-purple-900);
+
+  /* colors (additional roles) */
+  --heading-color: var(--color-navy-900);
+  --border-color: var(--color-neutral-200);
+  --control-border-color: var(--color-neutral-500);
+  --placeholder-color: var(--color-neutral-600);
+  --focus-ring-color: var(--color-purple-500);
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+
+  /* gradients and overlays */
+  --gradient-primary: linear-gradient(98.72deg, #684b9b -27.72%, #381b6b 127.08%);
+  --gradient-notice: linear-gradient(63deg, #503383 -14.73%, #cfb3ff 92.2%);
+  --overlay-hero: linear-gradient(rgb(0 0 0 / 0%) 0%, rgb(0 0 0 / 70%) 91.5%);
+  --overlay-card: linear-gradient(rgb(0 0 0 / 0%) 0%, rgb(0 0 0 / 60%) 100%);
+
+  /* fonts: brand faces first, then metric-matched local fallbacks, then installed Thai faces */
+  --thai-font-family: "Noto Sans Thai", "Leelawadee UI", leelawadee, thonburi, tahoma;
+  --body-font-family: inter, inter-fallback, var(--thai-font-family), sans-serif;
+  --heading-font-family: bellefair, bellefair-fallback, var(--thai-font-family), serif;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  --body-line-height: 1.6;
+  --heading-line-height: 1.5;
+  --heading-text-transform: uppercase;
 
   /* body sizes */
-  --body-font-size-m: 22px;
-  --body-font-size-s: 19px;
-  --body-font-size-xs: 17px;
+  --body-font-size-m: 16px;
+  --body-font-size-s: 14px;
+  --body-font-size-xs: 12px;
 
   /* heading sizes */
-  --heading-font-size-xxl: 55px;
-  --heading-font-size-xl: 44px;
-  --heading-font-size-l: 34px;
-  --heading-font-size-m: 27px;
-  --heading-font-size-s: 24px;
-  --heading-font-size-xs: 22px;
+  --heading-font-size-xxl: 24px;
+  --heading-font-size-xl: 24px;
+  --heading-font-size-l: 22px;
+  --heading-font-size-m: 20px;
+  --heading-font-size-s: 18px;
+  --heading-font-size-xs: 16px;
+
+  /* spacing (4px base) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 40px;
+  --space-8: 48px;
+  --space-9: 64px;
+  --space-10: 80px;
+  --section-spacing: var(--space-7);
+
+  /* layout */
+  --content-max-width: 1140px;
+  --content-gutter: var(--space-4);
+
+  /* shape and elevation */
+  --radius-s: 8px;
+  --radius-m: 16px;
+  --radius-pill: 999px;
+  --radius-round: 50%;
+  --shadow-xs: 0 1px 2px rgb(16 24 40 / 5%);
+  --shadow-s: 0 8px 16px rgb(16 24 40 / 10%);
+  --shadow-m: 0 16px 40px rgb(16 24 40 / 12%);
+  --shadow-l: 0 16px 100px rgb(16 24 40 / 8%);
+
+  /* controls */
+  --button-padding-block: 10px;
+  --button-padding-inline: 32px;
+  --control-height: 48px;
+  --control-height-l: 64px;
+  --control-padding-inline: var(--space-4);
+
+  /* icons and media */
+  --icon-size-s: 16px;
+  --icon-size-m: 20px;
+  --icon-size-l: 24px;
+  --ratio-banner: 16 / 5;
+  --ratio-card: 3 / 2;
+  --ratio-tile: 1 / 1;
+  --ratio-media: 16 / 9;
 
   /* nav height */
   --nav-height: 64px;
 }
 
-/* fallback fonts */
+/*
+ * fallback fonts: local system faces adjusted to the brand fonts' metrics to avoid layout shift
+ * when the web fonts swap in. Values computed from Inter 4.1 vs Arial and Bellefair vs Times New Roman.
+ */
 @font-face {
-  font-family: roboto-condensed-fallback;
-  size-adjust: 88.82%;
-  src: local('Arial');
+  font-family: inter-fallback;
+  size-adjust: 106.51%;
+  ascent-override: 90.96%;
+  descent-override: 22.65%;
+  line-gap-override: 0%;
+  src: local('Arial'), local('Helvetica Neue'), local('Helvetica');
 }
 
 @font-face {
-  font-family: roboto-fallback;
-  size-adjust: 99.529%;
-  src: local('Arial');
+  font-family: bellefair-fallback;
+  size-adjust: 91.99%;
+  ascent-override: 94.47%;
+  descent-override: 30.11%;
+  line-gap-override: 0%;
+  src: local('Times New Roman'), local('Times');
+}
+
+@media (width >= 600px) {
+  :root {
+    --content-gutter: var(--space-5);
+  }
 }
 
 @media (width >= 900px) {
   :root {
-    /* body sizes */
-    --body-font-size-m: 18px;
-    --body-font-size-s: 16px;
-    --body-font-size-xs: 14px;
-
     /* heading sizes */
-    --heading-font-size-xxl: 45px;
-    --heading-font-size-xl: 36px;
+    --heading-font-size-xxl: 36px;
+    --heading-font-size-xl: 32px;
     --heading-font-size-l: 28px;
-    --heading-font-size-m: 22px;
-    --heading-font-size-s: 20px;
-    --heading-font-size-xs: 18px;
+
+    /* spacing and layout */
+    --section-spacing: var(--space-9);
+    --content-gutter: var(--space-6);
   }
+}
+
+/* thai: stacked vowels and tone marks need extra leading; tracking must stay neutral */
+:lang(th) {
+  --heading-line-height: 1.6;
+
+  letter-spacing: normal;
 }
 
 body {
@@ -77,7 +191,7 @@ body {
   color: var(--text-color);
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-m);
-  line-height: 1.6;
+  line-height: var(--body-line-height);
 }
 
 body.appear {
@@ -106,10 +220,19 @@ h5,
 h6 {
   margin-top: 0.8em;
   margin-bottom: 0.25em;
-  font-family: var(--heading-font-family);
-  font-weight: 600;
-  line-height: 1.25;
+  color: var(--heading-color);
+  font-family: var(--body-font-family);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--heading-line-height);
   scroll-margin: 40px;
+}
+
+/* display headings use the brand serif; it has a single weight */
+h1,
+h2 {
+  font-family: var(--heading-font-family);
+  font-weight: var(--font-weight-regular);
+  text-transform: var(--heading-text-transform);
 }
 
 h1 { font-size: var(--heading-font-size-xxl); }
@@ -135,8 +258,8 @@ pre {
 }
 
 pre {
-  padding: 16px;
-  border-radius: 8px;
+  padding: var(--space-4);
+  border-radius: var(--radius-s);
   background-color: var(--light-color);
   overflow-x: auto;
   white-space: pre;
@@ -153,6 +276,12 @@ button {
   font: inherit;
 }
 
+/* keyboard focus: one visible ring for every interactive element */
+:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
 /* links */
 a:any-link {
   color: var(--link-color);
@@ -163,6 +292,17 @@ a:any-link {
 a:hover {
   color: var(--link-hover-color);
   text-decoration: underline;
+}
+
+/* links inside running text are underlined so colour is never the only cue */
+main :is(p, li, dd, td, th, blockquote) a:any-link:not(.button) {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+}
+
+main :is(p, li, dd, td, th, blockquote) a:any-link:not(.button):hover {
+  text-decoration-thickness: 2px;
 }
 
 /* buttons */
@@ -179,11 +319,11 @@ button.button {
   max-width: 100%;
   margin: 0;
   border: 2px solid transparent;
-  border-radius: 2.4em;
-  padding: 0.5em 1.2em;
+  border-radius: var(--radius-pill);
+  padding: var(--button-padding-block) var(--button-padding-inline);
   font: inherit;
-  font-weight: 500;
-  line-height: 1.25;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.5;
   text-decoration: none;
   cursor: pointer;
   overflow: hidden;
@@ -197,20 +337,24 @@ button.button:disabled {
   pointer-events: none;
 }
 
+/* primary: brand gradient, white text (6.84:1 at its lightest stop) */
 a.button.primary,
 button.button.primary {
-  border-color: var(--text-color);
-  background-color: var(--text-color);
-  color: var(--background-color);
+  border-color: transparent;
+  background-color: var(--color-purple-700);
+  background-image: var(--gradient-primary);
+  box-shadow: var(--shadow-xs);
+  color: var(--color-neutral-0);
 }
 
 a.button.primary:hover,
 a.button.primary:focus-visible,
 button.button.primary:hover,
 button.button.primary:focus-visible {
-  border-color: var(--dark-color);
+  border-color: transparent;
   background-color: var(--dark-color);
-  color: var(--light-color);
+  background-image: none;
+  color: var(--color-neutral-0);
 }
 
 a.button.primary[aria-disabled="true"],
@@ -220,15 +364,18 @@ button.button.primary:disabled,
 button.button.primary:disabled:hover,
 button.button.primary:disabled:focus-visible {
   background-color: var(--light-color);
+  background-image: none;
   border-color: var(--light-color);
-  color: var(--dark-color);
+  box-shadow: none;
+  color: var(--text-color);
 }
 
+/* secondary: outlined pill */
 a.button.secondary,
 button.button.secondary {
-  border-color: var(--text-color);
-  background-color: transparent;
-  color: var(--text-color);
+  border-color: var(--link-color);
+  background-color: var(--background-color);
+  color: var(--link-color);
 }
 
 a.button.secondary:hover,
@@ -236,7 +383,7 @@ a.button.secondary:focus-visible,
 button.button.secondary:hover,
 button.button.secondary:focus-visible {
   border-color: var(--dark-color);
-  background-color: var(--light-color);
+  background-color: var(--color-purple-100);
   color: var(--dark-color);
 }
 
@@ -248,7 +395,7 @@ button.button.secondary:disabled:hover,
 button.button.secondary:disabled:focus-visible {
   background-color: var(--light-color);
   border-color: var(--light-color);
-  color: var(--dark-color);
+  color: var(--text-color);
 }
 
 /* high-impact call-to-action */
@@ -275,7 +422,30 @@ button.button.accent:disabled:hover,
 button.button.accent:disabled:focus-visible {
   background-color: var(--light-color);
   border-color: var(--light-color);
-  color: var(--dark-color);
+  color: var(--text-color);
+}
+
+/* form controls */
+input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="file"], [type="hidden"], [type="submit"], [type="button"], [type="reset"], [type="image"]),
+select,
+textarea {
+  box-sizing: border-box;
+  max-width: 100%;
+  min-height: var(--control-height);
+  border: 1px solid var(--control-border-color);
+  border-radius: var(--radius-s);
+  padding: var(--space-2) var(--control-padding-inline);
+  background-color: var(--background-color);
+  color: var(--heading-color);
+}
+
+::placeholder {
+  color: var(--placeholder-color);
+  opacity: 1;
+}
+
+:is(input, select, textarea)[aria-invalid="true"] {
+  border-color: var(--color-error);
 }
 
 main img {
@@ -286,8 +456,8 @@ main img {
 
 .icon {
   display: inline-block;
-  height: 24px;
-  width: 24px;
+  height: var(--icon-size-l);
+  width: var(--icon-size-l);
 }
 
 .icon img {
@@ -297,23 +467,17 @@ main img {
 
 /* sections */
 main > .section {
-  margin: 40px 0;
+  margin: var(--section-spacing) 0;
 }
 
 main > .section > div {
-  max-width: 1200px;
+  max-width: var(--content-max-width);
   margin: auto;
-  padding: 0 24px;
+  padding: 0 var(--content-gutter);
 }
 
 main > .section:first-of-type {
   margin-top: 0;
-}
-
-@media (width >= 900px) {
-  main > .section > div {
-    padding: 0 32px;
-  }
 }
 
 /* section metadata */
@@ -321,5 +485,34 @@ main .section.light,
 main .section.highlight {
   background-color: var(--light-color);
   margin: 0;
-  padding: 40px 0;
+  padding: var(--section-spacing) 0;
+}
+
+/* tinted: navy text keeps >= 4.5:1 on the lavender surface (11.15:1) */
+main .section.tinted {
+  background-color: var(--color-purple-100);
+  color: var(--heading-color);
+  margin: 0;
+  padding: var(--section-spacing) 0;
+}
+
+/* dark: white text 13.66:1; focus ring purple-500 stays 3.66:1 */
+main .section.dark {
+  background-color: var(--dark-color);
+  color: var(--color-neutral-0);
+  margin: 0;
+  padding: var(--section-spacing) 0;
+}
+
+main .section.dark :is(h1, h2, h3, h4, h5, h6) {
+  color: inherit;
+}
+
+main .section.dark a:any-link:not(.button) {
+  color: var(--color-neutral-0);
+  text-decoration: underline;
+}
+
+main .section.dark a:any-link:not(.button):hover {
+  color: var(--color-purple-300);
 }
