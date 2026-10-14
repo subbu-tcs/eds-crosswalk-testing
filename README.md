@@ -76,3 +76,27 @@ Tabs are built from sections, so each panel can hold any content (text, tables, 
 | Jump links | `anchor` | Sticky link bar below the header; all sections stay visible and the one in view is marked current. Sticky only when the block is alone in its section |
 
 **Behaviour**: a link to any `#id` inside a panel opens that tab. All panels show when printing. Every panel stays visible while authoring in Universal Editor. Transitions run only when the visitor allows motion.
+
+### Carousel
+
+Horizontal slides built on a native scroll-snap list. Without JavaScript the slides can still be swiped or scrolled. The script adds previous/next buttons, slide indicators and current-slide tracking. There is no autoplay. Use `cards` for 3 or more items; for 1–2 items a Cards block is simpler.
+
+**Content model**
+
+| Level | Field | Type | Required | Notes |
+|---|---|---|---|---|
+| Block | `classes` | multiselect | no | `hero` = one full-width slide |
+| Block | `label` | text | no | Accessible name; defaults to the heading above the block |
+| Block | `previousLabel`, `nextLabel` | text | no | Screen-reader names for the arrow buttons; both empty hides the arrows |
+| Slide | `image` + `imageAlt` | reference + text | no | Alt text required unless decorative; don't put text in the image |
+| Slide | `mobileImage` | reference | no | Hero only: crop shown below 600px |
+| Slide | `text` | richtext | no | Title (bold or a heading), description, optional link or button |
+
+**Variants**
+
+| Variant | Layout |
+|---|---|
+| Cards (default) | About 1.15 slides visible on mobile, 2 from 600px, 3 from 900px |
+| Hero (`hero`) | Full-bleed; text below the image on mobile and over a gradient from 600px. The first image loads eagerly when the block is in the first section |
+
+**Behaviour**: indicators are named after each slide's title (or image alt text, or slide number). Arrows show as unavailable at the ends. All slides stay in the Tab order, and focusing one scrolls it into view. Smooth scrolling and transitions run only when the visitor allows motion.

@@ -15,6 +15,7 @@
       "hero",
       "accordion",
       "cards",
+      "carousel",
       "columns",
       "fragment",
       "tabs"
@@ -30,6 +31,12 @@
     "id": "cards",
     "components": [
       "card"
+    ]
+  },
+  {
+    "id": "carousel",
+    "components": [
+      "carousel-slide"
     ]
   },
   {
