@@ -1,0 +1,128 @@
+/* tabs: mobile first; the tab row scrolls horizontally when it doesn't fit */
+.tabs .tabs-list {
+  position: relative;
+  display: flex;
+  gap: var(--space-1);
+  overflow-x: auto;
+  border-bottom: 1px solid var(--border-color);
+  scrollbar-width: thin;
+}
+
+.tabs .tabs-tab {
+  flex: 0 0 auto;
+  min-height: var(--control-height);
+  margin: 0;
+  border: 0;
+  padding: var(--space-3) var(--space-4);
+  background: none;
+  box-shadow: inset 0 -3px 0 transparent;
+  color: var(--text-color);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tabs .tabs-tab:hover {
+  color: var(--heading-color);
+}
+
+/* selected: colour plus a 3px bar, so colour is never the only cue; weight stays the same to avoid shift */
+.tabs .tabs-tab[aria-selected="true"] {
+  box-shadow: inset 0 -3px 0 currentcolor;
+  color: var(--link-color);
+}
+
+/* inset ring so it isn't clipped by the scrolling row */
+.tabs .tabs-tab:focus-visible {
+  outline-offset: calc(var(--focus-ring-width) * -1);
+}
+
+main > .section.tabs-panel {
+  margin-top: var(--space-5);
+}
+
+/* jump-link (anchor) option */
+.tabs .tabs-anchor-nav ul {
+  display: flex;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--border-color);
+  list-style: none;
+  scrollbar-width: thin;
+}
+
+.tabs .tabs-anchor-nav li {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.tabs .tabs-anchor-nav a:any-link {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: var(--control-height);
+  padding: var(--space-3) var(--space-4);
+  box-shadow: inset 0 -3px 0 transparent;
+  color: var(--text-color);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.tabs .tabs-anchor-nav a:hover {
+  color: var(--heading-color);
+}
+
+.tabs .tabs-anchor-nav a[aria-current="true"] {
+  box-shadow: inset 0 -3px 0 currentcolor;
+  color: var(--link-color);
+}
+
+.tabs .tabs-anchor-nav a:focus-visible {
+  outline-offset: calc(var(--focus-ring-width) * -1);
+}
+
+main > .section.tabs-anchor-section {
+  position: sticky;
+  top: var(--nav-height);
+  z-index: 1;
+  margin-bottom: 0;
+  background-color: var(--background-color);
+}
+
+main > .section.tabs-anchor-section.tabs-anchor-ended {
+  position: static;
+}
+
+main > .section.tabs-anchor-target {
+  scroll-margin-top: calc(var(--nav-height) + var(--tabs-anchor-offset, 0px) + var(--space-4));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tabs .tabs-tab,
+  .tabs .tabs-anchor-nav a:any-link {
+    transition: color 0.15s ease-out, box-shadow 0.15s ease-out;
+  }
+}
+
+/* tablet */
+@media (width >= 600px) {
+  .tabs .tabs-tab,
+  .tabs .tabs-anchor-nav a:any-link {
+    padding: var(--space-3) var(--space-5);
+  }
+}
+
+/* desktop: tabs share the row equally but never shrink below their label */
+@media (width >= 900px) {
+  .tabs .tabs-tab {
+    flex: 1 0 auto;
+    padding: var(--space-4) var(--space-5);
+  }
+
+  main > .section.tabs-panel {
+    margin-top: var(--space-6);
+  }
+}

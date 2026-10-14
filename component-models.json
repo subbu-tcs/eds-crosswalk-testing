@@ -146,6 +146,13 @@
             "value": "dark"
           }
         ]
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "tabLabel",
+        "label": "Tab label",
+        "description": "Optional. Makes this section a tab of the nearest Tabs block above it. Keep it short and unique."
       }
     ]
   },
@@ -279,6 +286,30 @@
         "value": "",
         "label": "Text",
         "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "tabs",
+    "fields": [
+      {
+        "component": "multiselect",
+        "name": "classes",
+        "label": "Options",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Jump links (sticky, all sections visible)",
+            "value": "anchor"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "label",
+        "label": "Accessible label",
+        "description": "Optional. Names the tab list for screen readers, e.g. \"Baggage by route\". If empty, the heading just above the block is used. Tabs come from the following sections that have a Tab label."
       }
     ]
   }

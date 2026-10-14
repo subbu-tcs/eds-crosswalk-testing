@@ -55,3 +55,24 @@ Expandable list built on native `<details>`/`<summary>`. Everything works withou
 | One item open at a time | `single` | Opening an item closes the others (native `name`, with a script fallback) |
 
 **Behaviour**: each item gets a stable `id`, so `#id` links open and scroll to it. All items expand when printing. Every item stays open while authoring in Universal Editor. The indicator only animates when the visitor allows motion.
+
+### Tabs
+
+Tabs are built from sections, so each panel can hold any content (text, tables, columns, cards, accordion). Add a Tabs block, then give each following section a **Tab label**. The block groups the consecutive labelled sections directly after its own section and stops at the first section without a label. Sections are never moved. Without JavaScript they show stacked, each under its own heading.
+
+**Content model**
+
+| Where | Field | Type | Required | Notes |
+|---|---|---|---|---|
+| Tabs block | `classes` | multiselect | no | Options below |
+| Tabs block | `label` | text | no | Accessible name for the tab list; defaults to the heading above the block |
+| Section | `tabLabel` | text | yes, for a panel | Text on the tab; keep it short and unique |
+
+**Options**
+
+| Option | Value | Behaviour |
+|---|---|---|
+| (default) | — | WAI-ARIA tabs: one panel visible; arrow keys, Home and End move between tabs |
+| Jump links | `anchor` | Sticky link bar below the header; all sections stay visible and the one in view is marked current. Sticky only when the block is alone in its section |
+
+**Behaviour**: a link to any `#id` inside a panel opens that tab. All panels show when printing. Every panel stays visible while authoring in Universal Editor. Transitions run only when the visitor allows motion.
