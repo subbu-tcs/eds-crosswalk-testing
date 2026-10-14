@@ -100,3 +100,37 @@ Horizontal slides built on a native scroll-snap list. Without JavaScript the sli
 | Hero (`hero`) | Full-bleed; text below the image on mobile and over a gradient from 600px. The first image loads eagerly when the block is in the first section |
 
 **Behaviour**: indicators are named after each slide's title (or image alt text, or slide number). Arrows show as unavailable at the ends. All slides stay in the Tab order, and focusing one scrolls it into view. Smooth scrolling and transitions run only when the visitor allows motion.
+
+### Listing
+
+Lists published pages from a folder (for example Offers or News) using the shared query index (`/query-index.json`, configured in `helix-query.yaml`). Items come from each page's metadata, so nothing is maintained twice. Because the items are loaded at runtime, place a heading and any "Show all" link as default content above the block.
+
+**Page metadata used** (page properties in Universal Editor)
+
+| Field | Used for |
+|---|---|
+| Title, Description | Card title and text |
+| `image` (Listing image) | Card image (decorative; the title is the link text) |
+| `category` | Card label and filter. Free text; reuse the exact wording per market |
+| `date` | Shown and used for sorting (newest first); otherwise the last-modified date is used |
+| `validfrom`, `validto` | Pages outside this window are hidden. A date-only end date counts as the whole day |
+
+**Block fields**
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| `classes` | multiselect | no | `featured`, `list`, `filter` (see below) |
+| `folder` | aem-content | yes | Lists the pages inside this folder |
+| `categories` | text | no | Comma-separated categories to include; empty includes all |
+| `limit` | number | no | Maximum items shown (applied per filter selection) |
+
+**Options (combinable)**
+
+| Option | Behaviour |
+|---|---|
+| (default) | Card grid: 1 column on mobile, 2 from 600px, 3 from 900px |
+| Featured first item (`featured`) | First card spans the full row on tablet; 2×2 with text over the image on desktop |
+| List rows (`list`) | One card per row, image beside the text from 600px |
+| Show category filter (`filter`) | Toggle buttons for the categories found (shown when there are 2 or more); none pressed shows all |
+
+**Behaviour**: card titles are headings one level below the heading above the block (default `h2`). Dates use `<time>` and the page language. If nothing matches, or the index can't be loaded, the block hides itself. After changing `helix-query.yaml`, the index needs rebuilding so existing pages pick up the new properties.

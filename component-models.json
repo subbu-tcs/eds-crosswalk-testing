@@ -20,6 +20,42 @@
         "name": "keywords",
         "multi": true,
         "label": "Keywords"
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Listing image",
+        "description": "Shown on listing cards and when the page is shared.",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "category",
+        "label": "Category",
+        "description": "Used by Listing blocks as a filter. Reuse the exact same wording on every page of this market, e.g. \"Partner Privileges\"."
+      },
+      {
+        "component": "date-time",
+        "valueType": "date",
+        "name": "date",
+        "label": "Date",
+        "description": "News: publication date. Listings sort newest first."
+      },
+      {
+        "component": "date-time",
+        "valueType": "date",
+        "name": "validfrom",
+        "label": "Valid from",
+        "description": "Offers: hidden from listings before this date."
+      },
+      {
+        "component": "date-time",
+        "valueType": "date",
+        "name": "validto",
+        "label": "Valid to",
+        "description": "Offers: hidden from listings after this date. Must be on or after Valid from."
       }
     ]
   },
@@ -360,6 +396,53 @@
         "value": "",
         "label": "Text",
         "valueType": "string"
+      }
+    ]
+  },
+  {
+    "id": "listing",
+    "fields": [
+      {
+        "component": "multiselect",
+        "name": "classes",
+        "label": "Layout options",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Featured first item",
+            "value": "featured"
+          },
+          {
+            "name": "List rows",
+            "value": "list"
+          },
+          {
+            "name": "Show category filter",
+            "value": "filter"
+          }
+        ]
+      },
+      {
+        "component": "aem-content",
+        "valueType": "string",
+        "name": "folder",
+        "label": "Pages under",
+        "description": "Lists the published pages inside this folder, e.g. the Offers or News folder.",
+        "required": true
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "categories",
+        "label": "Only these categories",
+        "description": "Optional, comma-separated, matching the pages' Category exactly. Empty shows all."
+      },
+      {
+        "component": "number",
+        "valueType": "number",
+        "name": "limit",
+        "label": "Maximum items",
+        "description": "Optional. Empty shows every matching page."
       }
     ]
   },

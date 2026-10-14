@@ -14,3 +14,24 @@ indices:
       robots:
         select: head > meta[name="robots"]
         value: attribute(el, "content")
+      title:
+        select: head > meta[property="og:title"]
+        value: attribute(el, "content")
+      description:
+        select: head > meta[name="description"]
+        value: attribute(el, "content")
+      image:
+        select: head > meta[property="og:image"]
+        value: match(attribute(el, "content"), "https:\/\/[^/]+(/.*)")
+      category:
+        select: head > meta[name="category"]
+        value: attribute(el, "content")
+      date:
+        select: head > meta[name="date"]
+        value: attribute(el, "content")
+      validfrom:
+        select: head > meta[name="validfrom"]
+        value: attribute(el, "content")
+      validto:
+        select: head > meta[name="validto"]
+        value: attribute(el, "content")
