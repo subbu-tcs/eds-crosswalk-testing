@@ -1,0 +1,104 @@
+{
+  "definitions": [
+    {
+      "title": "Accordion",
+      "id": "accordion",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Accordion",
+              "model": "accordion",
+              "filter": "accordion"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Accordion Item",
+      "id": "accordion-item",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Accordion Item",
+              "model": "accordion-item"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "accordion",
+      "fields": [
+        {
+          "component": "multiselect",
+          "name": "classes",
+          "label": "Options",
+          "valueType": "string",
+          "options": [
+            {
+              "name": "FAQ search",
+              "value": "faq"
+            },
+            {
+              "name": "Inline row on desktop",
+              "value": "inline"
+            },
+            {
+              "name": "One item open at a time",
+              "value": "single"
+            }
+          ]
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "searchLabel",
+          "label": "Search label",
+          "description": "FAQ search only. Visible label for the search field, e.g. \"Search FAQs\". Leave empty to hide the search."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "noResultsMessage",
+          "label": "No results message",
+          "description": "FAQ search only. Shown and announced when a search matches nothing."
+        }
+      ]
+    },
+    {
+      "id": "accordion-item",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "summary",
+          "label": "Question or title",
+          "description": "Plain text shown on the clickable row. Keep it unique within the block.",
+          "required": true
+        },
+        {
+          "component": "richtext",
+          "valueType": "string",
+          "name": "body",
+          "label": "Answer or content",
+          "value": ""
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "accordion",
+      "components": [
+        "accordion-item"
+      ]
+    }
+  ]
+}

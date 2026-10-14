@@ -1,0 +1,167 @@
+/* accordion: mobile first */
+.accordion {
+  border-top: 1px solid var(--border-color);
+}
+
+.accordion .accordion-item {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.accordion .accordion-item[hidden] {
+  display: none;
+}
+
+.accordion .accordion-item-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: var(--control-height);
+  box-sizing: border-box;
+  padding: var(--space-3) var(--space-4);
+  color: var(--heading-color);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--heading-line-height);
+  list-style: none;
+  cursor: pointer;
+}
+
+.accordion .accordion-item-label::-webkit-details-marker {
+  display: none;
+}
+
+.accordion .accordion-item-label:hover {
+  color: var(--link-color);
+}
+
+/* plus / minus indicator drawn with gradients, inherits text colour */
+.accordion .accordion-item-label::after {
+  content: '';
+  flex: 0 0 var(--icon-size-s);
+  width: var(--icon-size-s);
+  height: var(--icon-size-s);
+  background:
+    linear-gradient(currentcolor, currentcolor) center / 100% 2px no-repeat,
+    linear-gradient(currentcolor, currentcolor) center / 2px 100% no-repeat;
+}
+
+.accordion .accordion-item[open] > .accordion-item-label::after {
+  background: linear-gradient(currentcolor, currentcolor) center / 100% 2px no-repeat;
+}
+
+.accordion .accordion-item-body {
+  padding: 0 var(--space-4) var(--space-5);
+  overflow-x: auto;
+}
+
+.accordion .accordion-item-body > :first-child {
+  margin-top: 0;
+}
+
+.accordion .accordion-item-untitled .accordion-item-body {
+  padding-top: var(--space-4);
+}
+
+/* faq search */
+.accordion .accordion-search {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+}
+
+.accordion .accordion-search label {
+  color: var(--heading-color);
+  font-size: var(--body-font-size-s);
+  font-weight: var(--font-weight-medium);
+}
+
+.accordion .accordion-search input {
+  width: 100%;
+  min-height: var(--control-height-l);
+  font-size: var(--heading-font-size-xs);
+}
+
+.accordion .accordion-search-status {
+  margin: 0 0 var(--space-4);
+  color: var(--heading-color);
+}
+
+.accordion .accordion-search-status:empty {
+  display: none;
+}
+
+/* reduced motion: the indicator only animates when motion is acceptable */
+@media (prefers-reduced-motion: no-preference) {
+  .accordion .accordion-item-label::after {
+    transition: transform 0.2s ease-out;
+  }
+
+  .accordion .accordion-item[open] > .accordion-item-label::after {
+    transform: rotate(180deg);
+  }
+}
+
+/* dark section: keep inherited white text */
+.section.dark .accordion .accordion-item-label,
+.section.dark .accordion .accordion-search label,
+.section.dark .accordion .accordion-search-status {
+  color: inherit;
+}
+
+.section.dark .accordion .accordion-item-label:hover {
+  color: var(--color-purple-300);
+}
+
+/* tablet */
+@media (width >= 600px) {
+  .accordion .accordion-item-label {
+    padding: var(--space-4) var(--space-5);
+  }
+
+  .accordion .accordion-item-body {
+    padding: 0 var(--space-5) var(--space-5);
+  }
+
+  .accordion .accordion-search {
+    flex-flow: row wrap;
+    align-items: center;
+  }
+
+  .accordion .accordion-search label {
+    flex: 1 0 100%;
+  }
+
+  .accordion.inline {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+    border-top: 0;
+  }
+
+  .accordion.inline .accordion-item {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-s);
+    background-color: var(--background-color);
+    box-shadow: var(--shadow-xs);
+  }
+
+  .accordion.inline .accordion-search,
+  .accordion.inline .accordion-search-status {
+    grid-column: 1 / -1;
+  }
+
+  .section.dark .accordion.inline .accordion-item {
+    border-color: var(--color-purple-300);
+    background-color: transparent;
+    box-shadow: none;
+  }
+}
+
+/* desktop */
+@media (width >= 900px) {
+  .accordion.inline {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    align-items: start;
+  }
+}

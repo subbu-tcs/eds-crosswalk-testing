@@ -13,9 +13,16 @@
       "button",
       "title",
       "hero",
+      "accordion",
       "cards",
       "columns",
       "fragment"
+    ]
+  },
+  {
+    "id": "accordion",
+    "components": [
+      "accordion-item"
     ]
   },
   {
