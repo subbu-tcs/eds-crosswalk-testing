@@ -136,6 +136,14 @@
           {
             "name": "Highlight",
             "value": "highlight"
+          },
+          {
+            "name": "Tinted",
+            "value": "tinted"
+          },
+          {
+            "name": "Dark",
+            "value": "dark"
           }
         ]
       }
