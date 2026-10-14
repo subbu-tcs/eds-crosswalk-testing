@@ -1,0 +1,274 @@
+/* carousel: a native scroll-snap list; works without JavaScript */
+.carousel {
+  --carousel-gap: var(--space-4);
+  --carousel-slide-width: 85%;
+}
+
+.carousel .carousel-slides {
+  position: relative;
+  display: flex;
+  gap: var(--carousel-gap);
+  margin: 0;
+  padding: 0 0 var(--space-2);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  list-style: none;
+}
+
+/* once enhanced, the controls replace the scrollbar as the affordance */
+.carousel.carousel-ready .carousel-slides {
+  scrollbar-width: none;
+}
+
+.carousel .carousel-slide {
+  box-sizing: border-box;
+  display: flex;
+  flex: 0 0 var(--carousel-slide-width);
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+  scroll-snap-align: start;
+}
+
+.carousel .carousel-slide-image picture,
+.carousel .carousel-slide-image img {
+  display: block;
+  width: 100%;
+}
+
+.carousel .carousel-slide-image img {
+  aspect-ratio: var(--ratio-card);
+  height: auto;
+  object-fit: cover;
+}
+
+.carousel .carousel-slide-content > :first-child {
+  margin-top: 0;
+}
+
+.carousel .carousel-slide-content > :last-child {
+  margin-bottom: 0;
+}
+
+/* cards (default) */
+.carousel:not(.hero) .carousel-slide {
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-s);
+  background-color: var(--background-color);
+  box-shadow: var(--shadow-xs);
+}
+
+.carousel:not(.hero) .carousel-slide-content {
+  flex: 1;
+  padding: var(--space-4);
+}
+
+/* controls */
+.carousel .carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.carousel .carousel-indicators {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-1);
+}
+
+.carousel .carousel-indicator {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.carousel .carousel-indicator::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--control-border-color);
+  border-radius: var(--radius-round);
+  background-color: var(--background-color);
+}
+
+/* current slide: filled, wider pill, so the state isn't conveyed by colour alone */
+.carousel .carousel-indicator[aria-current="true"]::before {
+  width: 20px;
+  border-color: var(--link-color);
+  border-radius: var(--radius-pill);
+  background-color: var(--link-color);
+}
+
+.carousel .carousel-prev,
+.carousel .carousel-next {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: var(--control-height);
+  height: var(--control-height);
+  margin: 0;
+  border: 1px solid var(--control-border-color);
+  border-radius: var(--radius-round);
+  padding: 0;
+  background-color: var(--background-color);
+  color: var(--link-color);
+  cursor: pointer;
+}
+
+.carousel .carousel-prev::before,
+.carousel .carousel-next::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid currentcolor;
+  border-right: 2px solid currentcolor;
+}
+
+.carousel .carousel-prev::before {
+  margin-left: 4px;
+  transform: rotate(-135deg);
+}
+
+.carousel .carousel-next::before {
+  margin-right: 4px;
+  transform: rotate(45deg);
+}
+
+.carousel .carousel-prev:hover,
+.carousel .carousel-next:hover {
+  border-color: var(--link-color);
+  background-color: var(--color-purple-100);
+}
+
+.carousel .carousel-prev[aria-disabled="true"],
+.carousel .carousel-next[aria-disabled="true"] {
+  border-color: var(--border-color);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .carousel .carousel-slides {
+    scroll-behavior: smooth;
+  }
+
+  .carousel .carousel-indicator::before {
+    transition: width 0.2s ease-out, background-color 0.2s ease-out;
+  }
+}
+
+/* hero: one full-width slide; text below the image on small screens */
+main > .section > .carousel-wrapper:has(> .carousel.hero) {
+  max-width: unset;
+  padding: 0;
+}
+
+.carousel.hero {
+  --carousel-gap: 0px;
+  --carousel-slide-width: 100%;
+}
+
+.carousel.hero .carousel-slide-image img {
+  aspect-ratio: 4 / 3;
+}
+
+.carousel.hero .carousel-slide-content {
+  padding: var(--space-4) var(--content-gutter);
+}
+
+.carousel.hero .carousel-controls {
+  padding: 0 var(--content-gutter);
+}
+
+/* dark sections keep inherited white text; controls stay on white for contrast */
+.section.dark .carousel:not(.hero) .carousel-slide {
+  color: var(--text-color);
+}
+
+.section.dark .carousel:not(.hero) .carousel-slide :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--heading-color);
+}
+
+.section.dark .carousel:not(.hero) .carousel-slide a:any-link:not(.button) {
+  color: var(--link-color);
+}
+
+.section.dark .carousel .carousel-indicator::before {
+  border-color: var(--color-purple-300);
+  background-color: transparent;
+}
+
+.section.dark .carousel .carousel-indicator[aria-current="true"]::before {
+  border-color: var(--color-neutral-0);
+  background-color: var(--color-neutral-0);
+}
+
+/* tablet */
+@media (width >= 600px) {
+  .carousel {
+    --carousel-gap: var(--space-5);
+    --carousel-slide-width: calc((100% - var(--carousel-gap)) / 2);
+  }
+
+  .carousel.hero .carousel-slide {
+    position: relative;
+  }
+
+  .carousel.hero .carousel-slide-image img {
+    aspect-ratio: 16 / 7;
+  }
+
+  /* text over the image on a dark gradient */
+  .carousel.hero .carousel-slide:not(.carousel-slide-image-only) .carousel-slide-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--overlay-hero);
+  }
+
+  .carousel.hero .carousel-slide:not(.carousel-slide-image-only) .carousel-slide-content {
+    position: absolute;
+    inset: auto 0 0;
+    box-sizing: border-box;
+    max-width: calc(var(--content-max-width) + 2 * var(--content-gutter));
+    margin: 0 auto;
+    padding: var(--space-6) var(--content-gutter);
+    color: var(--color-neutral-0);
+  }
+
+  .carousel.hero .carousel-slide-content :is(h1, h2, h3, h4, h5, h6) {
+    color: inherit;
+  }
+
+  .carousel.hero .carousel-slide-content a:any-link:not(.button) {
+    color: inherit;
+  }
+}
+
+/* desktop */
+@media (width >= 900px) {
+  .carousel {
+    --carousel-slide-width: calc((100% - 2 * var(--carousel-gap)) / 3);
+  }
+
+  .carousel:not(.hero) .carousel-slide-content {
+    padding: var(--space-5);
+  }
+
+  .carousel.hero .carousel-slide-image img {
+    aspect-ratio: var(--ratio-banner);
+  }
+}

@@ -235,6 +235,80 @@
     ]
   },
   {
+    "id": "carousel",
+    "fields": [
+      {
+        "component": "multiselect",
+        "name": "classes",
+        "label": "Options",
+        "valueType": "string",
+        "options": [
+          {
+            "name": "Hero (one full-width slide)",
+            "value": "hero"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "label",
+        "label": "Accessible label",
+        "description": "Optional. Names the carousel for screen readers, e.g. \"Partner offers\". If empty, the heading just above the block is used."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "previousLabel",
+        "label": "Previous button label",
+        "description": "Read by screen readers, e.g. \"Previous slide\". Leave both button labels empty to hide the arrow buttons."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "nextLabel",
+        "label": "Next button label",
+        "description": "Read by screen readers, e.g. \"Next slide\"."
+      }
+    ]
+  },
+  {
+    "id": "carousel-slide",
+    "fields": [
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "image",
+        "label": "Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Image alt text",
+        "description": "Describe the image. Leave empty only if it is purely decorative. Don't rely on text inside the image.",
+        "value": ""
+      },
+      {
+        "component": "reference",
+        "valueType": "string",
+        "name": "mobileImage",
+        "label": "Mobile image (hero only)",
+        "description": "Optional portrait crop shown below 600px. Uses the same alt text.",
+        "multi": false
+      },
+      {
+        "component": "richtext",
+        "valueType": "string",
+        "name": "text",
+        "label": "Text",
+        "description": "Title (bold or a heading at the right level), description, and optionally one link or button.",
+        "value": ""
+      }
+    ]
+  },
+  {
     "id": "columns",
     "fields": [
       {
