@@ -1,0 +1,46 @@
+{
+  "definitions": [
+    {
+      "title": "Tabs",
+      "id": "tabs",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Tabs",
+              "model": "tabs"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "tabs",
+      "fields": [
+        {
+          "component": "multiselect",
+          "name": "classes",
+          "label": "Options",
+          "valueType": "string",
+          "options": [
+            {
+              "name": "Jump links (sticky, all sections visible)",
+              "value": "anchor"
+            }
+          ]
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "label",
+          "label": "Accessible label",
+          "description": "Optional. Names the tab list for screen readers, e.g. \"Baggage by route\". If empty, the heading just above the block is used. Tabs come from the following sections that have a Tab label."
+        }
+      ]
+    }
+  ],
+  "filters": []
+}
