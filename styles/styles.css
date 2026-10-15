@@ -425,10 +425,8 @@ button.button.accent:disabled:focus-visible {
   color: var(--text-color);
 }
 
-/* form controls */
-input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="file"], [type="hidden"], [type="submit"], [type="button"], [type="reset"], [type="image"]),
-select,
-textarea {
+/* form controls: zero specificity, so blocks and embedded widgets can style their own fields */
+:where(input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="file"], [type="hidden"], [type="submit"], [type="button"], [type="reset"], [type="image"]), select, textarea) {
   box-sizing: border-box;
   max-width: 100%;
   min-height: var(--control-height);
@@ -444,7 +442,7 @@ textarea {
   opacity: 1;
 }
 
-:is(input, select, textarea)[aria-invalid="true"] {
+:where(input, select, textarea)[aria-invalid="true"] {
   border-color: var(--color-error);
 }
 

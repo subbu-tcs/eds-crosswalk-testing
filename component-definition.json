@@ -114,6 +114,21 @@
           }
         },
         {
+          "title": "Booking Widget",
+          "id": "booking-widget",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block",
+                "template": {
+                  "name": "Booking Widget",
+                  "model": "booking-widget"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Cards",
           "id": "cards",
           "plugins": {
