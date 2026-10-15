@@ -1,0 +1,65 @@
+{
+  "definitions": [
+    {
+      "title": "Booking Widget",
+      "id": "booking-widget",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Booking Widget",
+              "model": "booking-widget"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "booking-widget",
+      "fields": [
+        {
+          "component": "multiselect",
+          "name": "classes",
+          "label": "Options",
+          "valueType": "string",
+          "options": [
+            {
+              "name": "Promo code field",
+              "value": "promo-code"
+            },
+            {
+              "name": "Limit to the listed airports",
+              "value": "fixed-route"
+            }
+          ]
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "origin",
+          "label": "Origin airport",
+          "description": "Optional 3-letter IATA code pre-selected as From, e.g. BKK.",
+          "validation": {
+            "regExp": "^\\s*[A-Za-z]{3}\\s*$",
+            "customErrorMsg": "Use one 3-letter airport code, e.g. BKK."
+          }
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "destinations",
+          "label": "Destination airports",
+          "description": "Optional comma-separated IATA codes, e.g. TPE, KHH. With \"Limit to the listed airports\", only these can be chosen.",
+          "validation": {
+            "regExp": "^\\s*[A-Za-z]{3}(\\s*,\\s*[A-Za-z]{3})*\\s*$",
+            "customErrorMsg": "Use 3-letter airport codes separated by commas, e.g. TPE, KHH."
+          }
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

@@ -134,3 +134,26 @@ Lists published pages from a folder (for example Offers or News) using the share
 | Show category filter (`filter`) | Toggle buttons for the categories found (shown when there are 2 or more); none pressed shows all |
 
 **Behaviour**: card titles are headings one level below the heading above the block (default `h2`). Dates use `<time>` and the page language. If nothing matches, or the index can't be loaded, the block hides itself. After changing `helix-query.yaml`, the index needs rebuilding so existing pages pick up the new properties.
+
+### Booking Widget
+
+Mounts the existing Thai Airways **React booking widget** (the standalone bundle provisioned in AEM, `/content/dam/thaiairways/scripts/standalone-react/bookingwidget.bundle.min.js`). The block doesn't reimplement any booking logic: the widget renders the form and calls its own backend APIs.
+
+**Block fields**
+
+| Field | Type | Notes |
+|---|---|---|
+| `classes` | multiselect | `promo-code` shows the promo code field; `fixed-route` limits From/To to the listed airports |
+| `origin` | text | Optional IATA code pre-selected as From, e.g. `BKK` |
+| `destinations` | text | Optional comma-separated IATA codes, e.g. `TPE, KHH` |
+
+**How it works**
+
+- The block creates `<div id="bookFlightStandalone">` with the full `data-*` attribute set that the AEM `offers-bookingwidget` component emits (`WIDGET_DEFAULTS` in `booking-widget.js`), plus the authored values. The widget needs the full set; with fewer attributes it renders only part of the form on mobile.
+- The about 7 MB bundle loads only after the page `load` event, and when the block is within 300px of the viewport. Space is reserved (540px, or 336px from 900px) so the page doesn't shift.
+- The widget expects Bootstrap and react-datepicker CSS from the hosting page. The block fetches both once and confines them with `@layer booking-widget-vendor` and `@scope (#bookFlightStandalone)`, so Bootstrap can't restyle the rest of the page. One parity rule from the AEM component (brand airport-code pills) sits in the earlier `booking-widget-parity` layer.
+- Only one widget per page is possible, because the bundle looks up a fixed `id`. Further Booking Widget blocks hide themselves and log a warning.
+- In Universal Editor the bundle isn't loaded; the block shows the configured values.
+- If the bundle can't load, the block hides itself and logs the error.
+
+**Environment requirement**: the widget calls `/common/*`, `/bin/*`, `/content/*`, `/osci/*` and `/pss_router/*` on the page's own domain, and loads Bootstrap from `/etc.clientlibs/*`. It receives live data only on the production domain, where the CDN routes those paths to the existing AEM and API origin. On `*.aem.page` / `*.aem.live` the form renders partially but its data doesn't load.

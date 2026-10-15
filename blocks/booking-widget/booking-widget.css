@@ -1,0 +1,58 @@
+/*
+ * booking widget: hosts the existing React widget; its own styles come with the bundle.
+ * Layer order matters: !important declarations in an earlier layer win over later ones, so
+ * the parity overrides below beat Bootstrap's !important utilities in the vendor layer.
+ */
+@layer booking-widget-parity, booking-widget-vendor;
+
+.booking-widget {
+  position: relative;
+
+  /* calendar and airport pop-ups must stack above the sections that follow */
+  z-index: 1;
+}
+
+/* space reserved for the widget so the page doesn't shift when it renders (heights measured on the widget) */
+.booking-widget .booking-widget-host {
+  min-height: 540px;
+
+  /* the widget pulls itself upward (built to overlap a hero); the AEM component offsets it by 50px */
+  margin-top: 50px;
+}
+
+/*
+ * Parity with the AEM offers-bookingwidget component's inline styles: airport-code pills in the
+ * brand lavender instead of Bootstrap's blue .bg-primary. Bootstrap marks that utility !important.
+ */
+@layer booking-widget-parity {
+  .booking-widget .booking-widget-host .bg-primary {
+    border: var(--pill-border, 0) !important;
+    background: var(--pill-bg, var(--color-purple-100)) !important;
+    color: var(--pill-color, var(--color-purple-700)) !important;
+  }
+}
+
+.booking-widget .booking-widget-host[aria-busy="true"] {
+  border-radius: var(--radius-m);
+  background-color: var(--light-color);
+}
+
+/* authoring view: show the configured values; the live widget isn't loaded in the editor */
+.booking-widget.booking-widget-authoring {
+  border: 2px dashed var(--control-border-color);
+  border-radius: var(--radius-m);
+  padding: var(--space-4);
+  color: var(--text-color);
+  font-family: monospace;
+  font-size: var(--body-font-size-s);
+}
+
+.booking-widget.booking-widget-authoring > div {
+  min-height: 1.6em;
+}
+
+@media (width >= 900px) {
+  .booking-widget .booking-widget-host {
+    min-height: 336px;
+  }
+}
