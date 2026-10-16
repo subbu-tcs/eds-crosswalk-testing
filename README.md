@@ -346,6 +346,28 @@ Built automatically on every page except market home pages (`/`, `/en-th/`); aut
 
 **Index**: `breadcrumbtitle` was added to `helix-query.yaml`. After deploying, rebuild the index so ancestors use their breadcrumb titles.
 
+### Notification ticker
+
+The notice bar under the header on every page, built automatically like the breadcrumb.
+
+**Data**: each market's notifications sheet, published at `/{market}/notifications.json` (e.g. `/en-th/notifications.json`). If a market has no sheet, the current AEM feed `/bin/banner/notification.json?{market}` is used; that feed only responds on the production domain.
+
+| Sheet column | Notes |
+|---|---|
+| `Heading` | Shown in the bar and as the notice title in the list |
+| `Message` | Text (blank lines start new paragraphs) or simple HTML: paragraphs, lists, bold, italic, links |
+| `Link`, `Link text` | Optional link under the message |
+| `Start`, `End` | ISO date-times (`2026-10-01T09:00:00+07:00`) or dates; empty means always. Only notices active now are shown, and a date-only end covers the whole day |
+
+**Behaviour**
+- **Bar:** a 40px gradient bar with an info icon. One heading shows at a time and rotates every 6 seconds.
+  - Rotation pauses on hover or focus and with the pause button; with reduced motion there's no rotation and no pause button.
+  - A heading, or **See All**, opens a "Notice" dialog listing every active notice (a native modal: Escape, the close button or a click outside closes it).
+  - The close button dismisses the bar until the set of notices changes.
+- **Contrast:** the gradient uses `purple-800` → `purple-700`, so white text passes 4.5:1. The source's lavender end gives 1.82:1.
+- **No layout shift on later pages:** `scripts.js` adds the slot between the header and the breadcrumb. It reserves the 40px height when this market showed notices on the previous page of the visit, so only the first page can shift. With no active notices, the slot is removed.
+- **Labels:** the interface labels ("See All", "Notice", button names) are English until the per-market labels sheet exists.
+
 ### Header and footer
 
 Built from the **nav** and **footer** pages (fetched as `/nav.plain.html` and `/footer.plain.html`; `/content/…` first for local preview). All copy, links and images live in those pages; the code only adds controls and layout. Step-by-step authoring instructions with the full content are in [docs/nav-footer-authoring.md](docs/nav-footer-authoring.md).
