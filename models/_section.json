@@ -77,6 +77,7 @@
         "listing",
         "locator",
         "search",
+        "table",
         "tabs"
       ]
     }

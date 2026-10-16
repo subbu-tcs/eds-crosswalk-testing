@@ -23,6 +23,7 @@
       "listing",
       "locator",
       "search",
+      "table",
       "tabs"
     ]
   },
@@ -57,6 +58,42 @@
       "image",
       "button",
       "title"
+    ]
+  },
+  {
+    "id": "table-1",
+    "components": [
+      "table-col-1"
+    ]
+  },
+  {
+    "id": "table-2",
+    "components": [
+      "table-col-2"
+    ]
+  },
+  {
+    "id": "table-3",
+    "components": [
+      "table-col-3"
+    ]
+  },
+  {
+    "id": "table-4",
+    "components": [
+      "table-col-4"
+    ]
+  },
+  {
+    "id": "table-5",
+    "components": [
+      "table-col-5"
+    ]
+  },
+  {
+    "id": "table-6",
+    "components": [
+      "table-col-6"
     ]
   }
 ]

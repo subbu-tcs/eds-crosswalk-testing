@@ -301,6 +301,27 @@ The homepage "Trending destinations from [origin]" row of live fares. It calls t
 
 **Environment requirement**: the fares service (`/common/*`) only responds on the production domain, where the CDN routes it to the existing API. On `*.aem.page` / `*.aem.live` use a sheet. The booking page may not prefill from the link parameters, since on the current site that hand-off happens inside the app.
 
+### Table
+
+Data tables such as baggage allowances, fleet specifications and mileage charts. Put a heading just above the block: it names the table. Footnotes ("*Saver Class…") go as default content below it.
+
+**Content model**: the Table block has **Options** and **Columns** (1–6). Columns sets the row type authors can add (`table-col-1` … `table-col-6`), and each row has one rich-text field per column. The rendered markup is the standard one (rows of cells), so document-authored tables work too. Rows of 5 and 6 cells are allowed in `.eslintrc.js` (`xwalk/max-cells`).
+
+**Options (combinable)**
+
+| Option | Effect |
+|---|---|
+| (default) | The first row is the header row: bold white text on `--color-purple-900`. Body cells are 14px, centred, with light borders and alternating `neutral-50` / `neutral-25` bands |
+| No header row (`no-header`) | Every row is a body row |
+| First column as row headers (`header-column`) | The first cell of each row is a row header |
+| Left-aligned cells (`left`) | Text starts at the left instead of the centre |
+| No row bands (`plain`) | White body rows |
+
+**Behaviour**
+- **Group rows:** a row with only its first cell filled becomes a group heading across the table, such as "Business Class" in the partner mileage charts. It starts a new row group and is styled lavender with bold purple text. Real merged cells aren't supported.
+- **Shorter rows:** missing cells are padded, so every row has the full column count.
+- **Width:** below 600px, tables get at least 140px per column. Wider tables scroll sideways inside a focusable region named by the heading, instead of widening the page.
+
 ### Header and footer
 
 Built from the **nav** and **footer** pages (fetched as `/nav.plain.html` and `/footer.plain.html`; `/content/…` first for local preview). All copy, links and images live in those pages; the code only adds controls and layout. Step-by-step authoring instructions with the full content are in [docs/nav-footer-authoring.md](docs/nav-footer-authoring.md).
