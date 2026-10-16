@@ -1,6 +1,7 @@
 import {
   getMetadata,
   loadBlock,
+  toClassName,
   loadHeader,
   loadFooter,
   decorateIcons,
@@ -12,6 +13,72 @@ import {
   loadSections,
   loadCSS,
 } from './aem.js';
+
+/**
+ * The market of the current page: the first path segment when it is language-country,
+ * e.g. "en-th" or "th-th"; empty for pages outside a market.
+ * @returns {string}
+ */
+export function getMarket() {
+  const [, segment = ''] = window.location.pathname.split('/');
+  return /^[a-z]{2}-[a-z]{2}$/.test(segment) ? segment : '';
+}
+
+/** The page language from the market: "th-th" -> "th-TH", "en-th" -> "en-TH"; else "en". */
+function marketLanguage() {
+  const market = getMarket();
+  if (!market) return 'en';
+  const [language, country] = market.split('-');
+  return `${language}-${country.toUpperCase()}`;
+}
+
+let placeholders;
+
+async function fetchSheet(path) {
+  try {
+    const resp = await fetch(path);
+    if (!resp.ok) return {};
+    const json = await resp.json();
+    const rows = Array.isArray(json.data) ? json.data : json[json[':names']?.[0]]?.data || [];
+    return Object.fromEntries(rows
+      .filter((row) => row.Key || row.key)
+      .map((row) => [toClassName(row.Key || row.key), row.Text ?? row.text ?? '']));
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * Loads the interface labels once per page view: the site-wide placeholders sheet
+ * (/placeholders.json), overridden by the market's (/en-th/placeholders.json).
+ * Each sheet has Key and Text columns.
+ * @returns {Promise<Object<string, string>>} labels by key ("header-open-menu")
+ */
+export function fetchPlaceholders() {
+  if (!placeholders) {
+    const market = getMarket();
+    placeholders = Promise.all([
+      fetchSheet('/placeholders.json'),
+      market ? fetchSheet(`/${market}/placeholders.json`) : {},
+    ]).then(([site, local]) => ({ ...site, ...local }));
+  }
+  return placeholders;
+}
+
+/**
+ * A block's interface labels: its English defaults, replaced by any sheet entry keyed
+ * "<block>-<label>", e.g. header + openMenu -> "header-open-menu".
+ * @param {string} block block name
+ * @param {Object<string, string>} defaults labels by camelCase name
+ * @returns {Promise<Object<string, string>>}
+ */
+export async function getLabels(block, defaults) {
+  const sheet = await fetchPlaceholders();
+  return Object.fromEntries(Object.entries(defaults).map(([name, text]) => {
+    const key = toClassName(`${block}-${name.replace(/([a-z0-9])([A-Z])/g, '$1-$2')}`);
+    return [name, String(sheet[key] ?? '').trim() || text];
+  }));
+}
 
 /**
  * Moves all the attributes from a given elmenet to another given element.
@@ -162,7 +229,7 @@ function prepareHeaderSlots(main) {
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
-  document.documentElement.lang = 'en';
+  document.documentElement.lang = marketLanguage();
   decorateTemplateAndTheme();
   const main = doc.querySelector('main');
   if (main) {

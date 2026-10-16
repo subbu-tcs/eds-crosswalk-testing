@@ -1,4 +1,6 @@
-// interface labels the content cannot carry (until the per-market labels sheet exists)
+import { getLabels } from '../../scripts/scripts.js';
+
+// interface labels: English defaults, replaced by the placeholders sheet (notifications-*)
 const LABELS = {
   region: 'Notices',
   dialog: 'Notice',
@@ -158,6 +160,7 @@ function buildDialog(notices) {
  * @param {Element} block The notifications block element
  */
 export default async function decorate(block) {
+  Object.assign(LABELS, await getLabels('notifications', LABELS));
   const wrapper = block.parentElement;
   const [, market = ''] = window.location.pathname.split('/');
   const storageKey = `notifications:${market}`;

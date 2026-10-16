@@ -1,8 +1,9 @@
 import { getMetadata } from '../../scripts/aem.js';
+import { getLabels } from '../../scripts/scripts.js';
 
 const INDEX_PATH = '/query-index.json';
 const PAGE_SIZE = 500;
-// interface labels the content cannot carry (until the per-market labels sheet exists)
+// interface labels: English defaults, replaced by the placeholders sheet (breadcrumb-*)
 const LABELS = { nav: 'Breadcrumb', home: 'Home' };
 
 async function fetchIndexPage(offset, rows) {
@@ -68,6 +69,7 @@ function addStructuredData(trail) {
  * @param {Element} block The breadcrumb block element
  */
 export default async function decorate(block) {
+  Object.assign(LABELS, await getLabels('breadcrumb', LABELS));
   let rows = [];
   try {
     rows = await fetchIndexPage(0, []);

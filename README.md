@@ -366,7 +366,33 @@ The notice bar under the header on every page, built automatically like the brea
   - The close button dismisses the bar until the set of notices changes.
 - **Contrast:** the gradient uses `purple-800` → `purple-700`, so white text passes 4.5:1. The source's lavender end gives 1.82:1.
 - **No layout shift on later pages:** `scripts.js` adds the slot between the header and the breadcrumb. It reserves the 40px height when this market showed notices on the previous page of the visit, so only the first page can shift. With no active notices, the slot is removed.
-- **Labels:** the interface labels ("See All", "Notice", button names) are English until the per-market labels sheet exists.
+- **Labels:** "See All", "Notice" and the button names come from the labels sheet (`notifications-*` keys, see Interface labels), with English defaults.
+
+### Interface labels (placeholders sheet)
+
+Words that belong to the interface rather than to a page (button names, screen-reader labels) come from a **placeholders** spreadsheet with `Key` and `Text` columns. Create one at the site root (`/placeholders`) for site-wide wording and one per market (`/en-th/placeholders`, `/th-th/placeholders`), then publish them. The market sheet wins; an empty or missing entry keeps the English default. `fetchPlaceholders()` and `getLabels()` in `scripts.js` load both sheets once per page view.
+
+The page language also comes from the market: `/th-th/…` is `lang="th-TH"`, `/en-th/…` is `en-TH`, other pages `en`. It drives Thai line breaking and fonts, screen-reader pronunciation, Listing dates and Search plurals.
+
+| Key | English default |
+|---|---|
+| `header-open-menu` / `header-close-menu` | Open navigation / Close navigation |
+| `header-back` | Back |
+| `header-close` | Close |
+| `header-clear` | Clear |
+| `header-sub-menu` | sub-menu (added after the group name on drill-down buttons) |
+| `footer-new-tab` | (opens in a new tab) |
+| `footer-back-to-top` | Scroll page to top |
+| `breadcrumb-nav` | Breadcrumb |
+| `breadcrumb-home` | Home (a Breadcrumb title on the market home page takes priority) |
+| `notifications-region` | Notices |
+| `notifications-see-all` | See All |
+| `notifications-dialog` | Notice |
+| `notifications-close` | Close |
+| `notifications-dismiss` | Dismiss notices |
+| `notifications-pause` / `notifications-play` | Pause notices / Play notices |
+
+Keys are matched case-insensitively and spaces count as hyphens, so `Header Open Menu` works too. Publish the site and market sheets even if they're empty (the same goes for each market's `notifications` sheet): a missing sheet still works, but the browser logs the 404 as a console error, which Lighthouse counts against Best Practices. Labels that authors set on a block (Search, Locator, Fare Widget, Carousel, Accordion) stay block fields, because they can differ per page.
 
 ### Header and footer
 
