@@ -1,0 +1,98 @@
+/*
+ * table: data tables, measured on the source checked-baggage and partner pages at 1440px.
+ * Purple header row with bold white text, centred 14px cells with light borders, alternating
+ * row bands, and lavender group rows. Wide tables scroll sideways inside their own box.
+ */
+.table .table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  border-radius: var(--radius-s);
+}
+
+.table .table-scroll:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.table table {
+  width: 100%;
+  min-width: max(100%, calc(var(--table-columns, 2) * 140px));
+  border-collapse: collapse;
+  color: var(--text-color);
+  font-size: var(--body-font-size-s);
+  line-height: 22.4px;
+}
+
+.table :is(th, td) {
+  padding: var(--space-4) 11px;
+  border: 1px solid var(--border-color);
+  text-align: center;
+  vertical-align: middle;
+}
+
+.table :is(th, td) > :first-child {
+  margin-top: 0;
+}
+
+.table :is(th, td) > :last-child {
+  margin-bottom: 0;
+}
+
+.table thead th {
+  border-color: var(--color-purple-900);
+  border-inline-color: rgb(255 255 255 / 30%);
+  background-color: var(--color-purple-900);
+  color: var(--color-neutral-0);
+  font-size: var(--body-font-size-m);
+  font-weight: var(--font-weight-bold);
+  line-height: 24px;
+}
+
+.table thead th:first-child {
+  border-inline-start-color: var(--color-purple-900);
+}
+
+.table thead th:last-child {
+  border-inline-end-color: var(--color-purple-900);
+}
+
+.table thead a:any-link {
+  color: inherit;
+}
+
+/* row bands, as on the source; "plain" keeps the body white */
+.table tbody tr {
+  background-color: var(--color-neutral-25);
+}
+
+.table tbody tr:nth-child(odd) {
+  background-color: var(--color-neutral-50);
+}
+
+.table.plain tbody tr {
+  background-color: transparent;
+}
+
+.table tbody th[scope='row'] {
+  color: var(--heading-color);
+  font-weight: var(--font-weight-bold);
+}
+
+/* group rows: a row with only its first cell filled */
+.table tbody .table-group {
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--color-purple-200);
+  color: var(--color-purple-700);
+  font-weight: var(--font-weight-bold);
+  text-align: start;
+}
+
+.table.left :is(th, td) {
+  text-align: start;
+}
+
+@media (width >= 600px) {
+  .table table {
+    min-width: 100%;
+  }
+}

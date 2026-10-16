@@ -1,0 +1,391 @@
+{
+  "definitions": [
+    {
+      "title": "Table",
+      "id": "table",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Table",
+              "model": "table",
+              "filter": "table-3"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Row",
+      "id": "table-col-1",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Row",
+              "model": "table-col-1"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Row",
+      "id": "table-col-2",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Row",
+              "model": "table-col-2"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Row",
+      "id": "table-col-3",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Row",
+              "model": "table-col-3"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Row",
+      "id": "table-col-4",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Row",
+              "model": "table-col-4"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Row",
+      "id": "table-col-5",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Row",
+              "model": "table-col-5"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Row",
+      "id": "table-col-6",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block/item",
+            "template": {
+              "name": "Row",
+              "model": "table-col-6"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "table",
+      "fields": [
+        {
+          "component": "multiselect",
+          "name": "classes",
+          "label": "Options",
+          "valueType": "string",
+          "description": "The first row is the header row unless No header row is chosen. Introduce the table with a heading just above it: it names the table.",
+          "options": [
+            {
+              "name": "No header row",
+              "value": "no-header"
+            },
+            {
+              "name": "First column as row headers",
+              "value": "header-column"
+            },
+            {
+              "name": "Left-aligned cells",
+              "value": "left"
+            },
+            {
+              "name": "No row bands",
+              "value": "plain"
+            }
+          ]
+        },
+        {
+          "component": "select",
+          "name": "filter",
+          "label": "Columns",
+          "valueType": "string",
+          "value": "table-3",
+          "description": "Number of cells in each row. A row with only its first cell filled becomes a group heading across the table.",
+          "options": [
+            {
+              "name": "1 column",
+              "value": "table-1"
+            },
+            {
+              "name": "2 columns",
+              "value": "table-2"
+            },
+            {
+              "name": "3 columns",
+              "value": "table-3"
+            },
+            {
+              "name": "4 columns",
+              "value": "table-4"
+            },
+            {
+              "name": "5 columns",
+              "value": "table-5"
+            },
+            {
+              "name": "6 columns",
+              "value": "table-6"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "table-col-1",
+      "fields": [
+        {
+          "component": "richtext",
+          "name": "column1",
+          "label": "Column 1",
+          "valueType": "string",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "table-col-2",
+      "fields": [
+        {
+          "component": "richtext",
+          "name": "column1",
+          "label": "Column 1",
+          "valueType": "string",
+          "value": ""
+        },
+        {
+          "component": "richtext",
+          "name": "column2",
+          "label": "Column 2",
+          "valueType": "string",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "table-col-3",
+      "fields": [
+        {
+          "component": "richtext",
+          "name": "column1",
+          "label": "Column 1",
+          "valueType": "string",
+          "value": ""
+        },
+        {
+          "component": "richtext",
+          "name": "column2",
+          "label": "Column 2",
+          "valueType": "string",
+          "value": ""
+        },
+        {
+          "component": "richtext",
+          "name": "column3",
+          "label": "Column 3",
+          "valueType": "string",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "table-col-4",
+      "fields": [
+        {
+          "component": "richtext",
+          "name": "column1",
+          "label": "Column 1",
+          "valueType": "string",
+          "value": ""
+        },
+        {
+          "component": "richtext",
+          "name": "column2",
+          "label": "Column 2",
+          "valueType": "string",
+          "value": ""
+        },
+        {
+          "component": "richtext",
+          "name": "column3",
+          "label": "Column 3",
+          "valueType": "string",
+          "value": ""
+        },
+        {
+          "component": "richtext",
+          "name": "column4",
+          "label": "Column 4",
+          "valueType": "string",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "table-col-5",
+      "fields": [
+        {
+          "component": "richtext",
+          "name": "column1",
+          "label": "Column 1",
+          "valueType": "string",
+          "value": ""
+        },
+        {
+          "component": "richtext",
+          "name": "column2",
+          "label": "Column 2",
+          "valueType": "string",
+          "value": ""
+        },
+        {
+          "component": "richtext",
+          "name": "column3",
+          "label": "Column 3",
+          "valueType": "string",
+          "value": ""
+        },
+        {
+          "component": "richtext",
+          "name": "column4",
+          "label": "Column 4",
+          "valueType": "string",
+          "value": ""
+        },
+        {
+          "component": "richtext",
+          "name": "column5",
+          "label": "Column 5",
+          "valueType": "string",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "table-col-6",
+      "fields": [
+        {
+          "component": "richtext",
+          "name": "column1",
+          "label": "Column 1",
+          "valueType": "string",
+          "value": ""
+        },
+        {
+          "component": "richtext",
+          "name": "column2",
+          "label": "Column 2",
+          "valueType": "string",
+          "value": ""
+        },
+        {
+          "component": "richtext",
+          "name": "column3",
+          "label": "Column 3",
+          "valueType": "string",
+          "value": ""
+        },
+        {
+          "component": "richtext",
+          "name": "column4",
+          "label": "Column 4",
+          "valueType": "string",
+          "value": ""
+        },
+        {
+          "component": "richtext",
+          "name": "column5",
+          "label": "Column 5",
+          "valueType": "string",
+          "value": ""
+        },
+        {
+          "component": "richtext",
+          "name": "column6",
+          "label": "Column 6",
+          "valueType": "string",
+          "value": ""
+        }
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "table-1",
+      "components": [
+        "table-col-1"
+      ]
+    },
+    {
+      "id": "table-2",
+      "components": [
+        "table-col-2"
+      ]
+    },
+    {
+      "id": "table-3",
+      "components": [
+        "table-col-3"
+      ]
+    },
+    {
+      "id": "table-4",
+      "components": [
+        "table-col-4"
+      ]
+    },
+    {
+      "id": "table-5",
+      "components": [
+        "table-col-5"
+      ]
+    },
+    {
+      "id": "table-6",
+      "components": [
+        "table-col-6"
+      ]
+    }
+  ]
+}
