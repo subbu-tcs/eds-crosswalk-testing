@@ -191,6 +191,18 @@ export function decorateMain(main) {
   decorateButtons(main);
 }
 
+/**
+ * Small screens: when the previous page had no app banner in the header (none in the nav, or
+ * dismissed), the header starts without the banner's space, so it doesn't shrink after loading.
+ */
+function predictHeaderBanner() {
+  try {
+    if (localStorage.getItem(`nav-banner:${getMarket()}`) === 'none') {
+      document.querySelector('header')?.classList.add('no-banner');
+    }
+  } catch { /* storage unavailable: keep the banner space */ }
+}
+
 function createSlot(name) {
   const wrapper = document.createElement('div');
   wrapper.className = `${name}-wrapper`;
@@ -231,6 +243,7 @@ function prepareHeaderSlots(main) {
 async function loadEager(doc) {
   document.documentElement.lang = marketLanguage();
   decorateTemplateAndTheme();
+  predictHeaderBanner();
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);

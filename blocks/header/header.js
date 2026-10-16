@@ -1,5 +1,5 @@
 import { decorateIcons, toClassName } from '../../scripts/aem.js';
-import { getLabels } from '../../scripts/scripts.js';
+import { getLabels, getMarket } from '../../scripts/scripts.js';
 
 // media query match that indicates desktop width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -710,6 +710,18 @@ function buildMenuSearch(panelSections) {
 }
 
 /**
+ * Records whether the app banner shows, so the next page reserves the right header height
+ * before it renders (see predictHeaderBanner in scripts.js).
+ */
+function setBannerState(block, shown) {
+  block.classList.toggle('no-banner', !shown);
+  block.closest('header')?.classList.toggle('no-banner', !shown);
+  try {
+    localStorage.setItem(`nav-banner:${getMarket()}`, shown ? 'shown' : 'none');
+  } catch { /* storage unavailable: the next page reserves the banner space */ }
+}
+
+/**
  * Builds a dismissible banner (small screens) from a section without a heading: image, strong
  * title, text and a link. Dismissal is remembered per banner link.
  */
@@ -741,7 +753,7 @@ function buildBanner(section) {
   dismiss.addEventListener('click', () => {
     const block = banner.closest('.header');
     banner.remove();
-    if (block && !block.querySelector('.nav-banner')) block.classList.add('no-banner');
+    if (block && !block.querySelector('.nav-banner')) setBannerState(block, false);
     try {
       window.localStorage.setItem(key, '1');
     } catch { /* storage unavailable: dismissed for this page only */ }
@@ -823,7 +835,7 @@ export default async function decorate(block) {
   const renderedBanners = banners.map(buildBanner).filter(Boolean);
   block.prepend(...renderedBanners);
   // lets the header give back the space reserved for a banner when none is shown
-  block.classList.toggle('no-banner', renderedBanners.length === 0);
+  setBannerState(block, renderedBanners.length > 0);
 
   if (brand) {
     brand.className = 'nav-brand';

@@ -205,6 +205,17 @@ header {
   height: var(--nav-height);
 }
 
+/* small screens: no app banner (predicted from the previous page): only the 54px bar */
+header.no-banner {
+  height: 54px;
+}
+
+@media (width >= 900px) {
+  header.no-banner {
+    height: var(--nav-height);
+  }
+}
+
 header .header,
 footer .footer {
   visibility: hidden;
