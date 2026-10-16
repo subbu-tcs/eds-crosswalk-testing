@@ -224,6 +224,27 @@ Side-by-side text and images (Royal Silk content, the in-flight wifi band, board
 
 **Behaviour**: below 900px the columns stack and a cell holding only an image comes first. A link alone in its paragraph is shown as a bold link with an arrow ("Learn More →"); bold and italic links become primary and secondary buttons as everywhere else.
 
+### Search
+
+Site search for the search page, using the shared query index (`/query-index.json`) in the browser: no search service or vendor is needed. The header search panel submits to `/{market}/content/search?query=…`, so place the block on that page. Popular keywords and suggested pages stay as default content or blocks next to it.
+
+**Block fields**
+
+| Field | Required | Notes |
+|---|---|---|
+| `label` | yes | Names the field for screen readers and is the button text, e.g. "Search" |
+| `placeholder` | no | Hint inside the field |
+| `resultsMessage` | yes | `{count}` and `{query}` are filled in; singular and plural forms separated by `\|`, e.g. `{count} result for "{query}" \| {count} results for "{query}"` |
+| `noResultsMessage` | yes | `{query}` is filled in |
+
+**Behaviour**
+- Searches the title, keywords and description of the current market's pages (the first path segment, e.g. `/en-th/`). Pages marked `noindex`, untitled pages, nav, footer and fragments are left out.
+- Every word must match. Title matches rank first, then keywords, then the description. Matching ignores case and Latin accents; Thai text is matched as typed.
+- Results update as you type and on Enter, and the `query` parameter in the address bar follows, so results can be shared and the back button works. Without JavaScript, the form still submits to the same page.
+- The result count is announced to screen readers. Result titles are headings one level below the heading above the block, and the matched words are highlighted.
+
+**Index**: `keywords` was added to `helix-query.yaml`; after deploying, the index needs rebuilding so existing pages pick it up. Search quality depends on page titles, descriptions and keywords, because page body text isn't indexed.
+
 ### Header and footer
 
 Built from the **nav** and **footer** pages (fetched as `/nav.plain.html` and `/footer.plain.html`; `/content/…` first for local preview). All copy, links and images live in those pages; the code only adds controls and layout. Step-by-step authoring instructions with the full content are in [docs/nav-footer-authoring.md](docs/nav-footer-authoring.md).

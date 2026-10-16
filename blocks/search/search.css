@@ -1,0 +1,154 @@
+/*
+ * search: the site search page. The field matches the header search panel (52px, lavender
+ * inset, search icon); results are a plain list of linked titles, descriptions and paths.
+ */
+.search .search-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.search .search-field {
+  box-sizing: border-box;
+  display: flex;
+  flex: 1 1 260px;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  min-height: 52px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--control-border-color);
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 3px var(--color-neutral-50);
+  background-color: var(--color-neutral-0);
+  color: var(--color-neutral-600);
+}
+
+.search .search-field:focus-within {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.search .search-icon {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  background-color: currentcolor;
+  mask: url('../../icons/search.svg') center / contain no-repeat;
+}
+
+.search .search-field input {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  color: var(--color-neutral-600);
+  font: inherit;
+  font-size: var(--heading-font-size-s);
+  line-height: 1.4;
+}
+
+.search .search-field input:focus-visible {
+  outline: none;
+}
+
+.search .search-field input::placeholder {
+  color: var(--placeholder-color);
+}
+
+.search .search-submit {
+  flex: none;
+  min-height: 52px;
+}
+
+.search .search-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.search .search-status {
+  margin: var(--space-5) 0 0;
+  color: var(--heading-color);
+  font-weight: var(--font-weight-medium);
+}
+
+.search .search-status:empty {
+  display: none;
+}
+
+.search .search-results {
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.search .search-result {
+  padding: var(--space-5) 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.search .search-result > * {
+  margin: 0;
+}
+
+.search .search-result > * + * {
+  margin-top: var(--space-2);
+}
+
+.search .search-result-title {
+  font-family: var(--body-font-family);
+  font-size: var(--heading-font-size-m);
+  font-weight: var(--font-weight-bold);
+  line-height: 30px;
+  text-transform: none;
+}
+
+.search .search-result-title a:any-link {
+  color: var(--link-color);
+  text-decoration: none;
+}
+
+.search .search-result-title a:any-link:hover {
+  color: var(--link-hover-color);
+  text-decoration: underline;
+}
+
+.search .search-result-description {
+  font-size: var(--body-font-size-m);
+  line-height: 25.6px;
+}
+
+.search .search-result-path {
+  color: var(--color-neutral-600);
+  font-size: var(--body-font-size-s);
+  line-height: 22.4px;
+  overflow-wrap: anywhere;
+}
+
+.search mark {
+  border-radius: 2px;
+  background-color: var(--color-purple-100);
+  color: inherit;
+}
+
+.section.dark .search .search-status,
+.section.dark .search .search-result-path {
+  color: var(--color-neutral-0);
+}
+
+.section.dark .search .search-result-title a:any-link {
+  color: var(--color-neutral-0);
+}
+
+.section.dark .search mark {
+  background-color: var(--color-purple-800);
+}
