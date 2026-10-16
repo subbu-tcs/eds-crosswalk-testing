@@ -1,1 +1,33 @@
 /* add global styles that can be loaded post LCP here */
+
+/* chat widget (added by delayed.js): a 70px launcher bubble in the bottom-right corner */
+.chat-widget {
+  position: fixed;
+  right: 18px;
+  bottom: 30px;
+  z-index: 998;
+  width: 70px;
+  height: 70px;
+  border: 0;
+  color-scheme: normal;
+}
+
+/* above the footer's back-to-top button while that is shown */
+body:has(.footer-back-to-top:not([hidden])) .chat-widget:not(.is-open) {
+  bottom: 102px;
+}
+
+/* open: full screen on small screens, a side panel from 900px */
+.chat-widget.is-open {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+@media (width >= 900px) {
+  .chat-widget.is-open {
+    inset: auto 18px 30px auto;
+    width: 420px;
+    height: min(680px, calc(100vh - 60px));
+  }
+}
