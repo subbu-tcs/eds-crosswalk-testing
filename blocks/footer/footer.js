@@ -1,6 +1,8 @@
 import { decorateIcons } from '../../scripts/aem.js';
+import { getLabels } from '../../scripts/scripts.js';
 
-// interface labels for controls the fragment cannot carry
+// interface labels for controls the fragment cannot carry: English defaults, replaced by the
+// placeholders sheet (footer-*)
 const LABELS = {
   newTab: '(opens in a new tab)',
   backToTop: 'Scroll page to top',
@@ -223,6 +225,7 @@ function buildBackToTop() {
  * @param {Element} block The footer block element
  */
 export default async function decorate(block) {
+  Object.assign(LABELS, await getLabels('footer', LABELS));
   const fragment = await fetchFooterFragment();
   if (!fragment) return;
 

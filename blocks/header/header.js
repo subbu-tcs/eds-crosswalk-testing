@@ -1,10 +1,12 @@
 import { decorateIcons, toClassName } from '../../scripts/aem.js';
+import { getLabels } from '../../scripts/scripts.js';
 
 // media query match that indicates desktop width
 const isDesktop = window.matchMedia('(min-width: 900px)');
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-// interface labels for controls the fragment cannot carry (form controls are built in JS)
+// interface labels for controls the fragment cannot carry: English defaults, replaced by the
+// placeholders sheet (header-*)
 const LABELS = {
   close: 'Close',
   clear: 'Clear',
@@ -795,6 +797,7 @@ function toggleMobileMenu(nav, button, controller, forceExpanded = null) {
  * @param {Element} block The header block element
  */
 export default async function decorate(block) {
+  Object.assign(LABELS, await getLabels('header', LABELS));
   const fragment = await fetchNavFragment();
   if (!fragment) return;
 
