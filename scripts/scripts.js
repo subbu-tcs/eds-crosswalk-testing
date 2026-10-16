@@ -124,23 +124,37 @@ export function decorateMain(main) {
   decorateButtons(main);
 }
 
-/**
- * Reserves the breadcrumb bar between the header and the page content. It is filled after
- * the main content has loaded, so it neither delays the largest paint nor moves the page.
- * Home pages ("/", "/en-th/") and pages with Hide breadcrumb on get none.
- * @param {Element} main The main element
- */
-function prepareBreadcrumb(main) {
-  const path = window.location.pathname.replace(/\.html$/, '').replace(/\/(index)?$/, '');
-  if (!path || /^\/[a-z]{2}-[a-z]{2}$/.test(path) || getMetadata('hidebreadcrumb') === 'true') return;
+function createSlot(name) {
   const wrapper = document.createElement('div');
-  wrapper.className = 'breadcrumb-wrapper';
+  wrapper.className = `${name}-wrapper`;
   const block = document.createElement('div');
-  block.className = 'breadcrumb block';
-  block.dataset.blockName = 'breadcrumb';
+  block.className = `${name} block`;
+  block.dataset.blockName = name;
   block.dataset.blockStatus = 'initialized';
   wrapper.append(block);
-  main.before(wrapper);
+  return wrapper;
+}
+
+/**
+ * Adds the notification ticker and breadcrumb slots between the header and the page content.
+ * Both are filled after the main content has loaded, so they don't delay the largest paint:
+ * - the ticker reserves its height when this market had active notices on the previous page,
+ *   so it only moves the page on the first visit;
+ * - the breadcrumb always reserves its bar. Home pages ("/", "/en-th/") and pages with
+ *   Hide breadcrumb on get none.
+ * @param {Element} main The main element
+ */
+function prepareHeaderSlots(main) {
+  const notifications = createSlot('notifications');
+  const [, market] = window.location.pathname.split('/');
+  try {
+    if (sessionStorage.getItem(`notifications:${market}`) === 'shown') notifications.classList.add('is-reserved');
+  } catch { /* storage unavailable: no reservation */ }
+  main.before(notifications);
+
+  const path = window.location.pathname.replace(/\.html$/, '').replace(/\/(index)?$/, '');
+  if (!path || /^\/[a-z]{2}-[a-z]{2}$/.test(path) || getMetadata('hidebreadcrumb') === 'true') return;
+  main.before(createSlot('breadcrumb'));
 }
 
 /**
@@ -153,7 +167,7 @@ async function loadEager(doc) {
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
-    prepareBreadcrumb(main);
+    prepareHeaderSlots(main);
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
@@ -183,8 +197,7 @@ async function loadLazy(doc) {
   if (hash && element) element.scrollIntoView();
 
   loadFooter(doc.querySelector('footer'));
-  const breadcrumb = doc.querySelector('.breadcrumb-wrapper > .breadcrumb');
-  if (breadcrumb) loadBlock(breadcrumb);
+  doc.querySelectorAll(':is(.notifications-wrapper, .breadcrumb-wrapper) > .block').forEach(loadBlock);
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();

@@ -471,6 +471,11 @@ main img {
   min-height: 41px;
 }
 
+/* notification ticker: reserved when this market showed notices on the previous page */
+.notifications-wrapper.is-reserved {
+  min-height: 40px;
+}
+
 /* sections */
 main > .section {
   margin: var(--section-spacing) 0;
