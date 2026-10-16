@@ -1,0 +1,270 @@
+/*
+ * fare-widget: "Trending destinations from [origin]", measured on the source homepage at 1440px
+ * and 375px. Full-bleed row of 3:5 fare tiles (350 x 585 at 1440px, about 4 in view) with the
+ * destination, trip, cabin and price on a dark gradient; Book now shows on hover or focus.
+ */
+main > .section > .fare-widget-wrapper {
+  max-width: unset;
+  padding: 0;
+}
+
+.fare-widget {
+  --fare-widget-tile: 92vw;
+}
+
+.fare-widget.is-empty {
+  display: none;
+}
+
+.fare-widget .fare-widget-header {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4) var(--space-6);
+  max-width: calc(var(--content-max-width) + 2 * var(--content-gutter));
+  margin: 0 auto var(--space-6);
+  padding: 0 var(--content-gutter);
+}
+
+.fare-widget .fare-widget-heading {
+  margin: 0;
+}
+
+.fare-widget .fare-widget-origin {
+  flex: 0 1 231px;
+  min-width: 180px;
+}
+
+.fare-widget .fare-widget-origin select {
+  width: 100%;
+  min-height: 48px;
+  color: var(--heading-color);
+  font-size: var(--heading-font-size-s);
+  font-weight: var(--font-weight-medium);
+}
+
+.fare-widget .fare-widget-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.fare-widget .fare-widget-controls {
+  display: flex;
+  gap: var(--space-2);
+  margin-inline-start: auto;
+}
+
+.fare-widget .fare-widget-controls[hidden] {
+  display: none;
+}
+
+.fare-widget .fare-widget-controls button {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--control-border-color);
+  border-radius: var(--radius-round);
+  background-color: var(--color-neutral-0);
+  color: var(--heading-color);
+  cursor: pointer;
+}
+
+.fare-widget .fare-widget-controls button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.fare-widget .fare-widget-controls button:hover:not(:disabled) {
+  background-color: var(--color-neutral-50);
+}
+
+.fare-widget .fare-widget-icon {
+  width: 20px;
+  height: 20px;
+  background-color: currentcolor;
+  mask: url('../../icons/arrow-right.svg') center / contain no-repeat;
+}
+
+.fare-widget .fare-widget-prev .fare-widget-icon {
+  mask-image: url('../../icons/arrow-left.svg');
+}
+
+/* the row of tiles, edge to edge; height is reserved while the fares load */
+.fare-widget .fare-widget-list {
+  display: flex;
+  min-height: calc(var(--fare-widget-tile) * 5 / 3);
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  list-style: none;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.fare-widget .fare-widget-list::-webkit-scrollbar {
+  display: none;
+}
+
+.fare-widget .fare-widget-item {
+  position: relative;
+  display: flex;
+  flex: 0 0 var(--fare-widget-tile);
+  align-items: flex-end;
+  aspect-ratio: 3 / 5;
+  overflow: hidden;
+  background-color: var(--color-navy-900);
+  color: var(--color-neutral-0);
+  scroll-snap-align: start;
+  isolation: isolate;
+}
+
+.fare-widget .fare-widget-image {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fare-widget .fare-widget-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: linear-gradient(0deg, rgb(0 0 0 / 60%) 12.06%, rgb(0 0 0 / 0%) 92.06%);
+}
+
+.fare-widget .fare-widget-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: var(--space-4);
+}
+
+.fare-widget .fare-widget-body > * {
+  margin: 0;
+}
+
+.fare-widget .fare-widget-to,
+.fare-widget .fare-widget-trip {
+  font-size: var(--body-font-size-s);
+  font-weight: var(--font-weight-medium);
+  line-height: 22.4px;
+}
+
+.fare-widget .fare-widget-city {
+  margin-bottom: var(--space-1);
+  color: inherit;
+  font-family: var(--body-font-family);
+  font-size: var(--heading-font-size-m);
+  font-weight: var(--font-weight-bold);
+  line-height: 30px;
+  text-transform: none;
+}
+
+.fare-widget .fare-widget-price {
+  font-size: var(--heading-font-size-m);
+  font-weight: var(--font-weight-bold);
+  line-height: 30px;
+}
+
+/* Book now: a white pill; the whole tile is its click target */
+.fare-widget .fare-widget-book:any-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  margin-top: var(--space-4);
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-neutral-0);
+  color: var(--link-color);
+  font-size: var(--body-font-size-s);
+  font-weight: var(--font-weight-bold);
+  text-decoration: none;
+}
+
+.fare-widget .fare-widget-book::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.fare-widget .fare-widget-book:focus-visible {
+  outline: none;
+}
+
+.fare-widget .fare-widget-item:has(.fare-widget-book:focus-visible) {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: calc(-1 * var(--focus-ring-width) - 2px);
+}
+
+.fare-widget .fare-widget-item:has(.fare-widget-book:focus-visible) .fare-widget-book {
+  box-shadow: 0 0 0 2px var(--color-navy-900), 0 0 0 4px var(--color-neutral-0);
+}
+
+@media (width >= 600px) {
+  .fare-widget {
+    --fare-widget-tile: 44vw;
+  }
+}
+
+@media (width >= 900px) {
+  .fare-widget {
+    --fare-widget-tile: calc(350 / 1440 * 100vw);
+  }
+
+  .fare-widget .fare-widget-body {
+    padding: var(--space-5);
+  }
+
+  .fare-widget .fare-widget-to,
+  .fare-widget .fare-widget-trip {
+    font-size: var(--body-font-size-m);
+    line-height: 25.6px;
+  }
+
+  .fare-widget .fare-widget-city {
+    font-size: 21px;
+    line-height: 31.5px;
+  }
+
+  .fare-widget .fare-widget-price {
+    font-size: 24px;
+    line-height: 36px;
+  }
+}
+
+/* wide screens with a pointer: Book now and a slow zoom appear on hover or keyboard focus */
+@media (width >= 900px) and (hover: hover) {
+  .fare-widget .fare-widget-book:any-link {
+    opacity: 0;
+  }
+
+  .fare-widget .fare-widget-item:is(:hover, :focus-within) .fare-widget-book {
+    opacity: 1;
+  }
+
+  .fare-widget .fare-widget-item:is(:hover, :focus-within) .fare-widget-image {
+    transform: scale(1.1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .fare-widget .fare-widget-image {
+    transition: transform 0.6s ease;
+  }
+
+  .fare-widget .fare-widget-book:any-link {
+    transition: opacity 0.2s ease;
+  }
+}
