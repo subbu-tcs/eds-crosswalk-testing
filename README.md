@@ -206,6 +206,24 @@ One block for the source card grids (service and city tiles, help cards, hotel c
 **Behaviour**: a card with exactly one link is clickable as a whole, with the focus ring drawn on the card; a card with two links keeps them as separate actions. Links to other sites get an external-link icon. Images load lazily at 750px wide (600px for profiles, 400px for logos).
 **Note**: if an image contains text, repeat it in the alt text.
 
+### Columns
+
+Side-by-side text and images (Royal Silk content, the in-flight wifi band, board-member profiles, the homepage loyalty band). Background differences come from section styles, not from the block: use **Dark** + **Warm** for the near-black loyalty band and **Tinted** for light lavender bands.
+
+**Content model**: the standard Universal Editor columns component (number of columns and rows; each cell holds text, image, button or title) plus an Options field. Use 2 or 3 columns. Every image needs alt text.
+
+**Options (combinable)**
+
+| Option | Layout |
+|---|---|
+| (default) | Equal columns with a 32px gap, top aligned; images have 8px rounded corners |
+| First column narrow (`narrow-first`) / Last column narrow (`narrow-last`) | 1:2 or 2:1 split (2 columns only) |
+| Center content vertically (`middle`) | Columns aligned on their centre |
+| Image fills its column (`flush`) | Square corners; the image covers the full column height. Alone in a coloured section, the block meets the section's top and bottom edges |
+| Framed portrait photo (`portrait`) | 2:3 photo in a rounded frame with a lavender ring (249px wide on desktop, up to 294px on mobile) |
+
+**Behaviour**: below 900px the columns stack and a cell holding only an image comes first. A link alone in its paragraph is shown as a bold link with an arrow ("Learn More →"); bold and italic links become primary and secondary buttons as everywhere else.
+
 ### Header and footer
 
 Built from the **nav** and **footer** pages (fetched as `/nav.plain.html` and `/footer.plain.html`; `/content/…` first for local preview). All copy, links and images live in those pages; the code only adds controls and layout. Step-by-step authoring instructions with the full content are in [docs/nav-footer-authoring.md](docs/nav-footer-authoring.md).
