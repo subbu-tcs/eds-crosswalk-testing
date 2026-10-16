@@ -157,3 +157,25 @@ Mounts the existing Thai Airways **React booking widget** (the standalone bundle
 - If the bundle can't load, the block hides itself and logs the error.
 
 **Environment requirement**: the widget calls `/common/*`, `/bin/*`, `/content/*`, `/osci/*` and `/pss_router/*` on the page's own domain, and loads Bootstrap from `/etc.clientlibs/*`. It receives live data only on the production domain, where the CDN routes those paths to the existing AEM and API origin. On `*.aem.page` / `*.aem.live` the form renders partially but its data doesn't load.
+
+### Hero
+
+Full-bleed page banner with the page title. It matches the source content-page banner: 298px tall on desktop, image cover, dark gradient, uppercase title bottom-aligned to the content width. Place breadcrumbs as default content above it.
+
+**Content model**
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| `classes` | multiselect | no | `image` = image only, no text overlay |
+| `image` + `imageAlt` | reference + text | no | Wide image (about 4.8:1). Alt text required unless decorative; if the image contains text, repeat it in the alt text |
+| `mobileImage` | reference | no | Crop shown below 600px; uses the main alt text. Empty uses the main image |
+| `text` | richtext | no | Title as Heading 1, optional subtitle, optional link. Bold link = primary button, italic link = secondary button |
+
+**Variants**
+
+| Variant | Layout |
+|---|---|
+| Default | Text over the image and gradient. Minimum height 200px on mobile, 240px from 600px, 298px from 900px; taller when the text needs it, so nothing is clipped |
+| Image only (`image`) | The full image at its own proportions, no overlay; any authored text sits below it |
+
+**Behaviour**: without an image the banner uses the brand purple background; without text the image is shown at its own proportions. A hero in the first section loads its image eagerly with high fetch priority (it's usually the LCP). Images are served at 2000px wide from 1200px, 1200px from 600px and 750px below. Document-style content with the picture and text in one cell is also supported.

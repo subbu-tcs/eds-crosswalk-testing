@@ -1,37 +1,136 @@
-.hero-container .hero-wrapper {
+/*
+ * hero: full-bleed banner. Measured from the source content-page banner at 1440px: 298px tall,
+ * image cover, dark gradient, uppercase Bellefair title bottom-aligned to the content width.
+ * Small screens keep the overlay but grow with the text so nothing is clipped.
+ */
+main > .section > .hero-wrapper {
   max-width: unset;
   padding: 0;
 }
 
 .hero {
   position: relative;
-  padding: 40px 24px;
-  min-height: 300px;
+  display: grid;
+  min-height: 200px;
+  overflow: hidden;
+  background-color: var(--color-purple-900);
+  color: var(--color-neutral-0);
 }
 
-.hero h1 {
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-  color: var(--background-color);
-}
-
-.hero picture {
+.hero .hero-media {
   position: absolute;
-  z-index: -1;
   inset: 0;
-  object-fit: cover;
-  box-sizing: border-box;
 }
 
-.hero img {
-  object-fit: cover;
+.hero .hero-media picture,
+.hero .hero-media img {
+  display: block;
   width: 100%;
   height: 100%;
 }
 
+.hero .hero-media img {
+  object-fit: cover;
+}
+
+/* gradient keeps white text at 4.5:1 or better over light images */
+.hero .hero-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--overlay-hero);
+}
+
+.hero .hero-content {
+  position: relative;
+  align-self: end;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: calc(var(--content-max-width) + 2 * var(--content-gutter));
+  margin: 0 auto;
+  padding: var(--space-8) var(--content-gutter) var(--space-4);
+}
+
+.hero .hero-content > :first-child {
+  margin-top: 0;
+}
+
+.hero .hero-content > :last-child {
+  margin-bottom: 0;
+}
+
+.hero :is(h1, h2, h3, h4, h5, h6) {
+  margin: 0;
+  color: inherit;
+  font-family: var(--heading-font-family);
+  font-size: var(--heading-font-size-xxl);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--heading-line-height);
+  text-transform: var(--heading-text-transform);
+}
+
+.hero p {
+  margin: var(--space-2) 0 0;
+  color: inherit;
+  font-size: var(--body-font-size-m);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--body-line-height);
+}
+
+.hero a:any-link:not(.button) {
+  color: inherit;
+}
+
+.hero p.button-wrapper {
+  margin-top: var(--space-4);
+}
+
+/* image only: the full artwork at its own proportions, no overlay */
+.hero.image,
+.hero.hero-image-only {
+  min-height: 0;
+  background-color: transparent;
+  color: var(--text-color);
+}
+
+.hero.image .hero-media,
+.hero.hero-image-only .hero-media {
+  position: static;
+}
+
+.hero.image .hero-media img,
+.hero.hero-image-only .hero-media img {
+  height: auto;
+  object-fit: initial;
+}
+
+.hero.image .hero-media::after,
+.hero.hero-image-only .hero-media::after {
+  content: none;
+}
+
+/* any text authored on an image-only hero sits below the image on the page background */
+.hero.image .hero-content {
+  padding-top: var(--space-4);
+}
+
+.hero.image :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--heading-color);
+}
+
+@media (width >= 600px) {
+  .hero {
+    min-height: 240px;
+  }
+}
+
 @media (width >= 900px) {
   .hero {
-    padding: 40px 32px;
+    min-height: 298px;
+  }
+
+  .hero p {
+    font-size: var(--heading-font-size-s);
+    line-height: var(--body-line-height);
   }
 }
