@@ -21,10 +21,23 @@
       "id": "hero",
       "fields": [
         {
+          "component": "multiselect",
+          "name": "classes",
+          "label": "Options",
+          "valueType": "string",
+          "options": [
+            {
+              "name": "Image only (no text overlay)",
+              "value": "image"
+            }
+          ]
+        },
+        {
           "component": "reference",
           "valueType": "string",
           "name": "image",
           "label": "Image",
+          "description": "Wide banner image (about 4.8:1). Avoid text in the image; if the image contains text, repeat it in the alt text.",
           "multi": false
         },
         {
@@ -32,13 +45,23 @@
           "valueType": "string",
           "name": "imageAlt",
           "label": "Alt",
+          "description": "Describes the image. Leave empty only if the image is purely decorative.",
           "value": ""
+        },
+        {
+          "component": "reference",
+          "valueType": "string",
+          "name": "mobileImage",
+          "label": "Mobile image",
+          "description": "Optional crop for screens narrower than 600px. Uses the same alt text. If empty, the main image is used.",
+          "multi": false
         },
         {
           "component": "richtext",
           "name": "text",
           "value": "",
           "label": "Text",
+          "description": "Page title as Heading 1, an optional subtitle and an optional link. Bold link = primary button, italic link = secondary button.",
           "valueType": "string"
         }
       ]
