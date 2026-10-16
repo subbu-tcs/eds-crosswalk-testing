@@ -1,3 +1,5 @@
+import { decorateIcons } from '../../scripts/aem.js';
+
 // interface labels for controls the fragment cannot carry
 const LABELS = {
   newTab: '(opens in a new tab)',
@@ -6,6 +8,21 @@ const LABELS = {
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const isDesktop = window.matchMedia('(min-width: 900px)');
+
+/**
+ * Icons authored as `:name:` (Universal Editor text cannot hold images) become images placed
+ * exactly like authored ones.
+ */
+function inlineIcons(root) {
+  decorateIcons(root);
+  root.querySelectorAll('span.icon').forEach((span) => {
+    const img = span.querySelector('img');
+    if (!img) return;
+    img.removeAttribute('width');
+    img.removeAttribute('height');
+    span.replaceWith(img);
+  });
+}
 
 /**
  * Fetches the footer fragment. Metadata independent: /content first (local preview),
@@ -26,6 +43,7 @@ async function fetchFooterFragment() {
   doc.querySelectorAll('source[srcset]').forEach((source) => {
     source.setAttribute('srcset', new URL(source.getAttribute('srcset'), base).href);
   });
+  inlineIcons(doc.body);
   return doc.body;
 }
 
@@ -38,6 +56,22 @@ function createElement(tag, className, attrs = {}) {
 
 const isHeading = (el) => /^H[1-6]$/.test(el.tagName);
 const imageOnly = (el) => !!el.querySelector('picture, img') && !el.textContent.trim();
+// an icon link: only an image, or an image and its name in one link
+const iconItem = (el) => imageOnly(el)
+  || (el.children.length === 1 && el.firstElementChild.tagName === 'A'
+    && !!el.firstElementChild.querySelector('img') && el.textContent.trim() === el.firstElementChild.textContent.trim());
+
+/** Text beside an icon stays as the link's accessible name but isn't shown. */
+function hideIconLabels(list) {
+  list.querySelectorAll('a').forEach((a) => {
+    [...a.childNodes].forEach((child) => {
+      if (child.nodeType !== Node.TEXT_NODE || !child.textContent.trim()) return;
+      const name = createElement('span', 'footer-visually-hidden');
+      name.textContent = child.textContent.trim();
+      child.replaceWith(name);
+    });
+  });
+}
 
 /**
  * Links that leave the site or open a document open in a new tab and say so; text links get a
@@ -53,7 +87,7 @@ function decorateLinks(root) {
     a.rel = 'noopener';
     const note = createElement('span', 'footer-visually-hidden');
     note.textContent = ` ${LABELS.newTab}`;
-    if (a.textContent.trim()) {
+    if (a.textContent.trim() && !a.querySelector('img')) {
       a.classList.add(isDocument ? 'footer-link-download' : 'footer-link-external');
       a.append(createElement('span', 'footer-icon', { 'aria-hidden': 'true' }));
     }
@@ -146,8 +180,11 @@ function buildCard(section) {
 function decorateSection(section, isLast) {
   const headings = [...section.children].filter(isHeading);
   const lists = [...section.querySelectorAll(':scope > ul')];
-  const iconList = lists.find((ul) => [...ul.children].every(imageOnly));
-  if (iconList) iconList.classList.add('footer-icon-list');
+  const iconList = lists.find((ul) => [...ul.children].every(iconItem));
+  if (iconList) {
+    iconList.classList.add('footer-icon-list');
+    hideIconLabels(iconList);
+  }
 
   let role = 'promo';
   if (isLast && !headings.length) role = 'bottom';

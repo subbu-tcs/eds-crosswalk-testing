@@ -350,7 +350,7 @@ footer .footer-bottom p:first-child {
   opacity: 0.7;
 }
 
-footer .footer-bottom p:last-child > img {
+footer .footer-bottom p:last-child img {
   display: block;
   width: 140px;
   height: auto;

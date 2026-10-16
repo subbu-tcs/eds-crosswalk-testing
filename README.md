@@ -179,3 +179,20 @@ Full-bleed page banner with the page title. It matches the source content-page b
 | Image only (`image`) | The full image at its own proportions, no overlay; any authored text sits below it |
 
 **Behaviour**: without an image the banner uses the brand purple background; without text the image is shown at its own proportions. A hero in the first section loads its image eagerly with high fetch priority (it's usually the LCP). Images are served at 2000px wide from 1200px, 1200px from 600px and 750px below. Document-style content with the picture and text in one cell is also supported.
+
+### Header and footer
+
+Built from the **nav** and **footer** pages (fetched as `/nav.plain.html` and `/footer.plain.html`; `/content/…` first for local preview). All copy, links and images live in those pages; the code only adds controls and layout. Step-by-step authoring instructions with the full content are in [docs/nav-footer-authoring.md](docs/nav-footer-authoring.md).
+
+Both blocks read two equivalent layouts, so the same code works with migrated HTML and with Universal Editor content:
+
+| Part | Migrated HTML | Universal Editor |
+|---|---|---|
+| Logo | Image inside a link | Image component; linked to the home page (or to a link in the same section) |
+| Megamenu | Label paragraph + menu inside the main-menu list item | Main-menu item text (or `#slug` link) matching a section's Heading 2; the section holds the menu |
+| Link columns | One list, one item per column | Consecutive lists, one per column (one Text component each) |
+| Icons (tools, social, app badges) | Image inside the link, named by its alt text | `:name:` in the link text (SVGs in `/icons`); the text beside it is the hidden accessible name |
+
+**Header sections**: logo, main menu and tools come first, in that order. Further sections are panels keyed by the slug of their first heading (opened by a main-menu item or a `#slug` tools link); a panel with a link whose query ends with an empty parameter becomes the search panel, one with Heading 3 groups becomes the region list. A section without a heading is the small-screen app banner.
+
+**Footer sections** are classified by content: several headings each followed by a list are link columns (an accordion below 900px), a heading with a list of icon links is the social row, a section starting with an image is a card (bold link = primary button), the last section without a heading is the bottom bar, and anything else is a promo.
