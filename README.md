@@ -245,6 +245,35 @@ Site search for the search page, using the shared query index (`/query-index.jso
 
 **Index**: `keywords` was added to `helix-query.yaml`; after deploying, the index needs rebuilding so existing pages pick it up. Search quality depends on page titles, descriptions and keywords, because page body text isn't indexed.
 
+### Locator
+
+One block for the **airport information** and **worldwide offices** pages. It reads either the current AEM feeds or a published sheet; the format is detected from the data, so moving to sheets later only means changing the data address.
+
+**Block fields**
+
+| Field | Required | Notes |
+|---|---|---|
+| `classes` | yes | `airports` or `offices` |
+| `source` | yes | AEM feed, e.g. `/bin/modal/v1/airportinformation.json?en-th` or `/bin/modal/thaiworldwideOfficesv1.json?en-th`, or a sheet, e.g. `/en-th/data/airports.json` |
+| `defaultLocation` | no | Airports: an airport or country code (`BKK`, `TH`). Offices: a country code or city name (`TH`, `BANGKOK (Suvarnabhumi)`) |
+| `labels` | yes | Separated by `\|`. Airports: picker title \| location field. Offices: picker title \| country \| city \| office |
+
+**Airports**: a location picker (cities grouped by country), then the airport name, links to its sections, the banner image and each section (contact information, check-in counter, check-in service, lounges, basic facts). Field groups are cards of icon, label and value; lounges are image cards; basic facts are formatted text.
+**Offices**: country, city and office pickers, then the city and its offices by type, each a card of fields.
+
+**Behaviour**
+- Choices update the results straight away, and the address bar follows (`?location=BKK`, `?country=TH&city=…&office=…`), so a location can be shared and links can open it directly.
+- Phone numbers, e-mail addresses and web addresses become links; fax and licence numbers stay text. Field icons follow the label and value.
+- HTML in the data is cleaned to paragraphs, lists, emphasis and safe links. The feeds' variants of one office type ("<p>Reservation &amp; Ticketing</p>", …) are merged.
+- Headings start one level below the heading above the block. If the data can't be loaded, the block hides its picker and logs the error.
+
+**Sheets (one row per field)**
+- Airports: `Country`, `Country code`, `City`, `City code`, `Airport`, `Image`, `Section`, `Group`, `Label`, `Value`, `Link`, `Link text`. A row without a section sets the city's banner `Image`; a row without a group is the section introduction; rows with an `Image` make the group an image card.
+- Offices: `Country`, `Country code`, `City`, `Category`, `Name`; every other column (`Phone`, `Fax`, `Email`, `Location`, `Operation time`, …) is shown as a field.
+- `tools/locator/feed-to-sheet.py` converts the current feeds into these rows.
+
+**Environment requirement**: the AEM feeds and the airport and lounge images (`/content/dam/…`) only respond on the production domain, where the CDN routes those paths to AEM. On `*.aem.page` / `*.aem.live` use a sheet to see data.
+
 ### Header and footer
 
 Built from the **nav** and **footer** pages (fetched as `/nav.plain.html` and `/footer.plain.html`; `/content/…` first for local preview). All copy, links and images live in those pages; the code only adds controls and layout. Step-by-step authoring instructions with the full content are in [docs/nav-footer-authoring.md](docs/nav-footer-authoring.md).

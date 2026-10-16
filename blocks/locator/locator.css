@@ -1,0 +1,326 @@
+/*
+ * locator: airport information and worldwide offices, measured on the source at 1440px.
+ * A white picker panel, then the selected location: heading, section links, bordered cards of
+ * icon + label + value (2 per row from 900px), lounge cards on images, and formatted facts.
+ */
+.locator .locator-picker {
+  min-width: 0;
+  margin: 0;
+  padding: var(--space-5) var(--space-4);
+  border: 0;
+  border-radius: var(--radius-m);
+  background-color: var(--color-neutral-0);
+  box-shadow: var(--shadow-l);
+}
+
+.locator .locator-picker legend {
+  float: left;
+  width: 100%;
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  color: var(--heading-color);
+  font-size: var(--heading-font-size-s);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.5;
+}
+
+.locator .locator-fields {
+  clear: both;
+  display: grid;
+  gap: var(--space-4);
+}
+
+.locator .locator-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.locator .locator-field label {
+  color: var(--text-color);
+  font-size: var(--body-font-size-s);
+  font-weight: var(--font-weight-medium);
+}
+
+.locator .locator-field select {
+  width: 100%;
+  min-height: 52px;
+  color: var(--heading-color);
+  font-size: var(--body-font-size-m);
+  font-weight: var(--font-weight-medium);
+}
+
+.locator.is-empty .locator-picker {
+  display: none;
+}
+
+/* the selected location */
+.locator .locator-heading {
+  margin: var(--space-7) 0 var(--space-4);
+}
+
+.locator .locator-jump ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.locator .locator-jump a:any-link {
+  display: inline-block;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-s);
+  color: var(--text-color);
+  font-size: var(--heading-font-size-s);
+  font-weight: var(--font-weight-medium);
+  line-height: 27px;
+  text-decoration: none;
+}
+
+.locator .locator-jump a:hover {
+  background-color: var(--color-neutral-50);
+  color: var(--heading-color);
+}
+
+.locator .locator-banner {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 7 / 2;
+  margin-top: var(--space-6);
+  border-radius: var(--radius-s);
+  object-fit: cover;
+}
+
+.locator .locator-section {
+  margin-top: var(--space-8);
+}
+
+.locator .locator-section-title,
+.locator .locator-category-title {
+  margin: 0 0 var(--space-5);
+  scroll-margin-top: calc(var(--nav-height) + var(--space-4));
+}
+
+.locator .locator-section-title {
+  color: var(--heading-color);
+  font-family: var(--heading-font-family);
+  font-size: var(--heading-font-size-xl);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.locator .locator-category-title {
+  color: var(--heading-color);
+  font-family: var(--body-font-family);
+  font-size: 24px;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.5;
+  text-transform: none;
+}
+
+.locator .locator-intro,
+.locator .locator-rich {
+  max-width: 920px;
+}
+
+.locator .locator-intro {
+  margin-bottom: var(--space-5);
+}
+
+.locator .locator-rich > :first-child,
+.locator .locator-intro > :first-child {
+  margin-top: 0;
+}
+
+/* cards: groups of fields, offices, lounges */
+.locator .locator-grid {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.locator .locator-card {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-m);
+  background-color: var(--color-neutral-0);
+}
+
+.locator .locator-card-body {
+  padding: var(--space-5) var(--space-4);
+}
+
+.locator .locator-card-title {
+  margin: 0;
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--heading-color);
+  font-family: var(--body-font-family);
+  font-size: var(--heading-font-size-m);
+  font-weight: var(--font-weight-bold);
+  line-height: 30px;
+  text-transform: none;
+}
+
+.locator .locator-entries {
+  display: grid;
+  gap: var(--space-6);
+  margin: var(--space-6) 0 0;
+}
+
+.locator .locator-entry {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  column-gap: var(--space-4);
+}
+
+.locator .locator-entry.no-label {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.locator .locator-icon {
+  grid-row: span 2;
+  width: 24px;
+  height: 24px;
+  background-color: var(--text-color);
+  mask: var(--locator-icon) center / contain no-repeat;
+}
+
+.locator .locator-icon-location { --locator-icon: url('../../icons/location.svg'); }
+.locator .locator-icon-phone { --locator-icon: url('../../icons/phone.svg'); }
+.locator .locator-icon-mail { --locator-icon: url('../../icons/mail.svg'); }
+.locator .locator-icon-globe { --locator-icon: url('../../icons/globe.svg'); }
+.locator .locator-icon-clock { --locator-icon: url('../../icons/clock.svg'); }
+.locator .locator-icon-info { --locator-icon: url('../../icons/info.svg'); }
+
+.locator .locator-entry dt {
+  color: var(--text-color);
+  font-size: var(--body-font-size-m);
+  line-height: 25.6px;
+}
+
+.locator .locator-entry dd {
+  margin: var(--space-1) 0 0;
+  color: var(--heading-color);
+  font-size: var(--body-font-size-s);
+  font-weight: var(--font-weight-bold);
+  line-height: 22.4px;
+  overflow-wrap: anywhere;
+}
+
+.locator .locator-entry dd > :is(p, ul, ol) {
+  margin: 0;
+}
+
+.locator .locator-entry dd > * + * {
+  margin-top: var(--space-2);
+}
+
+.locator .locator-entry dd :is(ul, ol) {
+  padding-inline-start: var(--space-5);
+  font-weight: var(--font-weight-regular);
+}
+
+.locator .locator-entry.no-label dd {
+  color: inherit;
+  font-weight: inherit;
+}
+
+.locator .locator-entry dd a:any-link {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.locator .locator-entry dd a:any-link:hover {
+  color: var(--link-hover-color);
+}
+
+/* formatted text */
+.locator .locator-rich p:has(> :is(b, strong):only-child) {
+  margin: var(--space-5) 0 0;
+  color: var(--heading-color);
+  font-size: var(--body-font-size-s);
+}
+
+.locator .locator-rich p:has(> :is(b, strong):only-child) + * {
+  margin-top: var(--space-1);
+}
+
+/* lounges: text on the image over a dark gradient */
+.locator .locator-feature {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 380px;
+  border: 0;
+  background-color: var(--color-navy-900);
+  color: var(--color-neutral-0);
+  isolation: isolate;
+}
+
+.locator .locator-feature-image {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.locator .locator-feature::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--overlay-hero);
+}
+
+.locator .locator-feature .locator-card-title {
+  padding: 0;
+  border: 0;
+  color: inherit;
+  font-size: var(--heading-font-size-l);
+  line-height: 1.5;
+}
+
+.locator .locator-feature .locator-entries {
+  margin-top: var(--space-2);
+}
+
+.locator .locator-eyebrow {
+  margin: 0;
+  font-weight: var(--font-weight-medium);
+}
+
+.locator .locator-card-link {
+  margin-top: var(--space-4);
+}
+
+@media (width >= 900px) {
+  .locator .locator-picker {
+    padding: var(--space-6);
+  }
+
+  .locator.offices .locator-fields {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-5);
+  }
+
+  .locator .locator-grid:not(.locator-list) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .locator .locator-card-body {
+    padding: var(--space-6);
+  }
+
+  .locator .locator-jump a:any-link {
+    padding: var(--space-3) var(--space-5);
+  }
+}
