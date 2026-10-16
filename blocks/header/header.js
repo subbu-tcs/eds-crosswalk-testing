@@ -1,4 +1,4 @@
-import { toClassName } from '../../scripts/aem.js';
+import { decorateIcons, toClassName } from '../../scripts/aem.js';
 
 // media query match that indicates desktop width
 const isDesktop = window.matchMedia('(min-width: 900px)');
@@ -13,6 +13,21 @@ const LABELS = {
   openMenu: 'Open navigation',
   closeMenu: 'Close navigation',
 };
+
+/**
+ * Icons authored as `:name:` (Universal Editor text cannot hold images) become images placed
+ * exactly like authored ones, at their own size.
+ */
+function inlineIcons(root) {
+  decorateIcons(root);
+  root.querySelectorAll('span.icon').forEach((span) => {
+    const img = span.querySelector('img');
+    if (!img) return;
+    img.removeAttribute('width');
+    img.removeAttribute('height');
+    span.replaceWith(img);
+  });
+}
 
 /**
  * Fetches the nav fragment. Metadata independent: /content first (local preview),
@@ -32,6 +47,7 @@ async function fetchNavFragment() {
   doc.querySelectorAll('source[srcset]').forEach((source) => {
     source.setAttribute('srcset', new URL(source.getAttribute('srcset'), base).href);
   });
+  inlineIcons(doc.body);
   return doc.body;
 }
 
@@ -182,6 +198,9 @@ function decorateColumns(list) {
     column.classList.add('nav-column');
     column.querySelectorAll(':scope > ul > li').forEach((group) => {
       group.classList.add('nav-group');
+      // loose lists wrap the group link in a paragraph
+      const wrapped = group.querySelector(':scope > p:has(> a)');
+      if (wrapped) wrapped.replaceWith(...wrapped.childNodes);
       const title = group.querySelector(':scope > a');
       title?.classList.add('nav-group-title');
       const sublinks = group.querySelector(':scope > ul');
@@ -191,6 +210,32 @@ function decorateColumns(list) {
       }
     });
   });
+}
+
+/** A list whose items each hold only a nested list: one item per column. */
+const isColumnList = (list) => [...list.children].every((item) => item.children.length === 1
+  && item.firstElementChild.tagName === 'UL'
+  && ![...item.childNodes].some((n) => n.nodeType === Node.TEXT_NODE && n.textContent.trim()));
+
+/**
+ * Finds the link columns in authored nodes: either one list of columns, or consecutive lists that
+ * are each a column (Universal Editor lists cannot start with an empty item).
+ * @returns {{ columns: Element|null, end: number }} the columns list and the index after it
+ */
+function collectColumns(nodes, start) {
+  if (start < 0) return { columns: null, end: -1 };
+  let end = start;
+  while (nodes[end]?.tagName === 'UL') end += 1;
+  const lists = nodes.slice(start, end);
+  if (lists.length === 1 && isColumnList(lists[0])) return { columns: lists[0], end };
+  const columns = createElement('ul');
+  lists[0].before(columns);
+  lists.forEach((list) => {
+    const column = createElement('li');
+    column.append(list);
+    columns.append(column);
+  });
+  return { columns, end };
 }
 
 /**
@@ -203,9 +248,9 @@ function decorateColumns(list) {
 function buildPanelBody(nodes, panel) {
   const inner = createElement('div', 'nav-panel-inner');
   const listIndex = nodes.findIndex((n) => n.tagName === 'UL');
-  const columns = listIndex >= 0 ? nodes[listIndex] : null;
+  const { columns, end } = collectColumns(nodes, listIndex);
   const before = listIndex >= 0 ? nodes.slice(0, listIndex) : nodes;
-  const after = listIndex >= 0 ? nodes.slice(listIndex + 1) : [];
+  const after = listIndex >= 0 ? nodes.slice(end) : [];
   const intro = before.filter((n) => /^H[1-6]$/.test(n.tagName));
 
   if (columns) decorateColumns(columns);
@@ -532,7 +577,7 @@ function linkToButton(link, className) {
       button.append(child);
     }
   });
-  if (!button.querySelector('.nav-tool-label') && !button.querySelector('img[alt]:not([alt=""])')) {
+  if (!button.textContent.trim() && !button.querySelector('img[alt]:not([alt=""])')) {
     button.setAttribute('aria-label', link.textContent.trim());
   }
   link.replaceWith(button);
@@ -540,29 +585,51 @@ function linkToButton(link, className) {
 }
 
 /**
- * Builds the main navigation: list items with a label paragraph open a megamenu built from
- * the rest of the item; items with a single link stay links.
+ * Finds the megamenu content of a main navigation item. Either the item holds it (a label
+ * paragraph followed by the menu), or a fragment section has it: the item is plain text or a
+ * #slug link matching that section's heading (the heading is the item label).
+ * @returns {{ labelText: string, content: Element[] }|null}
  */
-function decorateSections(section, controller) {
+function findMenuContent(item, panelSections) {
+  const label = item.querySelector(':scope > p');
+  const content = [...item.children].filter((c) => c !== label);
+  if (label && content.length) {
+    label.remove();
+    return { labelText: label.textContent.trim(), content };
+  }
+  const link = item.querySelector('a[href]');
+  if (link && !link.getAttribute('href').startsWith('#')) return null;
+  const slug = link ? link.getAttribute('href').slice(1) : toClassName(item.textContent);
+  const section = panelSections.get(slug);
+  if (!section) return null;
+  panelSections.delete(slug);
+  const heading = section.querySelector('h1, h2, h3, h4, h5, h6');
+  return {
+    labelText: item.textContent.trim() || heading?.textContent.trim() || '',
+    content: [...section.children].filter((c) => c !== heading),
+  };
+}
+
+/**
+ * Builds the main navigation: items with menu content open a megamenu; items with a single
+ * link stay links.
+ */
+function decorateSections(section, controller, panelSections) {
   const list = section.querySelector('ul');
   if (!list) return;
   list.classList.add('nav-sections-list');
   [...list.children].forEach((item, i) => {
-    const label = item.querySelector(':scope > p');
-    const content = [...item.children].filter((c) => c !== label);
-    if (!label || !content.length) {
-      item.classList.add('nav-item');
-      return;
-    }
-    item.classList.add('nav-item', 'nav-drop');
-    const id = `nav-panel-${toClassName(label.textContent) || i}`;
+    item.classList.add('nav-item');
+    const menu = findMenuContent(item, panelSections);
+    if (!menu) return;
+    item.classList.add('nav-drop');
+    const id = `nav-panel-${toClassName(menu.labelText) || i}`;
     const trigger = createElement('button', 'nav-drop-trigger', { type: 'button' });
-    trigger.textContent = label.textContent.trim();
+    trigger.textContent = menu.labelText;
     const panel = createElement('div', 'nav-panel nav-panel-megamenu', { id, role: 'region', 'aria-label': trigger.textContent });
     panel.hidden = true;
-    buildPanelBody(content, panel);
-    label.replaceWith(trigger);
-    item.append(panel);
+    buildPanelBody(menu.content, panel);
+    item.replaceChildren(trigger, panel);
     controller.register(trigger, panel, {
       hover: true, hoverTarget: trigger, backdrop: true, closeOnOutsideClick: true, modal: false,
     });
@@ -597,6 +664,16 @@ function decorateTools(section, panelSections, controller, navWrapper) {
   lists[0]?.classList.add('nav-utility');
   lists[1]?.classList.add('nav-actions');
   lists[0]?.querySelectorAll(':scope > li').forEach(decorateUtilityItem);
+  // icon actions show the icon only; text next to an icon stays as its accessible name
+  lists[1]?.querySelectorAll('a').forEach((a) => {
+    if (!a.querySelector('img')) return;
+    [...a.childNodes].forEach((child) => {
+      if (child.nodeType !== Node.TEXT_NODE || !child.textContent.trim()) return;
+      const name = createElement('span', 'nav-visually-hidden');
+      name.textContent = child.textContent.trim();
+      child.replaceWith(name);
+    });
+  });
 
   section.querySelectorAll('a[href^="#"]').forEach((link) => {
     const slug = link.getAttribute('href').slice(1);
@@ -671,6 +748,22 @@ function buildBanner(section) {
 }
 
 /**
+ * The logo links to the home page. A logo authored as a separate image moves into the brand
+ * link (whose text becomes the alt text when the image has none), or into a link to the site root.
+ */
+function decorateBrand(brand) {
+  const media = brand.querySelector('picture') || brand.querySelector('img');
+  if (!media) return;
+  const img = media.tagName === 'IMG' ? media : media.querySelector('img');
+  if (img) img.loading = 'eager';
+  if (media.closest('a')) return;
+  const link = brand.querySelector('a[href]') || createElement('a', '', { href: '/' });
+  if (img && !img.alt && link.textContent.trim()) img.alt = link.textContent.trim();
+  link.replaceChildren(media);
+  brand.replaceChildren(link);
+}
+
+/**
  * Opens or closes the small-screen menu. The menu slides in and out unless reduced motion is
  * preferred; it opens with its first section expanded.
  */
@@ -731,14 +824,14 @@ export default async function decorate(block) {
 
   if (brand) {
     brand.className = 'nav-brand';
-    brand.querySelectorAll('img').forEach((img) => { img.loading = 'eager'; });
+    decorateBrand(brand);
     nav.append(brand);
   }
   const menuSearch = buildMenuSearch(panelSections);
   if (menuSearch) nav.append(menuSearch);
   if (main) {
     main.className = 'nav-sections';
-    decorateSections(main, controller);
+    decorateSections(main, controller, panelSections);
     nav.append(main);
   }
   if (tools) {
