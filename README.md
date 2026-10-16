@@ -274,6 +274,33 @@ One block for the **airport information** and **worldwide offices** pages. It re
 
 **Environment requirement**: the AEM feeds and the airport and lounge images (`/content/dam/…`) only respond on the production domain, where the CDN routes those paths to AEM. On `*.aem.page` / `*.aem.live` use a sheet to see data.
 
+### Fare Widget
+
+The homepage "Trending destinations from [origin]" row of live fares. It calls the airline's own fares service (`POST /common/calendarPricing/popular-fares` with the trip type and origin, as the current site does) or reads a published sheet. Put the fare note ("*Fares displayed have been collected within the last 48hrs…") as default content after the block.
+
+**Block fields** (a key-value block: each field is a labelled row, so the order doesn't matter)
+
+| Field | Required | Notes |
+|---|---|---|
+| `origins` | yes | `Bangkok (BKK), Chiang Mai (CNX)`; the first is shown first. With one origin there is no picker |
+| `source` | yes | `/common/calendarPricing/popular-fares`, or a sheet ending in `.json` |
+| `journey` | no | `ROUND_TRIP` (default) or `ONE_WAY` |
+| `limit` | no | Maximum fares shown |
+| `link` | no | Book now target, with `{origin}`, `{destination}`, `{date}`, `{returnDate}`, `{journey}`, e.g. `/en-th/book/book-flight?from={origin}&to={destination}`. Without it the tiles aren't links |
+| `heading`, `from`, `to`, `price`, `book`, `roundtrip`, `oneway`, `previous`, `next` | — | Text: heading before the origin, picker label (screen readers), "To", price text with `{currency}` and `{price}`, button text, trip type words, scroll button names |
+
+**Layout**: an edge-to-edge row of 3:5 tiles: 350 × 583 at 1440px (about 4 in view), 2 from 600px, 1 on mobile. Each tile shows the destination image under a dark gradient, "To", the city, trip and cabin, and the price. Previous and next buttons scroll the row.
+
+**Behaviour**
+- The whole tile links to the Book now target.
+- On wide screens with a pointer, Book now and a slow zoom appear on hover or keyboard focus; on touch screens Book now is always shown.
+- The fares of each origin are fetched once per page view. Space for the tiles is reserved while they load.
+- If the fares can't be loaded, or there are none, the block hides itself and logs the error.
+
+**Sheet**: columns `Origin`, `Destination`, `City`, `Image`, `Date`, `Return date`, `Journey`, `Price`, `Currency`, `Cabin`. Rows are filtered by origin and trip type.
+
+**Environment requirement**: the fares service (`/common/*`) only responds on the production domain, where the CDN routes it to the existing API. On `*.aem.page` / `*.aem.live` use a sheet. The booking page may not prefill from the link parameters, since on the current site that hand-off happens inside the app.
+
 ### Header and footer
 
 Built from the **nav** and **footer** pages (fetched as `/nav.plain.html` and `/footer.plain.html`; `/content/…` first for local preview). All copy, links and images live in those pages; the code only adds controls and layout. Step-by-step authoring instructions with the full content are in [docs/nav-footer-authoring.md](docs/nav-footer-authoring.md).

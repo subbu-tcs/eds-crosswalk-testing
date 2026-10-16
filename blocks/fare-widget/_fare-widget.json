@@ -1,0 +1,147 @@
+{
+  "definitions": [
+    {
+      "title": "Fare Widget",
+      "id": "fare-widget",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Fare Widget",
+              "model": "fare-widget",
+              "key-value": true,
+              "source": "/common/calendarPricing/popular-fares",
+              "journey": "ROUND_TRIP",
+              "link": "/en-th/book/book-flight",
+              "heading": "Trending destinations from",
+              "from": "From",
+              "to": "To",
+              "price": "From {currency} {price}*",
+              "book": "Book now",
+              "roundtrip": "Round trip",
+              "oneway": "One way",
+              "previous": "Previous destinations",
+              "next": "Next destinations"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "fare-widget",
+      "fields": [
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "origins",
+          "label": "Origins",
+          "description": "Comma-separated airports, the first is shown first, e.g. Bangkok (BKK), Chiang Mai (CNX), Phuket (HKT). With one origin there is no picker.",
+          "required": true
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "source",
+          "label": "Fares address",
+          "description": "The fares service (/common/calendarPricing/popular-fares, production domain only) or a published sheet ending in .json.",
+          "required": true
+        },
+        {
+          "component": "select",
+          "valueType": "string",
+          "name": "journey",
+          "label": "Trip type",
+          "options": [
+            {
+              "name": "Round trip",
+              "value": "ROUND_TRIP"
+            },
+            {
+              "name": "One way",
+              "value": "ONE_WAY"
+            }
+          ]
+        },
+        {
+          "component": "number",
+          "valueType": "number",
+          "name": "limit",
+          "label": "Maximum fares",
+          "description": "Optional. Empty shows every fare returned."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "link",
+          "label": "Book link",
+          "description": "Where Book now goes. Optional placeholders: {origin}, {destination}, {date}, {returnDate}, {journey}, e.g. /en-th/book/book-flight?from={origin}&to={destination}."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "heading",
+          "label": "Heading",
+          "description": "Shown before the origin, e.g. Trending destinations from."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "from",
+          "label": "Origin field label",
+          "description": "Names the origin picker for screen readers, e.g. From."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "to",
+          "label": "Destination label",
+          "description": "Shown above each city, e.g. To."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "price",
+          "label": "Price text",
+          "description": "{currency} and {price} are filled in, e.g. From {currency} {price}*. The * refers to the fare note authored after the block."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "book",
+          "label": "Book button",
+          "description": "e.g. Book now."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "roundtrip",
+          "label": "Round trip text"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "oneway",
+          "label": "One way text"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "previous",
+          "label": "Previous button label",
+          "description": "Screen-reader name of the scroll-back button."
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "next",
+          "label": "Next button label",
+          "description": "Screen-reader name of the scroll-forward button."
+        }
+      ]
+    }
+  ],
+  "filters": []
+}
