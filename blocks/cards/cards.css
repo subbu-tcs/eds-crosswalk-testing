@@ -1,27 +1,412 @@
+/*
+ * cards: one block for the source card grids, measured at 1440px and 375px.
+ * default: hotel/service cards (white, soft shadow, 3:2 image). overlay: destination and service
+ * tiles (title on the image, description on hover). compact: help cards (image beside the text).
+ * profile: board of directors portraits. logos: partner logo wall. featured: first card larger.
+ */
+.cards {
+  --cards-shadow-soft: 0 16px 40px rgb(16 24 40 / 6%);
+}
+
 .cards > ul {
-  list-style: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5);
   margin: 0;
   padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));
-  gap: 24px;
+  list-style: none;
 }
 
-.cards > ul > li {
-  border: 1px solid #dadada;
-  background-color: var(--background-color);
-}
-
-.cards .cards-card-body {
-  margin: 16px;
+.cards .cards-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-s);
+  background-color: var(--color-neutral-0);
+  box-shadow: var(--cards-shadow-soft);
+  color: var(--text-color);
 }
 
 .cards .cards-card-image {
   line-height: 0;
 }
 
-.cards > ul > li img {
+.cards .cards-card-image picture {
+  display: block;
+}
+
+.cards .cards-card-image img {
+  display: block;
   width: 100%;
-  aspect-ratio: 4 / 3;
+  height: auto;
+  aspect-ratio: var(--ratio-card);
   object-fit: cover;
+}
+
+.cards .cards-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 28px;
+}
+
+.cards .cards-card-body > *,
+.cards .cards-card-more p {
+  margin: 0;
+}
+
+.cards .cards-card-body > .cards-card-title {
+  color: var(--heading-color);
+  font-family: var(--body-font-family);
+  font-size: var(--heading-font-size-m);
+  font-weight: var(--font-weight-bold);
+  line-height: 30px;
+  text-transform: none;
+}
+
+.cards .cards-card-body p {
+  font-size: var(--body-font-size-m);
+  line-height: 25.6px;
+}
+
+.cards .cards-card-title a:any-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.cards .cards-card-body a:any-link:not(.button) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--link-color);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+}
+
+.cards .cards-icon-external,
+.cards .cards-card-arrow {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  background-color: currentcolor;
+  mask: url('../../icons/external-link.svg') center / contain no-repeat;
+}
+
+/* one link: the whole card is the click target; the focus ring is drawn on the card */
+.cards .is-linked .cards-card-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.cards .is-linked .cards-card-link:focus-visible {
+  outline: none;
+}
+
+.cards .cards-card-body a:any-link:not(.button):hover,
+.cards .is-linked:hover .cards-card-link:not(.button) {
+  text-decoration: underline;
+}
+
+.cards .is-linked:has(.cards-card-link:focus-visible) {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.cards .cards-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* overlay: title and arrow on the image over a dark gradient */
+.cards.overlay .cards-card {
+  isolation: isolate;
+  justify-content: flex-end;
+  aspect-ratio: var(--ratio-media);
+  background-color: var(--color-navy-900);
+  box-shadow: var(--shadow-s);
+  color: var(--color-neutral-0);
+}
+
+.cards.overlay .cards-card-image {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.cards.overlay .cards-card-image picture,
+.cards.overlay .cards-card-image img {
+  height: 100%;
+  aspect-ratio: auto;
+}
+
+.cards.overlay .cards-card-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgb(0 0 0 / 0%) 0%, rgb(0 0 0 / 60%) 70%), var(--overlay-card);
+}
+
+.cards.overlay .cards-card-body {
+  flex: none;
+  gap: 0;
+  padding: var(--space-4) var(--space-4) var(--space-3);
+}
+
+.cards.overlay .cards-card-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  color: var(--color-neutral-0);
+  font-family: var(--heading-font-family);
+  font-size: 22px;
+  font-weight: var(--font-weight-regular);
+  line-height: 33px;
+  text-transform: uppercase;
+}
+
+.cards.overlay .is-linked:hover .cards-card-title .cards-card-link {
+  text-decoration: none;
+}
+
+.cards.overlay .cards-card-arrow {
+  width: 24px;
+  height: 24px;
+  mask-image: url('../../icons/arrow-right.svg');
+}
+
+.cards.overlay .cards-card-body p,
+.cards.overlay .cards-card-body a:any-link:not(.button) {
+  color: var(--color-neutral-0);
+}
+
+.cards.overlay .cards-card-body > * + * {
+  margin-top: var(--space-2);
+}
+
+.cards.overlay .cards-card-more p {
+  font-size: var(--body-font-size-m);
+  line-height: 24px;
+}
+
+/* the description stays readable by assistive tech and opens while focus is inside the card */
+.cards.overlay .cards-card-more {
+  display: grid;
+  grid-template-rows: 0fr;
+  margin-top: 0;
+}
+
+.cards.overlay .cards-card-more > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.cards.overlay .has-more:focus-within .cards-card-more {
+  grid-template-rows: 1fr;
+}
+
+.cards.overlay .has-more:focus-within .cards-card-more > div {
+  padding-top: var(--space-2);
+}
+
+/* compact: image beside the text from 900px */
+.cards.compact > ul {
+  gap: var(--space-4);
+}
+
+.cards.compact .cards-card-body {
+  padding: var(--space-4);
+}
+
+.cards.compact .cards-card-title {
+  font-size: var(--heading-font-size-s);
+  line-height: 27px;
+}
+
+/* profile: portrait cards, centred rows */
+.cards.profile > ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.cards.profile .cards-card {
+  width: 267px;
+  max-width: 100%;
+  box-shadow: var(--shadow-s);
+}
+
+.cards.profile .cards-card-image {
+  background-color: var(--color-neutral-50);
+}
+
+.cards.profile .cards-card-image img {
+  aspect-ratio: 2 / 3;
+  object-position: top;
+}
+
+.cards.profile .cards-card-body {
+  padding: var(--space-4);
+}
+
+.cards.profile .cards-card-body > .cards-card-title {
+  font-size: var(--body-font-size-s);
+  line-height: 21px;
+}
+
+.cards.profile .cards-card-body p {
+  color: var(--heading-color);
+  font-size: 13px;
+  line-height: 20.8px;
+}
+
+/* logos: image only, no frame */
+.cards.logos > ul {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+}
+
+.cards.logos .cards-card {
+  padding: var(--space-4) var(--space-3);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.cards.logos .cards-card-image img {
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+}
+
+/* featured profile: the first card sits alone, centred, in the first row */
+.cards.profile.featured .cards-card:first-child {
+  margin-inline: max(0px, calc((100% - 267px) / 2));
+}
+
+@media (width >= 600px) {
+  .cards > ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cards.compact > ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cards.logos > ul {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .cards.featured:not(.compact, .profile, .logos) .cards-card:first-child {
+    grid-column: span 2;
+  }
+
+  .cards.featured:not(.compact, .profile, .logos, .overlay) .cards-card:first-child img {
+    aspect-ratio: var(--ratio-media);
+  }
+}
+
+@media (width >= 900px) {
+  .cards > ul {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .cards.compact > ul {
+    gap: var(--space-6);
+  }
+
+  .cards.logos > ul {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .cards.overlay .cards-card {
+    aspect-ratio: var(--ratio-tile);
+  }
+
+  .cards.compact .cards-card {
+    display: grid;
+    grid-template-columns: minmax(0, 326fr) minmax(0, 806fr);
+  }
+
+  .cards.compact .cards-card.no-image {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* the image fills the card height set by the text (at least the source's 201px) */
+  .cards.compact .cards-card-image {
+    position: relative;
+    min-height: 201px;
+  }
+
+  .cards.compact .cards-card-image :is(picture, img) {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    aspect-ratio: auto;
+  }
+
+  .cards.compact .cards-card-body {
+    justify-content: center;
+    padding: 30px;
+  }
+
+  .cards.compact .cards-card-title {
+    font-size: 24px;
+    line-height: 36px;
+  }
+
+  /* featured: the first card covers two columns and two rows */
+  .cards.featured:not(.compact, .profile, .logos) .cards-card:first-child {
+    grid-row: span 2;
+  }
+
+  .cards.featured:not(.compact, .profile, .logos, .overlay) .cards-card:first-child .cards-card-image {
+    flex: 1;
+  }
+
+  .cards.featured:not(.compact, .profile, .logos, .overlay) .cards-card:first-child .cards-card-body {
+    flex: none;
+  }
+
+  .cards.featured:not(.compact, .profile, .logos, .overlay) .cards-card:first-child .cards-card-image :is(picture, img) {
+    height: 100%;
+    aspect-ratio: auto;
+  }
+}
+
+@media (width >= 900px) and (hover: hover) {
+  .cards.overlay .has-more:hover .cards-card-more {
+    grid-template-rows: 1fr;
+  }
+
+  .cards.overlay .has-more:hover .cards-card-more > div {
+    padding-top: var(--space-2);
+  }
+
+  .cards.overlay .has-more:is(:hover, :focus-within) .cards-card-body {
+    background-image: radial-gradient(213% 213% at 55% 39%, rgb(255 255 255 / 0%) 0%, rgb(255 255 255 / 12%) 100%);
+    backdrop-filter: blur(6px);
+  }
+}
+
+@media (width >= 1200px) {
+  .cards.logos > ul {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cards.overlay .cards-card-more {
+    transition: grid-template-rows 0.3s ease;
+  }
 }

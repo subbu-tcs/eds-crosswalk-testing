@@ -295,6 +295,40 @@
     ]
   },
   {
+    "id": "cards",
+    "fields": [
+      {
+        "component": "multiselect",
+        "name": "classes",
+        "label": "Options",
+        "valueType": "string",
+        "description": "Pick at most one layout (overlay, compact, profile or logos). Feature first card can be combined with any of them.",
+        "options": [
+          {
+            "name": "Overlay: title on the image",
+            "value": "overlay"
+          },
+          {
+            "name": "Compact: image beside the text",
+            "value": "compact"
+          },
+          {
+            "name": "Profile: portrait, name and role",
+            "value": "profile"
+          },
+          {
+            "name": "Logos: linked images only",
+            "value": "logos"
+          },
+          {
+            "name": "Feature the first card",
+            "value": "featured"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "card",
     "fields": [
       {
@@ -302,13 +336,23 @@
         "valueType": "string",
         "name": "image",
         "label": "Image",
+        "description": "Required. Avoid text in the image.",
         "multi": false
+      },
+      {
+        "component": "text",
+        "valueType": "string",
+        "name": "imageAlt",
+        "label": "Alt",
+        "description": "Describes the image. For logos, the partner name. Leave empty only if the image is decorative.",
+        "value": ""
       },
       {
         "component": "richtext",
         "name": "text",
         "value": "",
         "label": "Text",
+        "description": "Title (heading or bold), optional description and up to 2 links. With one link the whole card is clickable. Profile: name as title, then the role. Logos: one link named after the partner.",
         "valueType": "string"
       }
     ]

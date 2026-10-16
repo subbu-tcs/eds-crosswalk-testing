@@ -180,6 +180,32 @@ Full-bleed page banner with the page title. It matches the source content-page b
 
 **Behaviour**: without an image the banner uses the brand purple background; without text the image is shown at its own proportions. A hero in the first section loads its image eagerly with high fetch priority (it's usually the LCP). Images are served at 2000px wide from 1200px, 1200px from 600px and 750px below. Document-style content with the picture and text in one cell is also supported.
 
+### Cards
+
+One block for the source card grids (service and city tiles, help cards, hotel cards, board-of-directors portraits, partner logo walls). The layout is a block option, not a separate block.
+
+**Content model**
+
+| Level | Field | Type | Required | Notes |
+|---|---|---|---|---|
+| Block | `classes` | multiselect | no | One layout (`overlay`, `compact`, `profile`, `logos`), optionally with `featured` |
+| Card | `image` + `imageAlt` | reference + text | yes | Alt text required unless decorative; for logos, the partner name |
+| Card | `text` | richtext | no | Title (heading or bold paragraph), optional description, up to 2 links. Profile: name as title, then the role. Logos: one link named after the partner |
+
+**Options**
+
+| Option | Layout |
+|---|---|
+| (default) | White card, 3:2 image, title, text and links. 1 column, 2 from 600px, 3 from 900px |
+| Overlay (`overlay`) | Title and arrow on the image over a dark gradient; 16:9 on mobile, square from 900px. On a card that is one link, the description shows on hover or keyboard focus (wide screens); otherwise it stays visible |
+| Compact (`compact`) | One card per row; image above the text on mobile, beside it from 900px |
+| Profile (`profile`) | 267px portrait cards in centred rows |
+| Logos (`logos`) | Linked images only, no frame: 2, 3, 4 and 6 per row at 0/600/900/1200px; the text is kept for screen readers |
+| Feature first (`featured`) | The first card covers 2 columns (and 2 rows from 900px). With `profile`, the first card sits alone in the first row |
+
+**Behaviour**: a card with exactly one link is clickable as a whole, with the focus ring drawn on the card; a card with two links keeps them as separate actions. Links to other sites get an external-link icon. Images load lazily at 750px wide (600px for profiles, 400px for logos).
+**Note**: if an image contains text, repeat it in the alt text.
+
 ### Header and footer
 
 Built from the **nav** and **footer** pages (fetched as `/nav.plain.html` and `/footer.plain.html`; `/content/…` first for local preview). All copy, links and images live in those pages; the code only adds controls and layout. Step-by-step authoring instructions with the full content are in [docs/nav-footer-authoring.md](docs/nav-footer-authoring.md).
