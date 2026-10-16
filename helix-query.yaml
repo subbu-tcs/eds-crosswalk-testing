@@ -23,6 +23,9 @@ indices:
       keywords:
         select: head > meta[name="keywords"]
         value: attribute(el, "content")
+      breadcrumbtitle:
+        select: head > meta[name="breadcrumbtitle"]
+        value: attribute(el, "content")
       image:
         select: head > meta[property="og:image"]
         value: match(attribute(el, "content"), "https:\/\/[^/]+(/.*)")

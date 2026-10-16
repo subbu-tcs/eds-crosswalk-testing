@@ -466,6 +466,11 @@ main img {
   width: 100%;
 }
 
+/* breadcrumb: the bar is reserved before the page renders and filled later, so nothing moves */
+.breadcrumb-wrapper {
+  min-height: 41px;
+}
+
 /* sections */
 main > .section {
   margin: var(--section-spacing) 0;

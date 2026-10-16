@@ -17,6 +17,20 @@
       {
         "component": "text",
         "valueType": "string",
+        "name": "breadcrumbtitle",
+        "label": "Breadcrumb title",
+        "description": "Optional short name for this page in breadcrumbs, e.g. Checked Baggage. Empty uses the page heading."
+      },
+      {
+        "component": "boolean",
+        "valueType": "boolean",
+        "name": "hidebreadcrumb",
+        "label": "Hide breadcrumb",
+        "description": "Turn on for pages that shouldn't show a breadcrumb, such as campaign landing pages."
+      },
+      {
+        "component": "text",
+        "valueType": "string",
         "name": "keywords",
         "multi": true,
         "label": "Keywords"

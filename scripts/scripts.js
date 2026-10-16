@@ -1,4 +1,6 @@
 import {
+  getMetadata,
+  loadBlock,
   loadHeader,
   loadFooter,
   decorateIcons,
@@ -123,6 +125,25 @@ export function decorateMain(main) {
 }
 
 /**
+ * Reserves the breadcrumb bar between the header and the page content. It is filled after
+ * the main content has loaded, so it neither delays the largest paint nor moves the page.
+ * Home pages ("/", "/en-th/") and pages with Hide breadcrumb on get none.
+ * @param {Element} main The main element
+ */
+function prepareBreadcrumb(main) {
+  const path = window.location.pathname.replace(/\.html$/, '').replace(/\/(index)?$/, '');
+  if (!path || /^\/[a-z]{2}-[a-z]{2}$/.test(path) || getMetadata('hidebreadcrumb') === 'true') return;
+  const wrapper = document.createElement('div');
+  wrapper.className = 'breadcrumb-wrapper';
+  const block = document.createElement('div');
+  block.className = 'breadcrumb block';
+  block.dataset.blockName = 'breadcrumb';
+  block.dataset.blockStatus = 'initialized';
+  wrapper.append(block);
+  main.before(wrapper);
+}
+
+/**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
  */
@@ -132,6 +153,7 @@ async function loadEager(doc) {
   const main = doc.querySelector('main');
   if (main) {
     decorateMain(main);
+    prepareBreadcrumb(main);
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
   }
@@ -161,6 +183,8 @@ async function loadLazy(doc) {
   if (hash && element) element.scrollIntoView();
 
   loadFooter(doc.querySelector('footer'));
+  const breadcrumb = doc.querySelector('.breadcrumb-wrapper > .breadcrumb');
+  if (breadcrumb) loadBlock(breadcrumb);
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
