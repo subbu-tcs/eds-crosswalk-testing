@@ -505,6 +505,11 @@ main .section.dark {
   padding: var(--section-spacing) 0;
 }
 
+/* warm: the near-black loyalty band; white text 18.48:1, focus ring 4.95:1 */
+main .section.dark.warm {
+  background-color: var(--color-surface-dark);
+}
+
 main .section.dark :is(h1, h2, h3, h4, h5, h6) {
   color: inherit;
 }

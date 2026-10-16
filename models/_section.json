@@ -41,6 +41,10 @@
             {
               "name": "Dark",
               "value": "dark"
+            },
+            {
+              "name": "Warm (with Dark: near-black, for the loyalty band)",
+              "value": "warm"
             }
           ]
         },

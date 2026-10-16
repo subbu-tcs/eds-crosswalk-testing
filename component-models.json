@@ -180,6 +180,10 @@
           {
             "name": "Dark",
             "value": "dark"
+          },
+          {
+            "name": "Warm (with Dark: near-black, for the loyalty band)",
+            "value": "warm"
           }
         ]
       },
@@ -439,14 +443,45 @@
         "valueType": "number",
         "name": "columns",
         "value": "",
-        "label": "Columns"
+        "label": "Columns",
+        "description": "2 or 3. Columns stack below 900px, image first."
       },
       {
         "component": "text",
         "valueType": "number",
         "name": "rows",
         "value": "",
-        "label": "Rows"
+        "label": "Rows",
+        "description": "Each row is a set of columns."
+      },
+      {
+        "component": "multiselect",
+        "name": "classes",
+        "label": "Options",
+        "valueType": "string",
+        "description": "Widths apply to 2 columns. Combine freely.",
+        "options": [
+          {
+            "name": "First column narrow (1:2)",
+            "value": "narrow-first"
+          },
+          {
+            "name": "Last column narrow (2:1)",
+            "value": "narrow-last"
+          },
+          {
+            "name": "Center content vertically",
+            "value": "middle"
+          },
+          {
+            "name": "Image fills its column edge to edge",
+            "value": "flush"
+          },
+          {
+            "name": "Framed portrait photo",
+            "value": "portrait"
+          }
+        ]
       }
     ]
   },

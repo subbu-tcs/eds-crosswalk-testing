@@ -1,6 +1,17 @@
+/*
+ * columns: side-by-side text and images, measured on the source at 1440px and 375px.
+ * default: equal columns, 32px gap, top aligned (Royal Silk). narrow-first / narrow-last: 1:2
+ * split (wifi band, board-member profile). middle + flush: the homepage loyalty band. portrait:
+ * the board-member photo frame. Columns stack below 900px with the image first.
+ */
 .columns > div {
   display: flex;
   flex-direction: column;
+  gap: var(--space-5);
+}
+
+.columns > div + div {
+  margin-top: var(--space-6);
 }
 
 .columns img {
@@ -9,25 +20,143 @@
 
 .columns > div > div {
   order: 1;
+  min-width: 0;
+}
+
+.columns > div > div > :first-child {
+  margin-top: 0;
+}
+
+.columns > div > div > :last-child {
+  margin-bottom: 0;
 }
 
 .columns > div > .columns-img-col {
   order: 0;
 }
 
+.columns > div > .columns-img-col :is(p, picture) {
+  display: block;
+  margin: 0;
+}
+
 .columns > div > .columns-img-col img {
   display: block;
+  height: auto;
+  border-radius: var(--radius-s);
+}
+
+/* a link alone in its paragraph: bold, with an arrow */
+.columns a.columns-link:any-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--link-color);
+  font-weight: var(--font-weight-bold);
+  text-decoration: none;
+}
+
+.columns a.columns-link:any-link::after {
+  content: '';
+  flex: none;
+  width: 16px;
+  height: 16px;
+  background-color: currentcolor;
+  mask: url('../../icons/arrow-right.svg') center / contain no-repeat;
+}
+
+.columns a.columns-link:any-link:hover {
+  color: var(--link-hover-color);
+  text-decoration: underline;
+}
+
+.section.dark .columns a.columns-link:any-link {
+  color: var(--color-neutral-0);
+  text-decoration: none;
+}
+
+.section.dark .columns a.columns-link:any-link:hover {
+  color: var(--color-purple-300);
+  text-decoration: underline;
+}
+
+/* flush: the image covers its column with square corners */
+.columns.flush > div > .columns-img-col img {
+  border-radius: 0;
+}
+
+/* a flush block alone in a coloured section meets the section edges, like the loyalty band */
+.section:is(.dark, .tinted, .highlight, .light) > .columns-wrapper:only-child > .columns.flush {
+  margin-block: calc(-1 * var(--section-spacing));
+}
+
+.section:is(.dark, .tinted, .highlight, .light) > .columns-wrapper:only-child > .columns.flush > div > div:not(.columns-img-col) {
+  padding-block: 0 var(--section-spacing);
+}
+
+/* portrait: photo in a rounded frame with a lavender ring */
+.columns.portrait > div > .columns-img-col img {
+  max-width: 294px;
+  margin-inline: auto;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 30%;
+  box-shadow: 0 0 0 2px var(--color-purple-200), 0 0 0 10px var(--color-neutral-25), 0 0 0 11px var(--color-purple-200);
 }
 
 @media (width >= 900px) {
   .columns > div {
-    align-items: center;
-    flex-direction: unset;
-    gap: 24px;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--space-6);
   }
 
   .columns > div > div {
     flex: 1;
     order: unset;
+  }
+
+  .columns > div > .columns-img-col {
+    order: unset;
+  }
+
+  .columns.middle > div {
+    align-items: center;
+  }
+
+  .columns.flush > div {
+    align-items: stretch;
+  }
+
+  .columns.columns-2-cols.narrow-first > div > div:first-child,
+  .columns.columns-2-cols.narrow-last > div > div:last-child {
+    flex: 1 1 0;
+  }
+
+  .columns.columns-2-cols.narrow-first > div > div:last-child,
+  .columns.columns-2-cols.narrow-last > div > div:first-child {
+    flex: 2 1 0;
+  }
+
+  .columns.flush > div > .columns-img-col :is(p, picture) {
+    height: 100%;
+  }
+
+  .columns.flush > div > .columns-img-col img {
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .columns.flush.middle > div > div:not(.columns-img-col) {
+    align-self: center;
+  }
+
+  .section:is(.dark, .tinted, .highlight, .light) > .columns-wrapper:only-child > .columns.flush > div > div:not(.columns-img-col) {
+    padding-block: var(--section-spacing);
+  }
+
+  .columns.portrait > div > .columns-img-col img {
+    max-width: 249px;
+    margin-top: 15px;
   }
 }
