@@ -394,6 +394,23 @@ The page language also comes from the market: `/th-th/…` is `lang="th-TH"`, `/
 
 Keys are matched case-insensitively and spaces count as hyphens, so `Header Open Menu` works too. Publish the site and market sheets even if they're empty (the same goes for each market's `notifications` sheet): a missing sheet still works, but the browser logs the 404 as a console error, which Lighthouse counts against Best Practices. Labels that authors set on a block (Search, Locator, Fare Widget, Carousel, Accordion) stay block fields, because they can differ per page.
 
+### Consent, tags and chat (late-loading extras)
+
+`scripts/delayed.js` loads these 3 seconds after the page, so they don't affect the largest paint or interaction readiness. IDs and addresses are in its `CONFIG`.
+
+| Feature | Details |
+|---|---|
+| Cookie consent | OneTrust (`otSDKStub.js`, domain script `280ff691-ab58-4610-bccb-330a6a94ec40`), as on the current site; the banner and preference centre are configured in OneTrust |
+| Google Tag Manager | Containers `GTM-PDXBB9T`, `GTM-NZRTJC`, `GTM-ML57FLPX`, which bring GA4 and Google Ads. Skipped in the airline app's in-app browser, as today. Meta pixels and Salesforce Personalization (hard-coded on the current site) belong in Tag Manager |
+| Chat | The existing chat widget (`genai-api.thaiairways.com` webchat, `lang` from the page language) as a 70px launcher bubble bottom right, kept above the back-to-top button while that shows. When the chat sends `BUBBLE_CHAT_OPENED` it grows to full screen on small screens and to a 420 × 680px panel from 900px; a `…CLOSED` message shrinks it back. Only messages from the chat's own frame and origin count |
+
+**Behaviour**
+- Nothing loads when the page is inside a frame, so Universal Editor stays free of consent banners, tags and chat.
+- They load on every domain, previews included, as chosen. OneTrust only shows its banner on domains configured for the domain script.
+- Dropped from the current site: legacy Universal Analytics (`ga.js`, `analytics.js`; Google retired it), Firebase push notifications, and the Eruda debug console loader.
+
+**To confirm with the chat team**: the desktop open size, and the close message name. The current site's handling sits inside its app bundle; only the open message was observed. Also whether `BUBBLE_CHAT_LOGIN_REQUIRED` expects the page to pass a signed-in member's token.
+
 ### Header and footer
 
 Built from the **nav** and **footer** pages (fetched as `/nav.plain.html` and `/footer.plain.html`; `/content/…` first for local preview). All copy, links and images live in those pages; the code only adds controls and layout. Step-by-step authoring instructions with the full content are in [docs/nav-footer-authoring.md](docs/nav-footer-authoring.md).
