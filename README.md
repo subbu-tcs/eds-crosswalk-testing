@@ -32,6 +32,8 @@ npm run lint
 
 ## Blocks
 
+Before migrating content, run the Universal Editor pilot in [docs/ue-pilot-checklist.md](docs/ue-pilot-checklist.md). It authors each block once and checks the assumptions the code makes about the editor's output.
+
 ### Accordion
 
 Expandable list built on native `<details>`/`<summary>`. Everything works without JavaScript; the script only adds search, deep links and the one-open option. Place a heading as default content above the block: the block itself never adds headings.
