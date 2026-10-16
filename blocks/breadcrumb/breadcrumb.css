@@ -1,0 +1,68 @@
+/*
+ * breadcrumb: the 41px bar between the header and the page, measured on the source content
+ * pages at 1440px and 375px. Ancestors are purple links (Inter Medium 14/22.4), the current page
+ * is grey text, separated by grey chevrons. Small screens show the last two items.
+ */
+.breadcrumb ol {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  max-width: calc(var(--content-max-width) + 2 * var(--content-gutter));
+  min-height: 41px;
+  margin: 0 auto;
+  padding: 0 var(--content-gutter);
+  overflow: hidden;
+  list-style: none;
+  font-size: var(--body-font-size-s);
+  line-height: 22.4px;
+}
+
+.breadcrumb li {
+  display: flex;
+  flex: none;
+  align-items: center;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+/* the current page gives way first when space runs out */
+.breadcrumb li:last-child {
+  flex: 0 1 auto;
+}
+
+.breadcrumb li + li::before {
+  content: '';
+  flex: none;
+  width: 12px;
+  height: 12px;
+  margin-inline: var(--space-3);
+  background-color: var(--color-neutral-500);
+  mask: url('../../icons/chevron-right.svg') center / contain no-repeat;
+}
+
+.breadcrumb a:any-link {
+  color: var(--link-color);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+}
+
+.breadcrumb a:any-link:hover {
+  color: var(--link-hover-color);
+  text-decoration: underline;
+}
+
+.breadcrumb [aria-current='page'] {
+  overflow: hidden;
+  color: var(--text-color);
+  text-overflow: ellipsis;
+}
+
+@media (width < 600px) {
+  .breadcrumb li:not(:nth-last-child(-n + 2)) {
+    display: none;
+  }
+
+  .breadcrumb li:nth-last-child(2)::before {
+    display: none;
+  }
+}

@@ -322,6 +322,30 @@ Data tables such as baggage allowances, fleet specifications and mileage charts.
 - **Shorter rows:** missing cells are padded, so every row has the full column count.
 - **Width:** below 600px, tables get at least 140px per column. Wider tables scroll sideways inside a focusable region named by the heading, instead of widening the page.
 
+### Breadcrumb
+
+Built automatically on every page except market home pages (`/`, `/en-th/`); authors don't add it.
+
+**How it works**
+- `scripts.js` reserves a 41px bar between the header and `main` while the page first renders. The breadcrumb block (`blocks/breadcrumb/`) fills it after the main content has loaded, so it neither delays the largest paint nor moves the page.
+- The trail is the market home, then every ancestor path that is a published page (from `/query-index.json`), then the current page. Path parts without a page, such as `/en-th/content`, are skipped.
+- Each label is the page's **Breadcrumb title**, otherwise its title without the site name. The current page falls back to its main heading.
+
+**Page properties**
+
+| Field | Notes |
+|---|---|
+| Breadcrumb title (`breadcrumbtitle`) | Short name in breadcrumbs, e.g. "Checked Baggage", or "MR. LAVARON SANGSNIT" on a page whose heading is "Board of directors". On a market home page it sets the "Home" label, e.g. "หน้าแรก" |
+| Hide breadcrumb (`hidebreadcrumb`) | No breadcrumb on this page, e.g. campaign landing pages |
+
+**Behaviour**
+- Ancestors are purple links (Inter Medium 14/22.4); the current page is grey text marked `aria-current="page"`. The trail is a `nav` named "Breadcrumb" containing an ordered list.
+- Below 600px only the last two items are shown, and a long current title is shortened with an ellipsis.
+- A `BreadcrumbList` structured-data script is added for search engines.
+- If the index can't be loaded, the trail is the home page and the current page.
+
+**Index**: `breadcrumbtitle` was added to `helix-query.yaml`. After deploying, rebuild the index so ancestors use their breadcrumb titles.
+
 ### Header and footer
 
 Built from the **nav** and **footer** pages (fetched as `/nav.plain.html` and `/footer.plain.html`; `/content/…` first for local preview). All copy, links and images live in those pages; the code only adds controls and layout. Step-by-step authoring instructions with the full content are in [docs/nav-footer-authoring.md](docs/nav-footer-authoring.md).
