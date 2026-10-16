@@ -74,6 +74,7 @@
         "columns",
         "fragment",
         "listing",
+        "locator",
         "search",
         "tabs"
       ]
