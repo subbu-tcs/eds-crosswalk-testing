@@ -1,6 +1,6 @@
 # Universal Editor pilot package
 
-`eds-crosswalk-testing-ue-pilot-1.0.0.zip` is an AEM content package with the pilot pages for [`docs/ue-pilot-checklist.md`](../../docs/ue-pilot-checklist.md), authored with the project's component models.
+`eds-crosswalk-testing-ue-pilot-1.0.1.zip` is an AEM content package with the pilot pages for [`docs/ue-pilot-checklist.md`](../../docs/ue-pilot-checklist.md), authored with the project's component models.
 
 ## Install
 
