@@ -22,12 +22,13 @@ BUILD = f'{WORK.name}/build'
 ROOT = f'{BUILD}/jcr_root'
 SITE = 'content/eds-crosswalk-testing/en-th/pilot'
 DAM = 'content/dam/eds-crosswalk-testing/pilot'
-NAME, GROUP, VERSION = 'eds-crosswalk-testing-ue-pilot', 'eds-crosswalk-testing', '1.0.0'
+NAME, GROUP, VERSION = 'eds-crosswalk-testing-ue-pilot', 'eds-crosswalk-testing', '1.0.1'
 OUT = f'{HERE}/{NAME}-{VERSION}.zip'
 
 # multiselect fields: Universal Editor stores them as String[]
 MULTI = {'accordion', 'booking-widget', 'cards', 'carousel', 'hero', 'listing', 'table', 'tabs'}
 BLOCK_TAGS = r'h[1-6]|ul|ol|table|blockquote|pre'
+JCR_TYPES = 'String|Binary|Long|Double|Decimal|Date|Boolean|Name|Path|Reference|WeakReference|URI'
 
 # --- 1. markdown -> JCR ---------------------------------------------------------------------
 subprocess.run(['python3', f'{HERE}/make-md.py', MD], check=True)
@@ -69,6 +70,10 @@ def fix(xml):
         if 'model="listing"' in xml else xml
     # F2: Book link left empty (md2jcr fills in the component template default)
     xml = re.sub(r'(<block [^>]*)link="/en-th/book/book-flight" ([^>]*model="fare-widget")', r'\1\2', xml)
+    # FileVault reads a leading "{" as a type ({Date}…) and "\" as an escape: escape literal ones,
+    # e.g. the search message "{count} results"
+    xml = xml.replace('\\', '\\\\')
+    xml = re.sub(r'="\{(?!(?:' + JCR_TYPES + r')\})', r'="\\{', xml)
     return xml
 
 
