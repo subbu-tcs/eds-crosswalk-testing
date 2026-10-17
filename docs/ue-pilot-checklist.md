@@ -6,6 +6,8 @@ Every block was built and tested against markup shaped like Universal Editor out
 
 **Where**: create the pilot pages under the English Thailand market (`/content/eds-crosswalk-testing/en-th/pilot/…`), so the market-dependent features are tested too. Use the branch preview `https://main--eds-crosswalk-testing--subbu-tcs.aem.page/en-th/pilot/…`.
 
+**Shortcut**: the content package in [`tools/ue-pilot/`](../tools/ue-pilot/README.md) creates these pages, already authored, so you can open them in Universal Editor and go straight to previewing and checking. The pilot landing page is `pilot` itself rather than `pilot/index`.
+
 Priority: **P1** = an assumption the code depends on that hasn't been checked in Universal Editor; **P2** = layout or behaviour check.
 
 ---
