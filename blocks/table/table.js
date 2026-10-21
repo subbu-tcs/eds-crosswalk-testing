@@ -4,6 +4,13 @@ const HEADING_SELECTOR = 'h1, h2, h3, h4, h5, h6';
 
 const isFilled = (cell) => !!(cell.textContent.trim() || cell.querySelector('img, picture'));
 
+/** The Columns setting ("table-4"), if it reaches the page as a row of its own. */
+const isColumnsSetting = (row) => row.children.length === 1
+  && /^table-\d+$/.test(row.textContent.trim());
+
+/** Imported content names each row's model ("table-col-4") in a leading cell. */
+const isRowModel = (cell) => /^table-col-\d+$/.test(cell.textContent.trim());
+
 /** The heading just above the block names the table. */
 function precedingHeading(block) {
   const section = block.closest('.section');
@@ -29,6 +36,11 @@ export default function decorate(block) {
   const hasHeader = !block.classList.contains('no-header');
   const rowHeaders = block.classList.contains('header-column');
   const rows = [...block.children];
+  if (rows.length && isColumnsSetting(rows[0])) rows.shift().remove();
+  rows.forEach((row) => {
+    const first = row.firstElementChild;
+    if (row.children.length > 1 && isRowModel(first)) first.remove();
+  });
   const columns = Math.max(1, ...rows.map((row) => row.children.length));
 
   const table = document.createElement('table');

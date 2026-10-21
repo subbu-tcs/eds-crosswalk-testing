@@ -19,6 +19,6 @@ module.exports = {
     'linebreak-style': ['error', 'unix'], // enforce unix linebreaks
     'no-param-reassign': [2, { props: false }], // allow modifying properties of param
     // table rows have one cell per column, up to 6
-    'xwalk/max-cells': ['error', { 'table-col-5': 5, 'table-col-6': 6 }],
+    'xwalk/max-cells': ['error', { 'table-col-5': 5, 'table-col-6': 6, 'table-col-7': 7 }],
   },
 };

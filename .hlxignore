@@ -8,3 +8,5 @@ test/*
 _*
 tools/locator/*
 tools/ue-pilot/*
+tools/importer/*
+tools/aem-package/*

@@ -14,3 +14,9 @@ helix-importer-ui
 
 migration-work/navigation-validation/
 migration-work/footer-validation/
+
+# importer working files and built packages (regenerated, large)
+tools/importer/bd-snapshots/
+tools/importer/reports/
+tools/importer/*.bundle.js
+tools/aem-package/dist/
