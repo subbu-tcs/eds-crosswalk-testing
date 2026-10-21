@@ -95,5 +95,11 @@
     "components": [
       "table-col-6"
     ]
+  },
+  {
+    "id": "table-7",
+    "components": [
+      "table-col-7"
+    ]
   }
 ]

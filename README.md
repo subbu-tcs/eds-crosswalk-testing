@@ -307,7 +307,7 @@ The homepage "Trending destinations from [origin]" row of live fares. It calls t
 
 Data tables such as baggage allowances, fleet specifications and mileage charts. Put a heading just above the block: it names the table. Footnotes ("*Saver Class…") go as default content below it.
 
-**Content model**: the Table block has **Options** and **Columns** (1–6). Columns sets the row type authors can add (`table-col-1` … `table-col-6`), and each row has one rich-text field per column. The rendered markup is the standard one (rows of cells), so document-authored tables work too. Rows of 5 and 6 cells are allowed in `.eslintrc.js` (`xwalk/max-cells`).
+**Content model**: the Table block has **Options** and **Columns** (1–7). Columns sets the row type authors can add (`table-col-1` … `table-col-7`), and each row has one rich-text field per column. The rendered markup is the standard one (rows of cells), so document-authored tables work too. Rows of 5–7 cells are allowed in `.eslintrc.js` (`xwalk/max-cells`). Imported content carries the Columns setting as a first row (`table-4`) and each row's model in a leading cell (`table-col-4`), which the conversion to Universal Editor needs; the block drops both if they reach the page.
 
 **Options (combinable)**
 
@@ -429,3 +429,15 @@ Both blocks read two equivalent layouts, so the same code works with migrated HT
 **Header sections**: logo, main menu and tools come first, in that order. Further sections are panels keyed by the slug of their first heading (opened by a main-menu item or a `#slug` tools link); a panel with a link whose query ends with an empty parameter becomes the search panel, one with Heading 3 groups becomes the region list. A section without a heading is the small-screen app banner. On small screens the header reserves the banner's 82px until it loads. It records whether the banner showed (`nav-banner:{market}` in localStorage), so after a visitor dismisses it, or when the nav has none, the next pages start with only the 54px bar and don't shift. A new banner the visitor hasn't dismissed still appears, shifting once on that page.
 
 **Footer sections** are classified by content: several headings each followed by a list are link columns (an accordion below 900px), a heading with a list of icon links is the social row, a section starting with an image is a card (bold link = primary button), the last section without a heading is the bottom bar, and anything else is a promo.
+
+## Content import
+
+Imports source pages into this project's blocks and packages them for AEM. The page inventory and migration plan are in [docs/page-inventory.md](docs/page-inventory.md).
+
+- **Import** (`tools/importer/`): five page templates (offer detail, partner detail, news article, landing page, content page) in `page-templates.json`, each with an `import-<template>.js` script. The scripts run the block parsers in `parsers/` and the site transformers in `transformers/`:
+  - `thaiairways-cleanup.js` strips chrome, fixes images, headings and links;
+  - `thaiairways-sections.js` adds sections and tab labels;
+  - `thaiairways-metadata.js` writes page properties.
+
+  The source site is bot-protected, so pages are imported from browser snapshots in `tools/importer/bd-snapshots/`. Those snapshots, the bundles and the reports aren't committed.
+- **Package** (`tools/aem-package/`): `build-package.mjs` turns the imported pages and their images into a Package Manager zip; see its [README](tools/aem-package/README.md).

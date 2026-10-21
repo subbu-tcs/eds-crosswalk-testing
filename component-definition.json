@@ -416,6 +416,21 @@
           }
         },
         {
+          "title": "Row",
+          "id": "table-col-7",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Row",
+                  "model": "table-col-7"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Tabs",
           "id": "tabs",
           "plugins": {

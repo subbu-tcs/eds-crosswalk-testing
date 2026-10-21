@@ -1,0 +1,688 @@
+{
+  "metadata": {
+    "projectType": "xwalk"
+  },
+  "variantInfo": {
+    "hero": {
+      "baseBlock": "hero",
+      "options": []
+    },
+    "table-left": {
+      "baseBlock": "table",
+      "options": [
+        "left"
+      ]
+    },
+    "table": {
+      "baseBlock": "table",
+      "options": [],
+      "notes": [
+        "partner-detail: .generictable holds several source <table>s that form one logical table (one block, group rows)"
+      ]
+    },
+    "accordion": {
+      "baseBlock": "accordion",
+      "options": []
+    },
+    "booking-widget": {
+      "baseBlock": "booking-widget",
+      "options": []
+    },
+    "cards": {
+      "baseBlock": "cards",
+      "options": [],
+      "notes": [
+        "offer-detail: consecutive .imagecardwithdescription siblings merge into one cards block",
+        ".imageWithContent: one card per .card-content (logo image, h3 title, text, the card link as a text link)"
+      ]
+    },
+    "cards-overlay": {
+      "baseBlock": "cards",
+      "options": [
+        "overlay"
+      ]
+    },
+    "cards-logos": {
+      "baseBlock": "cards",
+      "options": [
+        "logos"
+      ]
+    },
+    "tabs-anchor": {
+      "baseBlock": "tabs",
+      "options": [
+        "anchor"
+      ]
+    },
+    "tabs": {
+      "baseBlock": "tabs",
+      "options": []
+    },
+    "listing": {
+      "baseBlock": "listing",
+      "options": [],
+      "notes": [
+        "landing-page: the single .offer-container yields one listing block per tab panel section (categories = tabLabel, empty for All Promotions)"
+      ]
+    },
+    "carousel": {
+      "baseBlock": "carousel",
+      "options": []
+    },
+    "columns": {
+      "baseBlock": "columns",
+      "options": [],
+      "notes": [
+        ".leftImageRightContent: text column (label \u2192 h2, text, link/button) and image column; one row, 2 columns"
+      ]
+    },
+    "listing-news": {
+      "baseBlock": "listing",
+      "options": [
+        "filter"
+      ],
+      "notes": [
+        "news landing: one listing over the news folder; the category filter replaces the All/News/Announcements tabs"
+      ]
+    }
+  },
+  "templates": [
+    {
+      "name": "offer-detail",
+      "description": "Offer or promotion detail: title with image, offer text and terms, booking widget",
+      "urls": [
+        "https://www.thaiairways.com/en-th/content/offers-Promotions/special-offers/thaiairwaysxsentosa/",
+        "https://www.thaiairways.com/en-th/content/offers-Promotions/royal-orchid-plus/Centara-Maldives-1000Miles/",
+        "https://www.thaiairways.com/en-th/content/offers-Promotions/partnerPrivileges/co-promotion-with-bangkok-bank-sep-nov26/",
+        "https://www.thaiairways.com/en-th/content/offers-Promotions/special-offers/religious-fare-international/",
+        "https://www.thaiairways.com/en-th/content/offers-Promotions/royal-orchid-plus/KTC-ROYAL-ORCHID-PLUS-Credit-Card/",
+        "https://www.thaiairways.com/en-th/content/offers-Promotions/partnerPrivileges/RKTF2026-SCB-CARDX/",
+        "https://www.thaiairways.com/en-th/content/offers-Promotions/special-offers/fly-with-love/",
+        "https://www.thaiairways.com/en-th/content/offers-Promotions/royal-orchid-plus/Thipsamai-Flying-Padthai/",
+        "https://www.thaiairways.com/en-th/content/offers-Promotions/partnerPrivileges/RKTF2026-TTB/",
+        "https://www.thaiairways.com/en-th/content/offers-Promotions/special-offers/book-now-fly-later/",
+        "https://www.thaiairways.com/en-th/content/offers-Promotions/royal-orchid-plus/ROP-CentaraThe1-1K-Miles/",
+        "https://www.thaiairways.com/en-th/content/offers-Promotions/partnerPrivileges/fly-to-asia-australia-and-europe-with-the-1-credit-card/",
+        "https://www.thaiairways.com/en-th/content/offers-Promotions/special-offers/fly-to-dom-2026/",
+        "https://www.thaiairways.com/en-th/content/offers-Promotions/royal-orchid-plus/THAI-Junior-Sky-Explorers-Play-chef/",
+        "https://www.thaiairways.com/en-th/content/offers-Promotions/partnerPrivileges/co-promotion-with-bangkok-bank/"
+      ],
+      "representativeUrl": "https://www.thaiairways.com/en-th/content/offers-Promotions/partnerPrivileges/co-promotion-with-bangkok-bank-sep-nov26/",
+      "extraRepresentatives": [
+        "https://www.thaiairways.com/en-th/content/offers-Promotions/special-offers/thaiairwaysxsentosa/"
+      ],
+      "urlPattern": "/en-th/content/offers-Promotions/*/*",
+      "blocks": [
+        {
+          "name": "table-left",
+          "instances": [
+            ".tableComponent table"
+          ]
+        },
+        {
+          "name": "accordion",
+          "instances": [
+            ".multiAccordion"
+          ]
+        },
+        {
+          "name": "cards",
+          "instances": [
+            ".imagecardwithdescription"
+          ]
+        },
+        {
+          "name": "booking-widget",
+          "instances": [
+            ".offers-bookingwidget-1"
+          ]
+        },
+        {
+          "name": "hero",
+          "instances": [
+            ".banner"
+          ]
+        },
+        {
+          "name": "table",
+          "instances": [
+            ".generictable",
+            ".information table"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1",
+          "name": "Offer content",
+          "selector": [
+            "div.root.container.responsivegrid > div.cmp-container > div.aem-Grid > div.responsivegrid.aem-GridColumn",
+            "body > div.root.container.responsivegrid > div.cmp-container > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.responsivegrid.aem-GridColumn.aem-GridColumn--default--12"
+          ],
+          "style": null,
+          "blocks": [
+            "table-left",
+            "accordion",
+            "cards",
+            "booking-widget",
+            "hero",
+            "table"
+          ],
+          "defaultContent": [
+            ".titlewithimage",
+            "div.root.container.responsivegrid > div.cmp-container > div.aem-Grid > div.responsivegrid.aem-GridColumn > div.aem-Grid > div.information",
+            ".tableComponent caption"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "partner-detail",
+      "description": "Mileage partner detail (Star Alliance airline, credit card, lifestyle): banner, text, earning tables",
+      "urls": [
+        "https://www.thaiairways.com/en-th/content/earn-miles/star-alliance-airlines/eva-air-br/",
+        "https://www.thaiairways.com/en-th/content/earn-miles/credit-card-partners/thai-american-express-platinum-credit-card/",
+        "https://www.thaiairways.com/en-th/content/earn-miles/lifestyle-promotion-partners/miles-with-dining/",
+        "https://www.thaiairways.com/en-th/content/earn-miles/star-alliance-airlines/lot-polishairlines-lo/",
+        "https://www.thaiairways.com/en-th/content/earn-miles/credit-card-partners/aeon/",
+        "https://www.thaiairways.com/en-th/content/earn-miles/star-alliance-airlines/united-airlines-ua/",
+        "https://www.thaiairways.com/en-th/content/earn-miles/credit-card-partners/tmb-thanachart-ttb/",
+        "https://www.thaiairways.com/en-th/content/earn-miles/star-alliance-airlines/brussels-airlines-sn/",
+        "https://www.thaiairways.com/en-th/content/earn-miles/credit-card-partners/diners-club-international/",
+        "https://www.thaiairways.com/en-th/content/earn-miles/star-alliance-airlines/air-china-ca/",
+        "https://www.thaiairways.com/en-th/content/earn-miles/credit-card-partners/k-credit-card/",
+        "https://www.thaiairways.com/en-th/content/earn-miles/star-alliance-airlines/air-new-zealand-nz/",
+        "https://www.thaiairways.com/en-th/content/earn-miles/credit-card-partners/sumitomo-mitsui/",
+        "https://www.thaiairways.com/en-th/content/earn-miles/star-alliance-airlines/air-india-ai/",
+        "https://www.thaiairways.com/en-th/content/earn-miles/credit-card-partners/ktc-royal-orchid-plus/"
+      ],
+      "representativeUrl": "https://www.thaiairways.com/en-th/content/earn-miles/star-alliance-airlines/united-airlines-ua/",
+      "extraRepresentatives": [
+        "https://www.thaiairways.com/en-th/content/earn-miles/credit-card-partners/aeon/"
+      ],
+      "urlPattern": "/en-th/content/earn-miles/*/*",
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            ".banner"
+          ]
+        },
+        {
+          "name": "table",
+          "instances": [
+            ".generictable",
+            ".information table"
+          ]
+        },
+        {
+          "name": "cards-logos",
+          "instances": [
+            ".experiencefragment .heading-multiImage"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            ".leftImageRightContent"
+          ]
+        },
+        {
+          "name": "accordion",
+          "instances": [
+            ".multiAccordion"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1",
+          "name": "Partner content",
+          "selector": [
+            "div.root.container.responsivegrid > div.cmp-container > div.aem-Grid > div.responsivegrid.aem-GridColumn",
+            "body > div.root.container.responsivegrid > div.cmp-container > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.responsivegrid.aem-GridColumn.aem-GridColumn--default--12"
+          ],
+          "style": null,
+          "blocks": [
+            "hero",
+            "table",
+            "cards-logos",
+            "columns",
+            "accordion"
+          ],
+          "defaultContent": [
+            "div.root.container.responsivegrid > div.cmp-container > div.aem-Grid > div.responsivegrid.aem-GridColumn > div.aem-Grid > div.information",
+            ".buttonComponent",
+            ".experiencefragment .information"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "news-article",
+      "description": "News and announcement article: headline, date, article body",
+      "urls": [
+        "https://www.thaiairways.com/en-th/content/news-and-announcements/thai-announces-baggage-policy-for-economy-class/",
+        "https://www.thaiairways.com/en-th/content/news-and-announcements/thai-vitallife-bumrungrad-healthy-destinations-inflight-wellness/",
+        "https://www.thaiairways.com/en-th/content/news-and-announcements/thai-airways-unveils-rop-the-new-chapter-begins/",
+        "https://www.thaiairways.com/en-th/content/news-and-announcements/operational-update/",
+        "https://www.thaiairways.com/en-th/content/news-and-announcements/thai-airways-celebrates-the-33rd-anniversary-of-royal-orchid-plus/",
+        "https://www.thaiairways.com/en-th/content/news-and-announcements/thai-reports-operating-results-for-the-first-quarter-of-2026/",
+        "https://www.thaiairways.com/en-th/content/news-and-announcements/resumes-full-flight/",
+        "https://www.thaiairways.com/en-th/content/news-and-announcements/skytrax-awards-2024/",
+        "https://www.thaiairways.com/en-th/content/news-and-announcements/updated-baggage-procedure-for-connections-to-yangon-via-bangkok/",
+        "https://www.thaiairways.com/en-th/content/news-and-announcements/thai-launches-direct-flights-to-amsterdam/",
+        "https://www.thaiairways.com/en-th/content/news-and-announcements/thai-hosts-thai-talk/",
+        "https://www.thaiairways.com/en-th/content/news-and-announcements/thai-airways-cellars-in-the-sky-awards-2026/",
+        "https://www.thaiairways.com/en-th/content/news-and-announcements/thai-welcomes-its-first-airbus-a321neo/",
+        "https://www.thaiairways.com/en-th/content/news-and-announcements/introducing-thai-airways-new-distribution-capability/",
+        "https://www.thaiairways.com/en-th/content/news-and-announcements/service-fee-travel-agents/"
+      ],
+      "representativeUrl": "https://www.thaiairways.com/en-th/content/news-and-announcements/service-fee-travel-agents/",
+      "extraRepresentatives": [
+        "https://www.thaiairways.com/en-th/content/news-and-announcements/operational-update/"
+      ],
+      "urlPattern": "/en-th/content/news-and-announcements/*",
+      "blocks": [
+        {
+          "name": "table",
+          "instances": [
+            ".newsannouncementdetails .news-text table"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1",
+          "name": "Article body",
+          "selector": [
+            "div.root.container.responsivegrid > div.cmp-container > div.aem-Grid > div.responsivegrid.aem-GridColumn",
+            "body > div.root.container.responsivegrid > div.cmp-container > div.aem-Grid.aem-Grid--12.aem-Grid--default--12 > div.responsivegrid.aem-GridColumn.aem-GridColumn--default--12"
+          ],
+          "style": null,
+          "blocks": [
+            "table"
+          ],
+          "defaultContent": [
+            ".newsannouncementdetails .news-header",
+            ".newsannouncementdetails img.news-banner",
+            ".newsannouncementdetails .news-text > p",
+            ".newsannouncementdetails .news-text > ol"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "landing-page",
+      "description": "Section landing and category pages: banner, intro, card grids or tabbed lists",
+      "urls": [
+        "https://www.thaiairways.com/en-th/content/offers-Promotions/",
+        "https://www.thaiairways.com/en-th/content/offers-Promotions/special-offers/",
+        "https://www.thaiairways.com/en-th/content/offers-Promotions/partnerPrivileges/",
+        "https://www.thaiairways.com/en-th/content/offers-Promotions/royal-orchid-plus/",
+        "https://www.thaiairways.com/en-th/content/news-and-announcements/",
+        "https://www.thaiairways.com/en-th/content/earn-miles/",
+        "https://www.thaiairways.com/en-th/content/earn-miles/star-alliance-airlines/",
+        "https://www.thaiairways.com/en-th/content/earn-miles/credit-card-partners/",
+        "https://www.thaiairways.com/en-th/content/earn-miles/car-rental-partners/",
+        "https://www.thaiairways.com/en-th/content/earn-miles/hotelpartners/",
+        "https://www.thaiairways.com/en-th/content/earn-miles/online-service-partners/",
+        "https://www.thaiairways.com/en-th/content/earn-miles/lifestyle-promotion-partners/",
+        "https://www.thaiairways.com/en-th/content/earn-miles/thai/",
+        "https://www.thaiairways.com/en-th/content/more-services/",
+        "https://www.thaiairways.com/en-th/content/special-assistance/"
+      ],
+      "representativeUrl": "https://www.thaiairways.com/en-th/content/earn-miles/",
+      "extraRepresentatives": [
+        "https://www.thaiairways.com/en-th/content/offers-Promotions/"
+      ],
+      "urlPattern": "/en-th/content/*",
+      "blocks": [
+        {
+          "name": "cards-overlay",
+          "instances": [
+            ".moreService .cms-card-container"
+          ]
+        },
+        {
+          "name": "tabs",
+          "instances": [
+            ".offers .navigation-section"
+          ]
+        },
+        {
+          "name": "listing",
+          "instances": [
+            "#offerContainer"
+          ]
+        },
+        {
+          "name": "hero",
+          "instances": [
+            ".banner"
+          ]
+        },
+        {
+          "name": "cards",
+          "instances": [
+            ".imageWithContent"
+          ]
+        },
+        {
+          "name": "cards-logos",
+          "instances": [
+            ".heading-multiImage"
+          ]
+        },
+        {
+          "name": "table",
+          "instances": [
+            ".generictable",
+            ".information table"
+          ]
+        },
+        {
+          "name": "listing-news",
+          "instances": [
+            ".newsandannouncement"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1",
+          "name": "Overview: title, intro and category cards",
+          "selector": [
+            ".h1tagseo"
+          ],
+          "style": null,
+          "blocks": [
+            "cards-overlay",
+            "hero",
+            "cards",
+            "cards-logos",
+            "table",
+            "listing-news"
+          ],
+          "defaultContent": [
+            ".h1tagseo h1.head-title",
+            "div.root.container.responsivegrid > div.cmp-container > div.aem-Grid > div.responsivegrid.aem-GridColumn > div.aem-Grid > div.information .content"
+          ]
+        },
+        {
+          "id": "section-2",
+          "name": "Category tab bar",
+          "selector": [
+            ".offers .navigation-section"
+          ],
+          "style": null,
+          "blocks": [
+            "tabs"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-3",
+          "name": "Tab panel: All Promotions",
+          "selector": [
+            "#offerContainer",
+            ".offers .offer-container"
+          ],
+          "style": null,
+          "blocks": [
+            "listing"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-4",
+          "name": "Tab panel: Special Offers",
+          "selector": [
+            "#offerContainer > a.filter-specialOffers",
+            ".offers .offer-container > a.filter-specialOffers"
+          ],
+          "style": null,
+          "blocks": [
+            "listing"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-5",
+          "name": "Tab panel: Partners",
+          "selector": [
+            "#offerContainer > a.filter-partners",
+            ".offers .offer-container > a.filter-partners"
+          ],
+          "style": null,
+          "blocks": [
+            "listing"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-6",
+          "name": "Tab panel: Royal Orchid Plus",
+          "selector": [
+            "#offerContainer > a.filter-rop",
+            ".offers .offer-container > a.filter-rop"
+          ],
+          "style": null,
+          "blocks": [
+            "listing"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-7",
+          "name": "Tab panel: Royal Orchid Holidays",
+          "selector": [
+            "#offerContainer > a.filter-roh",
+            ".offers .offer-container > a.filter-roh"
+          ],
+          "style": null,
+          "blocks": [
+            "listing"
+          ],
+          "defaultContent": []
+        }
+      ],
+      "sectionMetadata": {
+        "section-3": {
+          "tabLabel": "All Promotions"
+        },
+        "section-4": {
+          "tabLabel": "Special Offers"
+        },
+        "section-5": {
+          "tabLabel": "Partners"
+        },
+        "section-6": {
+          "tabLabel": "Royal Orchid Plus"
+        },
+        "section-7": {
+          "tabLabel": "Royal Orchid Holidays"
+        }
+      }
+    },
+    {
+      "name": "content-page",
+      "description": "Generic content page (thai-generic): banner, text, tables, accordions, tabs, image and text rows",
+      "urls": [
+        "https://www.thaiairways.com/en-th/content/about-royal-orchid-plus/",
+        "https://www.thaiairways.com/en-th/content/status-and-benefits/",
+        "https://www.thaiairways.com/en-th/content/spend-miles/flight-upgrades/",
+        "https://www.thaiairways.com/en-th/content/mice/",
+        "https://www.thaiairways.com/en-th/content/in-flight-experience/",
+        "https://www.thaiairways.com/en-th/content/charter-flights/",
+        "https://www.thaiairways.com/en-th/content/sustainable-development/",
+        "https://www.thaiairways.com/en-th/content/procurement-supplier/",
+        "https://www.thaiairways.com/en-th/content/help/",
+        "https://www.thaiairways.com/en-th/content/junior-sky-explorer/",
+        "https://www.thaiairways.com/en-th/content/more-services/hotels/",
+        "https://www.thaiairways.com/en-th/content/baggage/restricted-baggage/",
+        "https://www.thaiairways.com/en-th/content/good-corporate-governance/roles-and-responsibilities-of-the-company-secretary/",
+        "https://www.thaiairways.com/en-th/content/in-flight-experience/in-flight-duty-free/",
+        "https://www.thaiairways.com/en-th/content/special-assistance/advice-for-elderly-passenger/"
+      ],
+      "representativeUrl": "https://www.thaiairways.com/en-th/content/charter-flights/",
+      "extraRepresentatives": [
+        "https://www.thaiairways.com/en-th/content/baggage/restricted-baggage/"
+      ],
+      "urlPattern": "/en-th/content/*",
+      "blocks": [
+        {
+          "name": "hero",
+          "instances": [
+            ".banner"
+          ]
+        },
+        {
+          "name": "tabs-anchor",
+          "instances": [
+            ".multitabscrolling"
+          ]
+        },
+        {
+          "name": "cards-overlay",
+          "instances": [
+            ".carouselwithslider"
+          ]
+        },
+        {
+          "name": "cards",
+          "instances": [
+            ".highlightsBenefits .info-group",
+            ".imagecardwithdescription",
+            ".imageWithContent"
+          ]
+        },
+        {
+          "name": "carousel",
+          "instances": [
+            ".imagetitlewithcarousel"
+          ]
+        },
+        {
+          "name": "table",
+          "instances": [
+            ".generictable",
+            ".information table",
+            ".flightupgrades table"
+          ]
+        },
+        {
+          "name": "accordion",
+          "instances": [
+            ".multiAccordion"
+          ]
+        },
+        {
+          "name": "columns",
+          "instances": [
+            ".leftImageRightContent"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "section-1",
+          "name": "Page banner",
+          "selector": [
+            ".banner"
+          ],
+          "style": null,
+          "blocks": [
+            "hero"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2",
+          "name": "Jump-link bar",
+          "selector": [
+            ".multitabscrolling",
+            "#passanger-charter > div.multitabscrolling"
+          ],
+          "style": null,
+          "blocks": [
+            "tabs-anchor"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-3",
+          "name": "Anchor section 1 (About passenger charter)",
+          "selector": [
+            "#section1"
+          ],
+          "style": null,
+          "blocks": [
+            "cards-overlay"
+          ],
+          "defaultContent": [
+            "#section1 .information",
+            "#section1 .buttonComponent"
+          ]
+        },
+        {
+          "id": "section-4",
+          "name": "Anchor section 2 (Why passenger charter ?)",
+          "selector": [
+            "#section2"
+          ],
+          "style": null,
+          "blocks": [
+            "cards"
+          ],
+          "defaultContent": [
+            "#section2 .highlightsBenefits p.heading-title"
+          ]
+        },
+        {
+          "id": "section-5",
+          "name": "Anchor section 3 (Passenger charter aircraft)",
+          "selector": [
+            "#section3"
+          ],
+          "style": null,
+          "blocks": [
+            "carousel"
+          ],
+          "defaultContent": [
+            "#section3 .information"
+          ]
+        },
+        {
+          "id": "section-6",
+          "name": "Body content (Smart baggage)",
+          "selector": [
+            "div.root.container.responsivegrid > div.cmp-container > div.aem-Grid > div.responsivegrid.aem-GridColumn > div.aem-Grid > div.information"
+          ],
+          "style": null,
+          "blocks": [
+            "cards",
+            "table",
+            "accordion",
+            "columns"
+          ],
+          "defaultContent": [
+            "div.root.container.responsivegrid > div.cmp-container > div.aem-Grid > div.responsivegrid.aem-GridColumn > div.aem-Grid > div.information",
+            "div.root.container.responsivegrid > div.cmp-container > div.aem-Grid > div.responsivegrid.aem-GridColumn > div.aem-Grid > div.highlightsBenefits p.heading-title"
+          ]
+        }
+      ],
+      "sectionMetadata": {
+        "section-3": {
+          "tabLabel": "About passenger charter"
+        },
+        "section-4": {
+          "tabLabel": "Why passenger charter ?"
+        },
+        "section-5": {
+          "tabLabel": "Passenger charter aircraft"
+        }
+      }
+    }
+  ]
+}
