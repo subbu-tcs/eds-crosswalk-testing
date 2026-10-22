@@ -3,7 +3,7 @@
  * Builds an AEM content package (Package Manager zip) from imported pages.
  *
  *   node tools/aem-package/build-package.mjs [--name NAME] [--version X.Y.Z] [--out DIR]
- *     [page.plain.html...]
+ *     [--max-mb N] [page.plain.html...]
  *
  * Without page arguments it packages every page listed in tools/importer/page-templates.json.
  * Each content/<path>.plain.html becomes /content/eds-crosswalk-testing/<path> (html2md, then
@@ -15,19 +15,19 @@
  * imported-assets folder. Missing parent pages are created as empty pages; existing ones are
  * left alone.
  */
-/* eslint-disable no-restricted-syntax, no-await-in-loop, no-console -- a Node command-line tool:
-   pages convert one after another (a large batch doesn't run hundreds of conversions at once),
-   and it reports on the console */
+/* eslint-disable no-restricted-syntax, no-await-in-loop, no-console,
+   import/no-extraneous-dependencies -- a Node command-line tool, not site code: pages convert
+   one after another (a large batch doesn't run hundreds of conversions at once), it reports on
+   the console, and its converters are dev dependencies */
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const MODULES = process.env.EXCAT_IMPORT_MODULES
-  || '/home/node/.excat-marketplaces/excat-marketplace/excat/skills/excat-content-import/scripts/node_modules';
-const { html2md } = await import(`${MODULES}/@adobe/helix-html2md/src/index.js`);
-const { md2jcr } = await import(`${MODULES}/@adobe/helix-md2jcr/src/index.js`);
+// the converters are project dev dependencies (npm install)
+const { html2md } = await import('@adobe/helix-html2md');
+const { md2jcr } = await import('@adobe/helix-md2jcr');
 
 const SITE = '/content/eds-crosswalk-testing';
 const DAM = '/content/dam/eds-crosswalk-testing';
@@ -52,6 +52,8 @@ const opt = (name, fallback) => {
 const NAME = opt('name', 'eds-crosswalk-testing-imported-pages');
 const VERSION = opt('version', '1.0.0');
 const OUT = path.resolve(opt('out', path.join(REPO, 'tools/aem-package/dist')));
+// split into a pages package and image packages of at most this size (0: one package)
+const MAX_MB = Number(opt('max-mb', 0));
 
 const json = (f) => JSON.parse(fs.readFileSync(path.join(REPO, f), 'utf8'));
 const models = { models: json('component-models.json'), definition: json('component-definition.json'), filters: json('component-filters.json') };
@@ -104,6 +106,18 @@ const write = (file, content) => {
   fs.writeFileSync(file, content);
 };
 
+// the imported pages are local preview content, not part of the repository
+const files = pageFiles();
+const absent = files.filter((f) => !fs.existsSync(f));
+if (absent.length === files.length) {
+  console.error(`None of the ${files.length} imported pages exist under ${path.join(REPO, 'content')}, e.g.
+  ${path.relative(REPO, files[0] || 'content/…')}
+They are written by the importer (tools/importer) together with their images in content/media-da/,
+and aren't committed. Build the package where the import ran, or copy that content/ folder here.`);
+  process.exit(1);
+}
+if (absent.length) console.warn(`${absent.length} page(s) not found, skipped:\n  ${absent.map((f) => path.relative(REPO, f)).join('\n  ')}`);
+
 fs.mkdirSync(OUT, { recursive: true });
 const work = fs.mkdtempSync(path.join(OUT, '.build-'));
 const root = path.join(work, 'jcr_root');
@@ -111,7 +125,7 @@ const pages = [];
 const images = new Map(); // DAM path -> local file
 const failures = [];
 
-for (const file of pageFiles()) {
+for (const file of files.filter((f) => fs.existsSync(f))) {
   const rel = path.relative(path.join(REPO, 'content'), file).replace(/\.plain\.html$/, '');
   const jcrPath = `${SITE}/${rel}`;
   const market = rel.split('/')[0];
@@ -144,13 +158,12 @@ pages.forEach((p) => {
 
 // assets
 const missing = [];
-const damFolders = new Set();
+const assets = []; // { damPath, bytes }
 images.forEach((src, damPath) => {
   if (!fs.existsSync(src)) {
     missing.push(damPath);
     return;
   }
-  damFolders.add(path.dirname(damPath));
   const mime = MIME[path.extname(src).toLowerCase()] || 'application/octet-stream';
   const asset = path.join(root, damPath);
   write(path.join(asset, '.content.xml'), `<?xml version="1.0" encoding="UTF-8"?>
@@ -168,59 +181,117 @@ images.forEach((src, damPath) => {
 </jcr:root>
 `);
   fs.copyFileSync(src, path.join(asset, '_jcr_content/renditions/original'));
+  assets.push({ damPath, bytes: fs.statSync(src).size });
 });
-damFolders.forEach((folder) => {
-  const parts = folder.split('/');
+assets.sort((a, b) => a.damPath.localeCompare(b.damPath));
+// asset folders (outside every filter: created only when missing)
+const folderFiles = new Set();
+assets.forEach(({ damPath }) => {
+  const parts = path.dirname(damPath).split('/');
   for (let i = 4; i <= parts.length; i += 1) {
     const f = parts.slice(0, i).join('/');
     const file = path.join(root, f, '.content.xml');
     if (!fs.existsSync(file)) write(file, folderXml(parts[i - 1]));
+    folderFiles.add(`jcr_root${f}/.content.xml`);
   }
 });
 
-// vault metadata: each page replaces only itself and its jcr:content, never its child pages
+// packages: each page replaces only itself and its jcr:content (never its child pages); each
+// image is its own filter root, so image packages and later batches never remove other images
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-const filters = [
-  ...pages.map((p) => `    <filter root="${p}">
+const pageFilters = pages.map((p) => `    <filter root="${p}">
         <include pattern="${esc(p)}"/>
         <include pattern="${esc(p)}/jcr:content(/.*)?"/>
-    </filter>`),
-  ...[...damFolders].map((f) => `    <filter root="${f}"/>`),
-];
-write(path.join(work, 'META-INF/vault/filter.xml'), `<?xml version="1.0" encoding="UTF-8"?>
+    </filter>`);
+const assetFilter = (a) => `    <filter root="${a.damPath}"/>`;
+const assetPaths = (list) => [...folderFiles, ...list.map((a) => `jcr_root${a.damPath}`)];
+
+const packages = [];
+if (!MAX_MB) {
+  packages.push({
+    name: NAME,
+    description: `${pages.length} imported pages under ${SITE} with ${assets.length} images under ${DAM}.`,
+    filters: [...pageFilters, ...assets.map(assetFilter)],
+    paths: [`jcr_root${SITE}`, ...assetPaths(assets)],
+  });
+} else {
+  packages.push({
+    name: `${NAME}-pages`,
+    description: `${pages.length} imported pages under ${SITE}. Their images are in the ${NAME}-images-N packages.`,
+    filters: pageFilters,
+    paths: [`jcr_root${SITE}`],
+  });
+  const groups = [];
+  assets.forEach((a) => {
+    const last = groups[groups.length - 1];
+    if (last && last.bytes + a.bytes <= MAX_MB * 1024 * 1024) {
+      last.list.push(a);
+      last.bytes += a.bytes;
+    } else groups.push({ list: [a], bytes: a.bytes });
+  });
+  groups.forEach((g, i) => packages.push({
+    name: `${NAME}-images-${i + 1}`,
+    description: `Images ${i + 1} of ${groups.length} (${g.list.length} images) for the ${NAME}-pages package, under ${DAM}.`,
+    filters: g.list.map(assetFilter),
+    paths: assetPaths(g.list),
+  }));
+}
+
+function zipPackage(pkg) {
+  const meta = fs.mkdtempSync(path.join(work, 'meta-'));
+  write(path.join(meta, 'META-INF/vault/filter.xml'), `<?xml version="1.0" encoding="UTF-8"?>
 <workspaceFilter version="1.0">
-${filters.join('\n')}
+${pkg.filters.join('\n')}
 </workspaceFilter>
 `);
-write(path.join(work, 'META-INF/vault/properties.xml'), `<?xml version="1.0" encoding="utf-8" standalone="no"?>
+  write(path.join(meta, 'META-INF/vault/properties.xml'), `<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>FileVault Package Properties</comment>
-<entry key="name">${NAME}</entry>
+<entry key="name">${pkg.name}</entry>
 <entry key="group">eds-crosswalk-testing</entry>
 <entry key="version">${VERSION}</entry>
-<entry key="description">${pages.length} imported pages under ${SITE} with ${images.size - missing.length} images under ${DAM}.</entry>
+<entry key="description">${pkg.description}</entry>
 <entry key="packageType">content</entry>
 <entry key="requiresRoot">false</entry>
 <entry key="allowIndexDefinitions">false</entry>
 </properties>
 `);
-write(path.join(work, 'META-INF/vault/config.xml'), '<?xml version="1.0" encoding="UTF-8"?>\n<vaultfs version="1.1"/>\n');
+  write(path.join(meta, 'META-INF/vault/config.xml'), '<?xml version="1.0" encoding="UTF-8"?>\n<vaultfs version="1.1"/>\n');
 
-const zip = path.join(OUT, `${NAME}-${VERSION}.zip`);
-if (fs.existsSync(zip)) fs.rmSync(zip);
-// python's zipfile: no zip binary needed
-execFileSync('python3', ['-c', `
+  const zip = path.join(OUT, `${pkg.name}-${VERSION}.zip`);
+  if (fs.existsSync(zip)) fs.rmSync(zip);
+  // the zip command (macOS, most Linux), else python's zipfile
+  try {
+    execFileSync('zip', ['-q', '-r', zip, 'META-INF'], { cwd: meta, stdio: 'ignore' });
+    execFileSync('zip', ['-q', '-r', zip, ...pkg.paths], { cwd: work, stdio: 'ignore' });
+  } catch (e) {
+    if (fs.existsSync(zip)) fs.rmSync(zip);
+    execFileSync('python3', ['-c', `
 import os, sys, zipfile
-with zipfile.ZipFile(sys.argv[1], 'w', zipfile.ZIP_DEFLATED) as z:
-    for top in ('META-INF', 'jcr_root'):
-        for folder, _, files in os.walk(top):
-            for f in sorted(files):
-                z.write(os.path.join(folder, f))
-`, zip], { cwd: work });
+zip_path, meta, work, *paths = sys.argv[1:]
+with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as z:
+    for base, tops in ((meta, ['META-INF']), (work, paths)):
+        for top in tops:
+            full = os.path.join(base, top)
+            if os.path.isfile(full):
+                z.write(full, top)
+                continue
+            for folder, _, names in os.walk(full):
+                for f in sorted(names):
+                    z.write(os.path.join(folder, f), os.path.relpath(os.path.join(folder, f), base))
+`, zip, meta, work, ...pkg.paths]);
+  }
+  return zip;
+}
+
+const zips = packages.map((pkg) => ({ pkg, zip: zipPackage(pkg) }));
 fs.rmSync(work, { recursive: true });
 
-console.log(`${path.relative(REPO, zip)}: ${pages.length} pages, ${images.size - missing.length} images`);
+zips.forEach(({ pkg, zip }) => {
+  const mb = (fs.statSync(zip).size / 1024 / 1024).toFixed(1);
+  console.log(`${path.relative(REPO, zip)} (${mb} MB): ${pkg.description}`);
+});
 if (missing.length) console.log(`images referenced but not found locally (${missing.length}):\n  ${missing.join('\n  ')}`);
 if (failures.length) {
   console.log(`pages that failed to convert (${failures.length}):\n  ${failures.join('\n  ')}`);
