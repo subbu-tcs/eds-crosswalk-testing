@@ -25,6 +25,8 @@
   },
   "homepage": "https://github.com/adobe/aem-boilerplate#readme",
   "devDependencies": {
+    "@adobe/helix-html2md": "1.1.1",
+    "@adobe/helix-md2jcr": "1.5.10",
     "@babel/eslint-parser": "7.28.6",
     "eslint": "8.57.1",
     "eslint-config-airbnb-base": "15.0.0",
