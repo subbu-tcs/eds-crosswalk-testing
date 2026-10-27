@@ -439,5 +439,11 @@ Imports source pages into this project's blocks and packages them for AEM. The p
   - `thaiairways-sections.js` adds sections and tab labels;
   - `thaiairways-metadata.js` writes page properties.
 
-  The source site is bot-protected, so pages are imported from browser snapshots in `tools/importer/bd-snapshots/`. Those snapshots, the bundles and the reports aren't committed.
-- **Package** (`tools/aem-package/`): `build-package.mjs` turns the imported pages and their images into a Package Manager zip; see its [README](tools/aem-package/README.md).
+  The source site is bot-protected, so pages are imported from browser snapshots in `tools/importer/bd-snapshots/`. Those snapshots, the bundles and the reports aren't committed. `fetch-missing-images.mjs` downloads images an imported page still points at on the source (lazy or feed-driven images the snapshot missed) and adds them to the page's image map for the next import.
+- **Home page** (template `home-page`): the source home page is a React app, so its import reads the app's content feeds:
+  1. `node tools/importer/home-feeds.mjs <snapshot> <feeds-dir>` embeds the banner carousel, services and offers feeds in the snapshot.
+  2. `thaiairways-home.js` marks the sections by their content.
+  3. The `home-*` parsers turn them into blocks.
+
+  The section map is in [docs/home-page-map.md](docs/home-page-map.md).
+- **Package** (`tools/aem-package/`): `build-package.mjs` turns the imported pages and their images into a Package Manager zip, and `check-package.py` checks the result; see its [README](tools/aem-package/README.md).

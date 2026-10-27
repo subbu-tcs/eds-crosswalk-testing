@@ -23,6 +23,21 @@ node tools/aem-package/build-package.mjs --name eds-crosswalk-testing-en-th-tria
 2. **Images:** each `/media-da/…` image a page uses becomes a `dam:Asset` under `/content/dam/eds-crosswalk-testing/<market>/imported/`, and the page points at it. Its declared type comes from the file's content, not its name, because the source serves some JPEGs as `.png` and the reverse, and AEM's asset processing goes by the declared type.
 3. **Parent pages:** parents that aren't packaged (for example `/en-th/content/baggage`) are added as empty pages. They are created only when missing and never overwrite an existing page.
 
+## Check
+
+```sh
+python3 tools/aem-package/check-package.py tools/aem-package/dist/<name>-*<version>.zip
+```
+
+Checks one package, or a split build together. It reports:
+- XML that doesn't parse;
+- values the installer would misread;
+- properties and options that aren't in the component models;
+- image references without an asset, and assets whose declared type doesn't match the file;
+- filters that don't match a package's contents.
+
+It exits with 1 when anything is found.
+
 ## Install
 
 In AEM, open **Tools → Deployment → Packages**, upload the zip(s) and click **Install** on each. For split packages, install the image packages before the pages package, so the pages open with their images.
