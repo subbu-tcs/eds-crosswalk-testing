@@ -84,6 +84,44 @@
       "notes": [
         "news landing: one listing over the news folder; the category filter replaces the All/News/Announcements tabs"
       ]
+    },
+    "home-carousel": {
+      "baseBlock": "carousel",
+      "options": [
+        "hero"
+      ]
+    },
+    "home-booking": {
+      "baseBlock": "booking-widget",
+      "options": [
+        "promo-code"
+      ]
+    },
+    "home-services": {
+      "baseBlock": "accordion",
+      "options": [
+        "inline"
+      ]
+    },
+    "home-listing": {
+      "baseBlock": "listing",
+      "options": [
+        "featured"
+      ],
+      "notes": [
+        "offers and news featured; partners plain"
+      ]
+    },
+    "home-fares": {
+      "baseBlock": "fare-widget",
+      "options": []
+    },
+    "home-rop": {
+      "baseBlock": "columns",
+      "options": [
+        "middle",
+        "flush"
+      ]
     }
   },
   "templates": [
@@ -683,6 +721,153 @@
           "tabLabel": "Passenger charter aircraft"
         }
       }
+    },
+    {
+      "name": "home-page",
+      "description": "Home page (a React app on the source): sections recognised by thaiairways-home.js; carousel and services from the content feeds embedded by tools/importer/home-feeds.mjs",
+      "urls": [
+        "https://www.thaiairways.com/en-th/"
+      ],
+      "representativeUrl": "https://www.thaiairways.com/en-th/",
+      "blocks": [
+        {
+          "name": "home-carousel",
+          "instances": [
+            "[data-home=\"carousel\"]"
+          ]
+        },
+        {
+          "name": "home-booking",
+          "instances": [
+            "[data-home=\"booking\"]"
+          ]
+        },
+        {
+          "name": "home-services",
+          "instances": [
+            "[data-home=\"services\"]"
+          ]
+        },
+        {
+          "name": "home-listing",
+          "instances": [
+            "[data-home=\"offers\"]",
+            "[data-home=\"partners\"]",
+            "[data-home=\"news\"]"
+          ]
+        },
+        {
+          "name": "home-fares",
+          "instances": [
+            "[data-home=\"fares\"]"
+          ]
+        },
+        {
+          "name": "home-rop",
+          "instances": [
+            "[data-home=\"rop\"]"
+          ]
+        }
+      ],
+      "urlPattern": "/en-th/",
+      "sections": [
+        {
+          "id": "section-1",
+          "name": "carousel",
+          "selector": [
+            "[data-home=\"carousel\"]"
+          ],
+          "style": null,
+          "blocks": [
+            "home-carousel"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-2",
+          "name": "booking",
+          "selector": [
+            "[data-home=\"booking\"]"
+          ],
+          "style": null,
+          "blocks": [
+            "home-booking"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-3",
+          "name": "services",
+          "selector": [
+            "[data-home=\"services\"]"
+          ],
+          "style": null,
+          "blocks": [
+            "home-services"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-4",
+          "name": "offers",
+          "selector": [
+            "[data-home=\"offers\"]"
+          ],
+          "style": null,
+          "blocks": [
+            "home-listing"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-5",
+          "name": "partners",
+          "selector": [
+            "[data-home=\"partners\"]"
+          ],
+          "style": null,
+          "blocks": [
+            "home-listing"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-6",
+          "name": "fares",
+          "selector": [
+            "[data-home=\"fares\"]"
+          ],
+          "style": null,
+          "blocks": [
+            "home-fares"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-7",
+          "name": "rop",
+          "selector": [
+            "[data-home=\"rop\"]"
+          ],
+          "style": "dark, warm",
+          "blocks": [
+            "home-rop"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "section-8",
+          "name": "news",
+          "selector": [
+            "[data-home=\"news\"]"
+          ],
+          "style": null,
+          "blocks": [
+            "home-listing"
+          ],
+          "defaultContent": []
+        }
+      ]
     }
   ]
 }

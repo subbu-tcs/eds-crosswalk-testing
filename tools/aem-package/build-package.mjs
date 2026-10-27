@@ -83,7 +83,8 @@ function fix(xml, damFolder) {
   // typed page properties
   out = out.replace(/ (date|validfrom|validto)="(\d{4}-\d\d-\d\d)"/g, ' $1="{Date}$2T00:00:00.000+07:00"');
   out = out.replace(/ hidebreadcrumb="true"/g, ' hidebreadcrumb="{Boolean}true"');
-  out = out.replace(/(<block[\w-]* [^>]*model="listing"[^>]*?) limit="(\d+)"/g, '$1 limit="{Long}$2"');
+  // number fields (attributes come in any order)
+  out = out.replace(/<block[\w-]* [^>]*model="listing"[^>]*>/g, (tag) => tag.replace(/ limit="(\d+)"/, ' limit="{Long}$1"'));
   // images: local import copies -> DAM assets
   out = out.replace(/\/media-da\//g, `${damFolder}/`);
   // FileVault reads a leading "{" as a type and "\" as an escape

@@ -518,7 +518,8 @@ export default function transform(hookName, element, payload) {
     // assets inside components (JSON-LD is kept for the metadata transformer)
     removeAll(element, ['link[rel="stylesheet"]', 'link[href*="clientlibs"]', 'style', 'noscript']);
     element.querySelectorAll('script').forEach((s) => {
-      if (!/ld\+json/i.test(s.getAttribute('type') || '')) s.remove();
+      // the home page's content feeds (data-excat-feed) are read by its parsers
+      if (!/ld\+json/i.test(s.getAttribute('type') || '') && !s.hasAttribute('data-excat-feed')) s.remove();
     });
     removeComments(element, doc);
 
