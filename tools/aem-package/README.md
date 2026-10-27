@@ -20,7 +20,7 @@ node tools/aem-package/build-package.mjs --name eds-crosswalk-testing-en-th-tria
    - dates as typed dates;
    - headings and lists not wrapped in paragraphs;
    - a leading `{` and backslashes escaped.
-2. **Images:** each `/media-da/…` image a page uses becomes a `dam:Asset` under `/content/dam/eds-crosswalk-testing/<market>/imported/`, and the page points at it.
+2. **Images:** each `/media-da/…` image a page uses becomes a `dam:Asset` under `/content/dam/eds-crosswalk-testing/<market>/imported/`, and the page points at it. Its declared type comes from the file's content, not its name, because the source serves some JPEGs as `.png` and the reverse, and AEM's asset processing goes by the declared type.
 3. **Parent pages:** parents that aren't packaged (for example `/en-th/content/baggage`) are added as empty pages. They are created only when missing and never overwrite an existing page.
 
 ## Install

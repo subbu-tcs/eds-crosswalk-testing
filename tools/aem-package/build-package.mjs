@@ -100,6 +100,22 @@ const pageXml = (title) => `<?xml version="1.0" encoding="UTF-8"?>
 const folderXml = (title) => `<?xml version="1.0" encoding="UTF-8"?>
 <jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0" jcr:primaryType="sling:OrderedFolder" jcr:title="${title}"/>
 `;
+/**
+ * The image type from the file's first bytes: the source serves some JPEGs as .png and some
+ * PNGs as .jpg, and AEM's asset processing goes by the declared type.
+ */
+function sniffMime(file) {
+  const fd = fs.openSync(file, 'r');
+  const head = Buffer.alloc(16);
+  fs.readSync(fd, head, 0, 16, 0);
+  fs.closeSync(fd);
+  if (head.subarray(0, 4).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47]))) return 'image/png';
+  if (head.subarray(0, 3).equals(Buffer.from([0xff, 0xd8, 0xff]))) return 'image/jpeg';
+  if (head.subarray(0, 4).toString() === 'GIF8') return 'image/gif';
+  if (head.subarray(0, 4).toString() === 'RIFF' && head.subarray(8, 12).toString() === 'WEBP') return 'image/webp';
+  if (/^\s*(<\?xml|<svg)/.test(head.toString())) return 'image/svg+xml';
+  return null;
+}
 const titleOf = (segment) => segment.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 const write = (file, content) => {
   fs.mkdirSync(path.dirname(file), { recursive: true });
@@ -164,7 +180,7 @@ images.forEach((src, damPath) => {
     missing.push(damPath);
     return;
   }
-  const mime = MIME[path.extname(src).toLowerCase()] || 'application/octet-stream';
+  const mime = sniffMime(src) || MIME[path.extname(src).toLowerCase()] || 'application/octet-stream';
   const asset = path.join(root, damPath);
   write(path.join(asset, '.content.xml'), `<?xml version="1.0" encoding="UTF-8"?>
 <jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:dam="http://www.day.com/dam/1.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" jcr:primaryType="dam:Asset">

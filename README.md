@@ -432,7 +432,7 @@ Both blocks read two equivalent layouts, so the same code works with migrated HT
 
 ## Content import
 
-Imports source pages into this project's blocks and packages them for AEM. The page inventory and migration plan are in [docs/page-inventory.md](docs/page-inventory.md).
+Imports source pages into this project's blocks and packages them for AEM. The page inventory and migration plan are in [docs/page-inventory.md](docs/page-inventory.md). The home page, a React app on the source, is mapped section by section in [docs/home-page-map.md](docs/home-page-map.md).
 
 - **Import** (`tools/importer/`): five page templates (offer detail, partner detail, news article, landing page, content page) in `page-templates.json`, each with an `import-<template>.js` script. The scripts run the block parsers in `parsers/` and the site transformers in `transformers/`:
   - `thaiairways-cleanup.js` strips chrome, fixes images, headings and links;
