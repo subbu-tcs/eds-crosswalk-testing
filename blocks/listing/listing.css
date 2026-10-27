@@ -61,8 +61,18 @@
   font-weight: var(--font-weight-bold);
 }
 
+/* card titles look the same whatever their level (h2 after an h1, h3 after an h2) */
 .listing .listing-card-title {
+  display: -webkit-box;
+  overflow: hidden;
+  font-family: var(--body-font-family);
   font-size: var(--heading-font-size-m);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--heading-line-height);
+  text-transform: none;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 
 .listing .listing-card-title a:any-link {
@@ -136,7 +146,144 @@
   color: var(--dark-color);
 }
 
+/* slider: the cards scroll sideways; arrows and dots below, centred */
+.listing.slider .listing-items {
+  grid-template-columns: none;
+  grid-auto-columns: 85%;
+  grid-auto-flow: column;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.listing.slider .listing-items::-webkit-scrollbar {
+  display: none;
+}
+
+.listing.slider .listing-item {
+  scroll-snap-align: start;
+}
+
+.listing .listing-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.listing .listing-indicators {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.listing .listing-indicator {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.listing .listing-indicator::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--control-border-color);
+  border-radius: var(--radius-round);
+  background-color: var(--background-color);
+}
+
+/* current card: filled, wider pill, so the state isn't conveyed by colour alone */
+.listing .listing-indicator[aria-current="true"]::before {
+  width: 20px;
+  border-color: var(--link-color);
+  border-radius: var(--radius-pill);
+  background-color: var(--link-color);
+}
+
+.listing .listing-prev,
+.listing .listing-next {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: var(--control-height);
+  height: var(--control-height);
+  margin: 0;
+  border: 1px solid var(--control-border-color);
+  border-radius: var(--radius-round);
+  padding: 0;
+  background-color: var(--background-color);
+  color: var(--link-color);
+  cursor: pointer;
+}
+
+.listing .listing-prev::before,
+.listing .listing-next::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid currentcolor;
+  border-right: 2px solid currentcolor;
+}
+
+.listing .listing-prev::before {
+  margin-left: 4px;
+  transform: rotate(-135deg);
+}
+
+.listing .listing-next::before {
+  margin-right: 4px;
+  transform: rotate(45deg);
+}
+
+.listing .listing-prev:hover,
+.listing .listing-next:hover {
+  border-color: var(--link-color);
+  background-color: var(--color-purple-100);
+}
+
+.listing .listing-prev[aria-disabled="true"],
+.listing .listing-next[aria-disabled="true"] {
+  border-color: var(--border-color);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* a section's heading with a "Show all" link: the link sits on the heading's line */
+main .section:has(> .listing-wrapper) > .default-content-wrapper:has(+ .listing-wrapper) > p:last-child:has(> a:only-child) a:any-link {
+  font-weight: var(--font-weight-bold);
+  text-decoration: none;
+}
+
+main .section:has(> .listing-wrapper) > .default-content-wrapper:has(+ .listing-wrapper) > p:last-child:has(> a:only-child) a::after {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-left: var(--space-2);
+  border-top: 2px solid currentcolor;
+  border-right: 2px solid currentcolor;
+  transform: translateY(-2px) rotate(45deg);
+}
+
 @media (prefers-reduced-motion: no-preference) {
+  .listing.slider .listing-items {
+    scroll-behavior: smooth;
+  }
+
+  .listing .listing-indicator::before {
+    transition: width 0.2s ease-out, background-color 0.2s ease-out;
+  }
+
   .listing .listing-card,
   .listing .listing-filter-option {
     transition: box-shadow 0.15s ease-out, border-color 0.15s ease-out, background-color 0.15s ease-out;
@@ -173,6 +320,15 @@
   .listing.featured .listing-item-first {
     grid-column: 1 / -1;
   }
+
+  .listing.slider .listing-items {
+    grid-template-columns: none;
+    grid-auto-columns: calc((100% - var(--space-5)) / 2);
+  }
+
+  .listing.slider .listing-item-first {
+    grid-column: auto;
+  }
 }
 
 /* desktop */
@@ -194,32 +350,106 @@
     flex-basis: 30%;
   }
 
-  /* featured: first card spans two columns with text over the image */
-  .listing.featured:not(.list) .listing-item-first {
-    grid-column: span 2;
-    grid-row: span 2;
+  .listing.slider .listing-items {
+    grid-auto-columns: calc((100% - 2 * var(--space-5)) / 3);
   }
 
-  .listing.featured:not(.list) .listing-item-first .listing-card-image,
-  .listing.featured:not(.list) .listing-item-first .listing-card-image picture,
-  .listing.featured:not(.list) .listing-item-first .listing-card-image img {
+  /* featured: the first card spans two columns of the first row, text over the image;
+     with list, it fills the left column and the others are text rows beside it */
+  .listing.featured:not(.list, .slider) .listing-item-first {
+    grid-column: span 2;
+  }
+
+  .listing.featured.list .listing-items {
+    grid-template-columns: minmax(0, 52fr) minmax(0, 48fr);
+    gap: 0;
+  }
+
+  .listing.featured.list .listing-item-first {
+    grid-column: 1;
+    grid-row: span var(--listing-side-items, 2);
+  }
+
+  .listing.featured.list .listing-item-first .listing-card {
+    border-radius: var(--radius-s) 0 0 var(--radius-s);
+  }
+
+  /* the first card's image fills the card without setting the row height (400px, as on the
+     source); the other cards in the row decide it */
+  .listing.featured:not(.slider) .listing-item-first .listing-card {
+    min-height: 400px;
+  }
+
+  .listing.featured:not(.slider) .listing-item-first .listing-card-image {
+    position: absolute;
+    inset: 0;
+  }
+
+  .listing.featured:not(.slider) .listing-item-first .listing-card-image picture,
+  .listing.featured:not(.slider) .listing-item-first .listing-card-image img {
     height: 100%;
   }
 
-  .listing.featured:not(.list) .listing-item-first .listing-card-image::after {
+  .listing.featured:not(.slider) .listing-item-first .listing-card-image img {
+    aspect-ratio: auto;
+  }
+
+  .listing.featured:not(.slider) .listing-item-first .listing-card-image::after {
     content: '';
     position: absolute;
     inset: 0;
     background-image: var(--overlay-hero);
   }
 
-  .listing.featured:not(.list) .listing-item-first .listing-card-body {
+  .listing.featured:not(.slider) .listing-item-first .listing-card-body {
     position: absolute;
     inset: auto 0 0;
     color: var(--color-neutral-0);
   }
 
-  .listing.featured:not(.list) .listing-item-first :is(.listing-card-category, .listing-card-date, .listing-card-title a) {
+  .listing.featured:not(.slider) .listing-item-first :is(.listing-card-category, .listing-card-date, .listing-card-title, .listing-card-title a) {
     color: inherit;
+  }
+
+  /* featured list: the other items are text rows in one bordered column */
+  .listing.featured.list .listing-item:not(.listing-item-first) .listing-card {
+    flex-direction: column;
+    border-left: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .listing.featured.list .listing-item:not(.listing-item-first, :last-child) .listing-card {
+    border-bottom: 0;
+  }
+
+  .listing.featured.list .listing-item:nth-child(2) .listing-card {
+    border-top-right-radius: var(--radius-s);
+  }
+
+  .listing.featured.list .listing-item:last-child .listing-card {
+    border-bottom-right-radius: var(--radius-s);
+  }
+
+  .listing.featured.list .listing-item:not(.listing-item-first) .listing-card-image {
+    display: none;
+  }
+
+  /* the "Show all" link on the heading's line, at the right */
+  main .section:has(> .listing-wrapper) > .default-content-wrapper:has(+ .listing-wrapper):has(> p:last-child > a:only-child) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    column-gap: var(--space-5);
+  }
+
+  main .section:has(> .listing-wrapper) > .default-content-wrapper:has(+ .listing-wrapper) > * {
+    grid-column: 1;
+  }
+
+  main .section:has(> .listing-wrapper) > .default-content-wrapper:has(+ .listing-wrapper) > p:last-child:has(> a:only-child) {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
   }
 }

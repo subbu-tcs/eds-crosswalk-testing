@@ -53,7 +53,7 @@ Expandable list built on native `<details>`/`<summary>`. Everything works withou
 | Option | Value | Behaviour |
 |---|---|---|
 | FAQ search | `faq` | Search field above the items; hides non-matching items |
-| Inline row on desktop | `inline` | Cards in 2 columns from 600px, auto-fit row from 900px |
+| Inline row on desktop | `inline` | Cards in 2 columns from 600px; from 900px one white bar of items with dividers, where an open item drops down below the bar (home page services strip) |
 | One item open at a time | `single` | Opening an item closes the others (native `name`, with a script fallback) |
 
 **Behaviour**: each item gets a stable `id`, so `#id` links open and scroll to it. All items expand when printing. Every item stays open while authoring in Universal Editor. The indicator only animates when the visitor allows motion.
@@ -99,7 +99,7 @@ Horizontal slides built on a native scroll-snap list. Without JavaScript the sli
 | Variant | Layout |
 |---|---|
 | Cards (default) | About 1.15 slides visible on mobile, 2 from 600px, 3 from 900px |
-| Hero (`hero`) | Full-bleed; text below the image on mobile and over a gradient from 600px. The first image loads eagerly when the block is in the first section |
+| Hero (`hero`) | Full-bleed; text below the image on mobile and over a gradient from 600px, with the arrows and dots centred over the bottom of the image; 400px tall at 1440px. The first image loads eagerly when the block is in the first section |
 
 **Behaviour**: indicators are named after each slide's title (or image alt text, or slide number). Arrows show as unavailable at the ends. All slides stay in the Tab order, and focusing one scrolls it into view. Smooth scrolling and transitions run only when the visitor allows motion.
 
@@ -121,7 +121,7 @@ Lists published pages from a folder (for example Offers or News) using the share
 
 | Field | Type | Required | Notes |
 |---|---|---|---|
-| `classes` | multiselect | no | `featured`, `list`, `filter` (see below) |
+| `classes` | multiselect | no | `featured`, `list`, `slider`, `filter` (see below) |
 | `folder` | aem-content | yes | Lists the pages inside this folder |
 | `categories` | text | no | Comma-separated categories to include; empty includes all |
 | `limit` | number | no | Maximum items shown (applied per filter selection) |
@@ -131,11 +131,12 @@ Lists published pages from a folder (for example Offers or News) using the share
 | Option | Behaviour |
 |---|---|
 | (default) | Card grid: 1 column on mobile, 2 from 600px, 3 from 900px |
-| Featured first item (`featured`) | First card spans the full row on tablet; 2×2 with text over the image on desktop |
-| List rows (`list`) | One card per row, image beside the text from 600px |
+| Featured first item (`featured`) | First card spans the full row on tablet; on desktop it spans two columns of the first row (400px) with text over the image, then rows of three |
+| List rows (`list`) | One card per row, image beside the text from 600px. With `featured`, on desktop: the first card fills the left column with text over the image and the others are text-only rows beside it (home page news) |
+| Slider (`slider`) | Cards scroll sideways (3 in view on desktop, 2 on tablet, one and a peek on mobile) with previous/next buttons and one dot per card below. Button labels: `listing-previous` / `listing-next` in the placeholders sheet |
 | Show category filter (`filter`) | Toggle buttons for the categories found (shown when there are 2 or more); none pressed shows all |
 
-**Behaviour**: card titles are headings one level below the heading above the block (default `h2`). Dates use `<time>` and the page language. If nothing matches, or the index can't be loaded, the block hides itself. After changing `helix-query.yaml`, the index needs rebuilding so existing pages pick up the new properties.
+**Behaviour**: card titles are headings one level below the heading above the block (default `h2`), styled the same at every level. With one category set in `categories`, cards don't repeat it. In the section above a listing, a last paragraph that is a single link ("Show All Offers") sits on the heading's line, at the right, from 900px. Dates use `<time>` and the page language. If nothing matches, or the index can't be loaded, the block hides itself. After changing `helix-query.yaml`, the index needs rebuilding so existing pages pick up the new properties.
 
 ### Booking Widget
 
@@ -294,6 +295,7 @@ The homepage "Trending destinations from [origin]" row of live fares. It calls t
 **Layout**: an edge-to-edge row of 3:5 tiles: 350 × 583 at 1440px (about 4 in view), 2 from 600px, 1 on mobile. Each tile shows the destination image under a dark gradient, "To", the city, trip and cabin, and the price. Previous and next buttons scroll the row.
 
 **Behaviour**
+- Arrows and one dot per fare sit over the bottom of the tiles, centred. Prices use the page language's number format ("From THB 3,850*").
 - The whole tile links to the Book now target.
 - On wide screens with a pointer, Book now and a slow zoom appear on hover or keyboard focus; on touch screens Book now is always shown.
 - The fares of each origin are fetched once per page view. Space for the tiles is reserved while they load.

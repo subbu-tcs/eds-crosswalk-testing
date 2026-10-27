@@ -118,7 +118,13 @@ function renderFare(fare, config, origin, index, idBase) {
   trip.textContent = [journey === 'ONE_WAY' ? text(config.oneway) : text(config.roundtrip), cabinName(fare.cabin)]
     .filter(Boolean).join(', ');
   const price = element('p', 'fare-widget-price');
-  price.textContent = fill(config.price || '{currency} {price}', { currency: fare.currency || '', price: fare.price });
+  // 3850 -> "3,850" in the page language, as the current site shows fares
+  const amount = Number(fare.price);
+  const numbers = new Intl.NumberFormat(document.documentElement.lang || undefined, {
+    maximumFractionDigits: 2,
+  });
+  const shown = Number.isFinite(amount) ? numbers.format(amount) : fare.price;
+  price.textContent = fill(config.price || '{currency} {price}', { currency: fare.currency || '', price: shown });
   if (text(config.to)) body.append(to);
   body.append(city, trip, price);
 
@@ -171,21 +177,40 @@ export default async function decorate(block) {
     heading.append(name);
   }
 
+  // arrows and one dot per fare, over the bottom of the tiles
   const controls = element('div', 'fare-widget-controls');
   const prev = element('button', 'fare-widget-prev', { type: 'button', 'aria-label': text(config.previous), 'aria-controls': `${uid}-list` });
   const next = element('button', 'fare-widget-next', { type: 'button', 'aria-label': text(config.next), 'aria-controls': `${uid}-list` });
   [prev, next].forEach((button) => button.append(element('span', 'fare-widget-icon', { 'aria-hidden': 'true' })));
-  controls.append(prev, next);
-  header.append(controls);
+  const dots = element('div', 'fare-widget-dots');
+  controls.append(prev, dots, next);
 
   const list = element('ul', 'fare-widget-list', { id: `${uid}-list`, 'aria-labelledby': `${uid}-heading` });
-  block.append(header, list);
+  block.append(header, list, controls);
 
   const syncControls = () => {
     const max = list.scrollWidth - list.clientWidth;
     prev.disabled = list.scrollLeft <= 2;
     next.disabled = list.scrollLeft >= max - 2;
     controls.hidden = max <= 2;
+    const items = [...list.children];
+    const width = items[0]?.getBoundingClientRect().width || 1;
+    const current = Math.min(Math.round(list.scrollLeft / width), items.length - 1);
+    [...dots.children].forEach((dot, i) => {
+      if (i === current) dot.setAttribute('aria-current', 'true');
+      else dot.removeAttribute('aria-current');
+    });
+  };
+  const buildDots = () => {
+    dots.replaceChildren(...[...list.children].map((item, i) => {
+      const label = item.querySelector('.fare-widget-city')?.textContent || String(i + 1);
+      const dot = element('button', 'fare-widget-dot', { type: 'button', 'aria-controls': `${uid}-list`, 'aria-label': label });
+      dot.addEventListener('click', () => list.scrollTo({
+        left: item.offsetLeft - list.firstElementChild.offsetLeft,
+        behavior: prefersReducedMotion.matches ? 'auto' : 'smooth',
+      }));
+      return dot;
+    }));
   };
   const step = (direction) => {
     const item = list.querySelector('.fare-widget-item');
@@ -214,6 +239,7 @@ export default async function decorate(block) {
       block.classList.add('is-empty');
     }
     block.classList.remove('is-loading');
+    buildDots();
     syncControls();
   };
 

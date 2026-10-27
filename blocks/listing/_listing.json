@@ -37,6 +37,10 @@
             {
               "name": "Show category filter",
               "value": "filter"
+            },
+            {
+              "name": "Slider",
+              "value": "slider"
             }
           ]
         },

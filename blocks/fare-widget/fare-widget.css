@@ -10,6 +10,8 @@ main > .section > .fare-widget-wrapper {
 
 .fare-widget {
   --fare-widget-tile: 92vw;
+
+  position: relative;
 }
 
 .fare-widget.is-empty {
@@ -53,10 +55,49 @@ main > .section > .fare-widget-wrapper {
   white-space: nowrap;
 }
 
+/* arrows and dots over the bottom of the tiles, centred, as on the source */
 .fare-widget .fare-widget-controls {
+  position: absolute;
+  inset: auto 0 var(--space-4);
+  z-index: 1;
   display: flex;
+  align-items: center;
+  justify-content: center;
   gap: var(--space-2);
-  margin-inline-start: auto;
+  pointer-events: none;
+}
+
+.fare-widget .fare-widget-controls > * {
+  pointer-events: auto;
+}
+
+.fare-widget .fare-widget-dots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.fare-widget .fare-widget-controls .fare-widget-dot {
+  width: 24px;
+  height: 24px;
+  border: 0;
+  background: none;
+}
+
+.fare-widget .fare-widget-dot::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-round);
+  background-color: var(--color-neutral-0);
+  opacity: 0.6;
+}
+
+/* current fare: a wider, opaque pill, so the state isn't shown by colour alone */
+.fare-widget .fare-widget-dot[aria-current="true"]::before {
+  width: 18px;
+  border-radius: var(--radius-pill);
+  opacity: 1;
 }
 
 .fare-widget .fare-widget-controls[hidden] {
