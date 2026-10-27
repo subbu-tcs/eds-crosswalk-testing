@@ -9,6 +9,7 @@ node tools/aem-package/build-package.mjs --name eds-crosswalk-testing-en-th-tria
 
 - Without page arguments it packages every URL in `tools/importer/page-templates.json`. Pass `.plain.html` files to package only those.
 - The zip goes to `tools/aem-package/dist/`, which is not committed.
+- `--root DIR` takes page paths relative to `DIR` instead of `content/`, for pages generated elsewhere (the nav and footer, below). Images written as `images/<file>` come from `content/images/` and become assets in `/content/dam/eds-crosswalk-testing/site/`.
 - `--max-mb 90` splits the output into a pages package (`<name>-pages`) and image packages (`<name>-images-1`, `-2`, …) of at most that size each, for transfers with a file-size limit (GitHub rejects files over 100 MB).
 - **It needs the imported pages.** They are the importer's output, `content/<path>.plain.html` plus their images in `content/media-da/`. That folder is local preview content and isn't in the repository, so run the builder where the import ran, or copy that `content/` folder into the project first. Without it, the script stops and says which pages are missing.
 - The html2md and md2jcr converters are dev dependencies (`@adobe/helix-html2md`, `@adobe/helix-md2jcr`). Zipping uses the `zip` command, or Python 3 when `zip` isn't installed.
@@ -22,6 +23,18 @@ node tools/aem-package/build-package.mjs --name eds-crosswalk-testing-en-th-tria
    - a leading `{` and backslashes escaped.
 2. **Images:** each `/media-da/…` image a page uses becomes a `dam:Asset` under `/content/dam/eds-crosswalk-testing/<market>/imported/`, and the page points at it. Its declared type comes from the file's content, not its name, because the source serves some JPEGs as `.png` and the reverse, and AEM's asset processing goes by the declared type.
 3. **Parent pages:** parents that aren't packaged (for example `/en-th/content/baggage`) are added as empty pages. They are created only when missing and never overwrite an existing page.
+
+## Nav and footer
+
+The header and footer pages are built from `docs/nav-footer-authoring.md`, in the editor-friendly layout it describes:
+
+```sh
+node tools/aem-package/nav-footer-from-guide.mjs /tmp/nav-footer
+node tools/aem-package/build-package.mjs --root /tmp/nav-footer --name eds-crosswalk-testing-nav-footer \
+  /tmp/nav-footer/nav.plain.html /tmp/nav-footer/footer.plain.html
+```
+
+Links to content pages are written as Edge Delivery URLs (lower case, no trailing slash).
 
 ## Check
 

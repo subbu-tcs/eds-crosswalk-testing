@@ -245,7 +245,9 @@ main > .section > .carousel-wrapper:has(> .carousel.hero) {
     box-sizing: border-box;
     max-width: calc(var(--content-max-width) + 2 * var(--content-gutter));
     margin: 0 auto;
-    padding: var(--space-6) var(--content-gutter);
+
+    /* the bottom clears the arrows and dots over the image */
+    padding: var(--space-6) var(--content-gutter) calc(var(--space-5) + var(--control-height) + var(--space-5));
     color: var(--color-neutral-0);
   }
 
@@ -255,6 +257,22 @@ main > .section > .carousel-wrapper:has(> .carousel.hero) {
 
   .carousel.hero .carousel-slide-content a:any-link:not(.button) {
     color: inherit;
+  }
+
+  /* arrows and dots over the bottom of the image, centred; the text clears them */
+  .carousel.hero {
+    position: relative;
+  }
+
+  .carousel.hero .carousel-controls {
+    position: absolute;
+    inset: auto 0 var(--space-5);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .carousel.hero .carousel-controls > * {
+    pointer-events: auto;
   }
 }
 
@@ -268,7 +286,8 @@ main > .section > .carousel-wrapper:has(> .carousel.hero) {
     padding: var(--space-5);
   }
 
+  /* 400px tall at 1440px, as the source home page hero */
   .carousel.hero .carousel-slide-image img {
-    aspect-ratio: var(--ratio-banner);
+    aspect-ratio: 36 / 10;
   }
 }

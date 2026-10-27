@@ -5,8 +5,8 @@
  * Parser for home-listing (project block "listing").
  * Source: the home page's three generated lists, marked by thaiairways-home.js:
  *   offers    "Discover your next adventure" (h1, intro, Show All Offers) + 5 special offers
- *   partners  "Exclusive Deals with Our Partners" (Show All Partner Privileges) + slider
- *   news      "News & Announcements" (Show All News) + 3 latest articles
+ *   partners  "Exclusive Deals with Our Partners" (Show All Partner Privileges) + slider (slider)
+ *   news      "News & Announcements" (Show All News) + 3 latest (featured + list)
  * The cards come from the offer and news pages (query index), so only the section heading,
  * intro and "Show all" link are imported as default content, followed by a listing block.
  * Model (blocks/listing/_listing.json): classes, folder (aem-content), categories, limit ->
@@ -19,11 +19,11 @@ const CONFIG = {
     link: '/en-th/content/offers-promotions',
   },
   partners: {
-    heading: 'h2', variants: [], folder: `${SITE}/offers-promotions`, categories: 'Partners', limit: '',
+    heading: 'h2', variants: ['slider'], folder: `${SITE}/offers-promotions`, categories: 'Partners', limit: '',
     link: '/en-th/content/offers-promotions',
   },
   news: {
-    heading: 'h2', variants: ['featured'], folder: `${SITE}/news-and-announcements`, categories: '', limit: '3',
+    heading: 'h2', variants: ['featured', 'list'], folder: `${SITE}/news-and-announcements`, categories: '', limit: '3',
     link: '/en-th/content/news-and-announcements',
   },
 };

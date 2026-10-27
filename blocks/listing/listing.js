@@ -1,4 +1,5 @@
 import { createOptimizedPicture, toClassName } from '../../scripts/aem.js';
+import { getLabels } from '../../scripts/scripts.js';
 
 const INDEX_PATH = '/query-index.json';
 const PAGE_SIZE = 500;
@@ -116,7 +117,7 @@ function element(tag, className, text) {
   return el;
 }
 
-function renderCard(item, { headingTag, dateFormat }) {
+function renderCard(item, { headingTag, dateFormat, showCategory }) {
   const li = element('li', 'listing-item');
   const article = element('article', 'listing-card');
 
@@ -131,7 +132,7 @@ function renderCard(item, { headingTag, dateFormat }) {
   }
 
   const body = element('div', 'listing-card-body');
-  if (item.category) body.append(element('p', 'listing-card-category', item.category));
+  if (item.category && showCategory) body.append(element('p', 'listing-card-category', item.category));
   const heading = element(headingTag, 'listing-card-title');
   const link = element('a', '', item.title);
   link.href = item.path;
@@ -146,6 +147,75 @@ function renderCard(item, { headingTag, dateFormat }) {
   article.append(body);
   li.append(article);
   return li;
+}
+
+const scrollBehavior = () => (window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth');
+
+function controlButton(className, label) {
+  const button = element('button', className);
+  button.type = 'button';
+  button.setAttribute('aria-label', label);
+  return button;
+}
+
+/**
+ * Slider: the cards scroll sideways (native scrolling with snap points), with previous/next
+ * buttons and one dot per card that follows the scroll position, as in the carousel block.
+ * Rebuilt whenever the cards change (category filter).
+ */
+function buildSlider(block, list, labels) {
+  block.querySelector(':scope > .listing-controls')?.remove();
+  const items = [...list.children];
+  if (items.length < 2) return;
+
+  const controls = element('div', 'listing-controls');
+  const prev = controlButton('listing-prev', labels.previous);
+  const next = controlButton('listing-next', labels.next);
+  const indicators = element('div', 'listing-indicators');
+  const dots = items.map((item, i) => {
+    const title = item.querySelector('.listing-card-title')?.textContent.trim() || String(i + 1);
+    const dot = controlButton('listing-indicator', title);
+    dot.setAttribute('aria-controls', list.id);
+    dot.addEventListener('click', () => list.scrollTo({ left: item.offsetLeft - items[0].offsetLeft, behavior: scrollBehavior() }));
+    indicators.append(dot);
+    return dot;
+  });
+  controls.append(prev, indicators, next);
+  block.append(controls);
+
+  const visible = new Set();
+  const update = () => {
+    const first = Math.max(items.findIndex((item) => visible.has(item)), 0);
+    dots.forEach((dot, i) => {
+      if (i === first) dot.setAttribute('aria-current', 'true');
+      else dot.removeAttribute('aria-current');
+    });
+    prev.setAttribute('aria-disabled', String(list.scrollLeft <= 1));
+    next.setAttribute('aria-disabled', String(list.scrollLeft + list.clientWidth >= list.scrollWidth - 1));
+  };
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) visible.add(entry.target);
+      else visible.delete(entry.target);
+    });
+    update();
+  }, { root: list, threshold: 0.6 });
+  items.forEach((item) => observer.observe(item));
+  new ResizeObserver(update).observe(list);
+  let frame;
+  list.addEventListener('scroll', () => {
+    cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(update);
+  }, { passive: true });
+
+  const step = () => items[1].offsetLeft - items[0].offsetLeft;
+  prev.addEventListener('click', () => {
+    if (prev.getAttribute('aria-disabled') !== 'true') list.scrollBy({ left: -step(), behavior: scrollBehavior() });
+  });
+  next.addEventListener('click', () => {
+    if (next.getAttribute('aria-disabled') !== 'true') list.scrollBy({ left: step(), behavior: scrollBehavior() });
+  });
+  update();
 }
 
 function buildFilter(items, list, heading, onChange) {
@@ -215,13 +285,20 @@ export default async function decorate(block) {
   const options = {
     headingTag: `h${level}`,
     dateFormat: new Intl.DateTimeFormat(document.documentElement.lang || undefined, { dateStyle: 'long' }),
+    // a listing of one category doesn't repeat it on every card
+    showCategory: config.categories.length !== 1,
   };
+  const slider = block.classList.contains('slider');
+  const labels = slider ? await getLabels('listing', { previous: 'Previous', next: 'Next' }) : null;
   const render = (category) => {
     const visible = items
       .filter((item) => !category || normalizeText(item.category) === category)
       .slice(0, config.limit);
     list.replaceChildren(...visible.map((item) => renderCard(item, options)));
     list.firstElementChild?.classList.add('listing-item-first');
+    // featured list: the first card spans the rows of the others beside it
+    list.style.setProperty('--listing-side-items', Math.max(visible.length - 1, 1));
+    if (slider) buildSlider(block, list, labels);
   };
 
   if (config.showFilter) {

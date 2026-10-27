@@ -54,6 +54,10 @@ const VERSION = opt('version', '1.0.0');
 const OUT = path.resolve(opt('out', path.join(REPO, 'tools/aem-package/dist')));
 // split into a pages package and image packages of at most this size (0: one package)
 const MAX_MB = Number(opt('max-mb', 0));
+// folder the page paths are relative to (default content/; e.g. generated nav/footer pages)
+const PAGES_ROOT = path.resolve(opt('root', path.join(REPO, 'content')));
+// site-wide images (images/… in nav, footer and drafts; files in content/images/)
+const SITE_IMAGES = `${DAM}/site`;
 
 const json = (f) => JSON.parse(fs.readFileSync(path.join(REPO, f), 'utf8'));
 const models = { models: json('component-models.json'), definition: json('component-definition.json'), filters: json('component-filters.json') };
@@ -85,8 +89,9 @@ function fix(xml, damFolder) {
   out = out.replace(/ hidebreadcrumb="true"/g, ' hidebreadcrumb="{Boolean}true"');
   // number fields (attributes come in any order)
   out = out.replace(/<block[\w-]* [^>]*model="listing"[^>]*>/g, (tag) => tag.replace(/ limit="(\d+)"/, ' limit="{Long}$1"'));
-  // images: local import copies -> DAM assets
+  // images: local import copies and site-wide images -> DAM assets
   out = out.replace(/\/media-da\//g, `${damFolder}/`);
+  out = out.replace(/(="|src=&quot;)(?:\.\/|\/content\/)?images\//g, `$1${SITE_IMAGES}/`);
   // FileVault reads a leading "{" as a type and "\" as an escape
   out = out.replace(/\\/g, '\\\\');
   out = out.replace(new RegExp(`="\\{(?!(?:${JCR_TYPES})\\})`, 'g'), '="\\{');
@@ -143,7 +148,7 @@ const images = new Map(); // DAM path -> local file
 const failures = [];
 
 for (const file of files.filter((f) => fs.existsSync(f))) {
-  const rel = path.relative(path.join(REPO, 'content'), file).replace(/\.plain\.html$/, '');
+  const rel = path.relative(PAGES_ROOT, file).replace(/\.plain\.html$/, '');
   const jcrPath = `${SITE}/${rel}`;
   const market = rel.split('/')[0];
   const damFolder = `${DAM}/${market}/imported`;
@@ -153,6 +158,9 @@ for (const file of files.filter((f) => fs.existsSync(f))) {
     const xml = fix(await md2jcr(md, { ...models, log: SILENT }), damFolder);
     [...xml.matchAll(new RegExp(`${damFolder}/([\\w.-]+)`, 'g'))].forEach(([, name]) => {
       images.set(`${damFolder}/${name}`, path.join(REPO, 'content/media-da', name));
+    });
+    [...xml.matchAll(new RegExp(`${SITE_IMAGES}/([\\w.-]+)`, 'g'))].forEach(([, name]) => {
+      images.set(`${SITE_IMAGES}/${name}`, path.join(REPO, 'content/images', name));
     });
     write(path.join(root, jcrPath, '.content.xml'), xml);
     pages.push(jcrPath);

@@ -158,10 +158,59 @@
   }
 }
 
-/* desktop */
+/* desktop: inline is one white bar of items with dividers (the home page services strip);
+   an open item drops down below the bar instead of stretching it */
 @media (width >= 900px) {
   .accordion.inline {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    align-items: start;
+    display: flex;
+    gap: 0;
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-m);
+    background-color: var(--background-color);
+    box-shadow: var(--shadow-m);
+  }
+
+  .accordion.inline .accordion-item {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+
+  .accordion.inline .accordion-item-label {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .accordion.inline .accordion-item + .accordion-item > .accordion-item-label {
+    background: linear-gradient(var(--border-color), var(--border-color)) left center / 1px 26px no-repeat;
+  }
+
+  .accordion.inline .accordion-item[open] > .accordion-item-body {
+    position: absolute;
+    top: 100%;
+    inset-inline: 0;
+    z-index: 2;
+    padding-top: var(--space-4);
+    border-radius: 0 0 var(--radius-m) var(--radius-m);
+    background-color: var(--background-color);
+    box-shadow: var(--shadow-m);
+  }
+
+  .accordion.inline .accordion-item-body :is(ul, ol) {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .accordion.inline .accordion-item-body li + li {
+    margin-top: var(--space-3);
+  }
+
+  .section.dark .accordion.inline {
+    background-color: transparent;
+    box-shadow: none;
   }
 }

@@ -4,6 +4,8 @@ The header and footer are built from two AEM pages at the site root: **nav** and
 
 This guide matches the editor-friendly layout the header and footer code reads (tested in the local preview). Copy the text and links exactly; the section order matters where noted.
 
+**Shortcut:** `tools/aem-package/nav-footer-from-guide.mjs` builds both pages from this guide as a content package (see `tools/aem-package/README.md`). Installing it gives the same result as authoring them by hand. Edit this guide first if the content changes, so the two stay in step.
+
 ## Before you start: images
 
 Upload these images to AEM Assets (for example to a `thaiairways/navigation` folder) and pick them in the Image components:
