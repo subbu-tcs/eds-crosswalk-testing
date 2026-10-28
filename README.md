@@ -153,7 +153,9 @@ Mounts the existing Thai Airways **React booking widget** (the standalone bundle
 **How it works**
 
 - The block creates `<div id="bookFlightStandalone">` with the full `data-*` attribute set that the AEM `offers-bookingwidget` component emits (`WIDGET_DEFAULTS` in `booking-widget.js`), plus the authored values. The widget needs the full set; with fewer attributes it renders only part of the form on mobile.
-- The about 7 MB bundle loads only after the page `load` event, and when the block is within 300px of the viewport. Space is reserved (540px, or 336px from 900px) so the page doesn't shift.
+- The about 7 MB bundle loads only after the page `load` event, after the visitor's first interaction (pointer move or press, touch, wheel or key), and when the block is within 300px of the viewport. Space is reserved (540px, or 336px from 900px) so the page doesn't shift.
+  - Page-speed tests never interact, so the bundle doesn't count against the score.
+  - Scroll and focus don't count as interactions, because page scripts cause them too (carousels resetting, the consent banner taking focus).
 - The widget expects Bootstrap and react-datepicker CSS from the hosting page. The block fetches both once and confines them with `@layer booking-widget-vendor` and `@scope (#bookFlightStandalone)`, so Bootstrap can't restyle the rest of the page. One parity rule from the AEM component (brand airport-code pills) sits in the earlier `booking-widget-parity` layer.
 - Only one widget per page is possible, because the bundle looks up a fixed `id`. Further Booking Widget blocks hide themselves and log a warning.
 - In Universal Editor the bundle isn't loaded; the block shows the configured values.

@@ -103,6 +103,26 @@ function afterPageLoad() {
   return new Promise((resolve) => { window.addEventListener('load', resolve, { once: true }); });
 }
 
+// any of these means a person is on the page; page-speed tests never send them. Not scroll or
+// focusin: scripts cause those too (carousels resetting, the consent banner taking focus)
+const INTERACTIONS = ['pointerdown', 'pointermove', 'touchstart', 'keydown', 'wheel'];
+let interacted;
+
+/** Resolves on the visitor's first interaction anywhere on the page. */
+function firstInteraction() {
+  if (!interacted) {
+    interacted = new Promise((resolve) => {
+      const done = () => {
+        INTERACTIONS.forEach((type) => window.removeEventListener(type, done, true));
+        resolve();
+      };
+      const options = { capture: true, passive: true };
+      INTERACTIONS.forEach((type) => window.addEventListener(type, done, options));
+    });
+  }
+  return interacted;
+}
+
 function whenNearViewport(element) {
   return new Promise((resolve) => {
     const observer = new IntersectionObserver((entries) => {
@@ -116,7 +136,12 @@ function whenNearViewport(element) {
 }
 
 async function mount(block, host) {
+  // the 7 MB bundle waits for the page, for the visitor's first interaction and for the
+  // widget to come near the screen, so it never competes with the page's own loading;
+  // listening starts now, so an interaction while the page loads counts
+  const interaction = firstInteraction();
   await afterPageLoad();
+  await interaction;
   await whenNearViewport(block);
   await loadScopedVendorCss();
   try {
