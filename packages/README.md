@@ -6,7 +6,18 @@ AEM content packages with the 75-page English (Thailand) trial batch, built with
 |---|---:|---|
 | `eds-crosswalk-testing-en-th-trial-images-1-1.0.1.zip` | 87.5 MB | 197 images |
 | `eds-crosswalk-testing-en-th-trial-images-2-1.0.1.zip` | 32.0 MB | 56 images |
-| `eds-crosswalk-testing-en-th-trial-pages-1.0.1.zip` | 0.2 MB | 75 pages and 5 empty parent pages |
+| `eds-crosswalk-testing-en-th-trial-pages-1.0.2.zip` | 0.2 MB | 75 pages and 5 empty parent pages |
+
+**Pages 1.0.2:** the offer pages carry their dates, so expired offers drop out of the listings. Updating from 1.0.1: reinstall only this pages package (the image packages are unchanged), then publish the offer pages again.
+
+The dates come from three sources, in order:
+1. the site's offers feed, which gives valid from and valid to: 5 offers;
+2. the offers page as captured on 17 October: 1 offer;
+3. the booking, sales or promotion period stated on the page: 6 offers.
+
+The other 3 have no date anywhere: RKTF2026 SCB CardX, RKTF2026 TTB and Thipsamai Flying Padthai. They stay listed.
+
+The feed also corrects one category: Thai Airways × Sentosa is listed under Partners.
 
 **1.0.1:** 25 images have a file name that doesn't match their content, for example JPEG photos named `.png`, because the source site serves them that way. They now declare their real type, so AEM can process them. The pages are unchanged from 1.0.0.
 
