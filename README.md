@@ -152,7 +152,7 @@ Mounts the existing Thai Airways **React booking widget** (the standalone bundle
 
 **How it works**
 
-- The block creates `<div id="bookFlightStandalone">` with the full `data-*` attribute set that the AEM `offers-bookingwidget` component emits (`WIDGET_DEFAULTS` in `booking-widget.js`), plus the authored values. The widget needs the full set; with fewer attributes it renders only part of the form on mobile.
+- The block creates `<div id="bookFlightStandalone">` with the full `data-*` attribute set that the AEM `offers-bookingwidget` component emits (`WIDGET_DEFAULTS` in `booking-widget.js`), plus the authored values. The widget needs the full set; with fewer attributes it renders only part of the form on mobile. Two values differ from the component's. `data-widget-type` is empty, for the general search as on the airline's home page; `OFFERS` books an offer fare and keeps its details in session storage, which the results page can't read from another domain. `data-isdapiredirect` stays `true`, so searches go to the airline's booking engine (`/booking/select-flight`).
 - The about 7 MB bundle loads only after the page `load` event, after the visitor's first interaction (pointer move or press, touch, wheel or key), and when the block is within 300px of the viewport. Space is reserved (540px, or 336px from 900px) so the page doesn't shift.
   - Page-speed tests never interact, so the bundle doesn't count against the score.
   - Scroll and focus don't count as interactions, because page scripts cause them too (carousels resetting, the consent banner taking focus).

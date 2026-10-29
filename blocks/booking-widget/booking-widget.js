@@ -28,7 +28,9 @@ const MOUNT_ID = 'bookFlightStandalone';
 
 // attribute values emitted by the AEM offers-bookingwidget component; the widget needs the full set
 const WIDGET_DEFAULTS = {
-  'data-captureinputfield': 'false',
+  // empty, not "false": the widget writes the value straight after the country code in the
+  // results link, so "false" sends pos_country_code=thfalse
+  'data-captureinputfield': '',
   'data-redemption': 'false',
   'data-redemption-toggle': 'false',
   'data-promocode': 'false',
@@ -42,8 +44,13 @@ const WIDGET_DEFAULTS = {
   'data-blackout-dates': '',
   'data-show-strike-through': 'false',
   'data-clear-blackout-dates': 'false',
+  // searches go to the airline's own booking engine (/booking/select-flight); without this the
+  // widget decides from the market rollout plan, which it can't read off the airline's domain
   'data-isdapiredirect': 'true',
-  'data-widget-type': 'OFFERS',
+  // the general search, as on the airline's home page. OFFERS (the component's value) books an
+  // offer fare whose details it keeps in session storage, which the results page on
+  // www.thaiairways.com can't read from another domain
+  'data-widget-type': '',
   'data-custom-booking-class': '[]',
 };
 

@@ -67,6 +67,20 @@ On the Cloudflare zone:
   `/etc.clientlibs/*` and `/bin/*`. `SERVICES` in `blocks/booking-widget/booking-widget.js`
   lists every path the widget calls.
 
+**Flight results stay on the site.** With these rules, Search Flights goes to
+`www.thaiairways.com/booking/select-flight/…`. That's the same domain and the same session as
+the page the search started on, served by the existing booking engine. The visitor doesn't leave
+the site for results, passenger details or payment, and the new site needs no code for those
+steps. Markets that book through `/pss_router/*` keep the hand-off to the external booking
+engine they use today.
+
+Before that, the results can't be shown inside the new site's own pages:
+
+- the results step is a separate booking app, not part of the booking widget bundle;
+- the airline's responses we checked carry `X-Frame-Options: SAMEORIGIN`, which stops other
+  sites from framing them;
+- the booking session relies on the airline's cookies, which aren't available on another domain.
+
 A staging hostname on the same zone (for example `staging.thaiairways.com`) with the same rules
 would let the whole flow, including sign-in, be tested before the switch.
 
@@ -76,3 +90,5 @@ would let the whole flow, including sign-in, be tested before the switch.
   challenges may have the widget's calls refused, since a challenge can't be answered on a
   cross-site request.
 - Flows that need sign-in or the airline's session only work on the airline's domain.
+- Search Flights hands the visitor to the results page on `www.thaiairways.com`, a different
+  domain from `*.aem.page` / `*.aem.live`.
