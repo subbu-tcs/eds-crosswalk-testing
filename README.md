@@ -156,12 +156,20 @@ Mounts the existing Thai Airways **React booking widget** (the standalone bundle
 - The about 7 MB bundle loads only after the page `load` event, after the visitor's first interaction (pointer move or press, touch, wheel or key), and when the block is within 300px of the viewport. Space is reserved (540px, or 336px from 900px) so the page doesn't shift.
   - Page-speed tests never interact, so the bundle doesn't count against the score.
   - Scroll and focus don't count as interactions, because page scripts cause them too (carousels resetting, the consent banner taking focus).
-- The widget expects Bootstrap and react-datepicker CSS from the hosting page. The block fetches both once and confines them with `@layer booking-widget-vendor` and `@scope (#bookFlightStandalone)`, so Bootstrap can't restyle the rest of the page. One parity rule from the AEM component (brand airport-code pills) sits in the earlier `booking-widget-parity` layer.
+- The widget expects Bootstrap and react-datepicker CSS from the hosting page. The block fetches both once from jsDelivr and confines them with `@layer booking-widget-vendor` and `@scope (#bookFlightStandalone)`, so Bootstrap can't restyle the rest of the page. The airline's `clientlib-bootstrap` is stock Bootstrap 5.3.3, which is the version loaded. One parity rule from the AEM component (brand airport-code pills) sits in the earlier `booking-widget-parity` layer.
 - Only one widget per page is possible, because the bundle looks up a fixed `id`. Further Booking Widget blocks hide themselves and log a warning.
 - In Universal Editor the bundle isn't loaded; the block shows the configured values.
 - If the bundle can't load, the block hides itself and logs the error.
 
-**Environment requirement**: the widget calls `/common/*`, `/bin/*`, `/content/*`, `/osci/*` and `/pss_router/*` on the page's own domain, and loads Bootstrap from `/etc.clientlibs/*`. It receives live data only on the production domain, where the CDN routes those paths to the existing AEM and API origin. On `*.aem.page` / `*.aem.live` the form renders partially but its data doesn't load.
+**Off the airline's domain** (`*.aem.page`, `*.aem.live`, local): the widget calls its services with paths relative to the page (`/common/*`, `/content/*`, `/custom_config/*`, …), which our host doesn't have. So the block:
+
+- rewrites those calls (XHR and fetch, paths in `SERVICES`) to `https://www.thaiairways.com`;
+- points the widget's fonts (`/osci/assets/*.ttf`) at the site's own Inter and Bellefair in `/fonts`;
+- relies on `404.html`, which forwards `/pss_router/*` and `/booking/*` (where Search Flights sends the visitor) to the same path on the airline's site.
+
+On `www.thaiairways.com` none of this applies.
+
+The airline answers cross-origin calls for `/common/*` (airports, fares, calendar prices). Six configuration files under `/content/*` are refused: the airport configuration, the market rollout plan, the flight listing config and three label files. Without them, the airport fields find no airports. [docs/booking-widget-hosting.md](docs/booking-widget-hosting.md) has the request for the airline's web team.
 
 ### Hero
 
@@ -305,7 +313,7 @@ The homepage "Trending destinations from [origin]" row of live fares. It calls t
 
 **Sheet**: columns `Origin`, `Destination`, `City`, `Image`, `Date`, `Return date`, `Journey`, `Price`, `Currency`, `Cabin`. Rows are filtered by origin and trip type.
 
-**Environment requirement**: the fares service (`/common/*`) only responds on the production domain, where the CDN routes it to the existing API. On `*.aem.page` / `*.aem.live` use a sheet. The booking page may not prefill from the link parameters, since on the current site that hand-off happens inside the app.
+**Fares service**: a source on this host other than a `.json` sheet (for example `/common/calendarPricing/popular-fares`, which published pages hold as a link) is called on `https://www.thaiairways.com` when the page isn't on that domain. The service answers cross-origin calls, so live fares show on `*.aem.page` and `*.aem.live` too. The booking page may not prefill from the link parameters, since on the current site that hand-off happens inside the app.
 
 ### Table
 

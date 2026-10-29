@@ -9,6 +9,12 @@
   >
   <title>Page not found</title>
   <script nonce="aem" type="text/javascript">
+    // the booking widget sends a flight search to /pss_router/… (or /booking/…) on the page's
+    // own host; off the airline's domain those land here and go on to the airline's site
+    if (/^(?:\/[a-z]{2}-[a-z]{2})?\/(?:pss_router|booking)(?:\/|$)/.test(window.location.pathname)
+      && window.location.hostname !== 'www.thaiairways.com') {
+      window.location.replace(`https://www.thaiairways.com${window.location.pathname}${window.location.search}`);
+    }
     window.isErrorPage = true;
     window.errorCode = '404';
   </script>
