@@ -449,7 +449,7 @@ Imports source pages into this project's blocks and packages them for AEM. The p
 - **Import** (`tools/importer/`): five page templates (offer detail, partner detail, news article, landing page, content page) in `page-templates.json`, each with an `import-<template>.js` script. The scripts run the block parsers in `parsers/` and the site transformers in `transformers/`:
   - `thaiairways-cleanup.js` strips chrome, fixes images, headings and links;
   - `thaiairways-sections.js` adds sections and tab labels;
-  - `thaiairways-metadata.js` writes page properties.
+  - `thaiairways-metadata.js` writes page properties. For offer pages, category, valid from and valid to come from the offers feed, matched by the offer's slug. `node tools/importer/home-feeds.mjs <snapshot> <feeds-dir> offers` embeds that feed in an offer snapshot. When an offer isn't in the feed, the end date comes from the capture of the offers page on 17 October, or else from the booking, sales or promotion period the page states (never a travel or stay period). The offers feed is per market.
 
   The source site is bot-protected, so pages are imported from browser snapshots in `tools/importer/bd-snapshots/`. Those snapshots, the bundles and the reports aren't committed. `fetch-missing-images.mjs` downloads images an imported page still points at on the source (lazy or feed-driven images the snapshot missed) and adds them to the page's image map for the next import.
 - **Home page** (template `home-page`): the source home page is a React app, so its import reads the app's content feeds:

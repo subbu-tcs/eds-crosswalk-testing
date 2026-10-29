@@ -8,7 +8,8 @@
  * header) and removes the news category/date line from the body; afterTransform writes
  * one Metadata block (field names follow models/_page.json):
  *   title, description (fallback: first body paragraph), image (og:image / JSON-LD /
- *   page banner), category + date (news), category + validto (offer detail pages).
+ *   page banner), category + date (news), category + validfrom + validto (offer detail
+ *   pages; see the offer sources below).
  * If a Metadata block already exists (import script called createMetadata), missing
  * rows are appended to it instead of creating a second block.
  */
@@ -133,6 +134,66 @@ function toIsoDate(raw) {
   return '';
 }
 
+/*
+ * Offer dates and category, from three sources in order:
+ * 1. the offers feed (offers.model.json, the site's live offer list with validFrom, validTo
+ *    and cardFilter), embedded in the page snapshot by tools/importer/home-feeds.mjs; matched
+ *    by the offer's slug, preferring an entry in the same market;
+ * 2. OFFER_VALIDTO above (the offers landing page on 2026-10-17), for offers since delisted;
+ * 3. the period the page states: "Booking / Sales / Promotion / Ticketing / Purchase /
+ *    Campaign period|date(s): … <date>", the last date of that statement (never a Travel or
+ *    Stay period).
+ */
+const FEED_CATEGORIES = {
+  specialOffers: 'Special Offers', partners: 'Partners', rop: 'Royal Orchid Plus', roh: 'Royal Orchid Holidays',
+};
+const urlPath = (u) => (u || '').replace(/^https?:\/\/www\.thaiairways\.com/i, '').split(/[?#]/)[0]
+  .replace(/\/+$/, '').toLowerCase();
+const slugOf = (p) => p.split('/').pop();
+
+/** The embedded offers feed entries; the feed element is removed from the page. */
+function readOfferFeed(doc) {
+  const el = doc.querySelector('[data-excat-feed="offers"]');
+  if (!el) return [];
+  let entries = [];
+  try {
+    entries = JSON.parse(el.textContent).fieldValues || [];
+  } catch (e) {
+    entries = [];
+  }
+  el.remove();
+  return entries;
+}
+
+function feedEntry(entries, path) {
+  const market = path.split('/')[1];
+  const matches = entries.filter((e) => slugOf(urlPath(e.redirectionurl)) === slugOf(path));
+  return matches.find((e) => urlPath(e.redirectionurl).startsWith(`/${market}/`)) || matches[0] || null;
+}
+
+const PERIOD_LABEL = /\b(?:booking|sales|promotion(?:al)?|ticketing|purchase|campaign)\s+(?:period|dates?)\s*:?/i;
+// where the statement ends: the next period label, or a travel/stay clause ("Stay anytime …")
+const ANY_LABEL = /\b(?:(?:booking|sales|promotion(?:al)?|ticketing|purchase|campaign)\s+(?:period|dates?)|travel|stay|flight)\b/i;
+const FULL_DATE = /\d{1,2}(?:st|nd|rd|th)?\s+[A-Za-z]+\.?,?\s+\d{4}/g;
+
+/** The end date of the sales/booking period the page states, or ''. */
+function statedEnd(element) {
+  let end = '';
+  element.querySelectorAll('p, li, td, h3, h4, h5, h6').forEach((el) => {
+    const text = norm(el.textContent);
+    const m = text.match(PERIOD_LABEL);
+    if (!m) return;
+    // up to the next period label (a Travel or Stay period often follows on the same line)
+    let rest = text.slice(m.index + m[0].length);
+    const next = rest.match(ANY_LABEL);
+    if (next) rest = rest.slice(0, next.index);
+    const dates = (rest.match(FULL_DATE) || []).map(toIsoDate).filter(Boolean);
+    const last = dates[dates.length - 1];
+    if (last && last > end) end = last;
+  });
+  return end;
+}
+
 function headMeta(doc, selector) {
   const head = doc.head || doc;
   const el = head.querySelector(selector);
@@ -243,15 +304,25 @@ export default function transform(hookName, element, payload) {
     if (subtitle) subtitle.remove();
     element.querySelectorAll('.newsannouncementdetails .news-divider').forEach((d) => d.remove());
 
-    // offer detail pages: category from folder, validto from the landing-page snapshot
+    // offer detail pages: dates and category from the feed, the landing capture or the page
+    const feed = readOfferFeed(doc);
     const url = pageUrl(payload, doc);
     if (url) {
       const path = url.pathname.toLowerCase().replace(/\/(index(\.html)?)?$/, '').replace(/\.html$/, '');
       const m = path.match(/\/offers-promotions\/([^/]+)\/[^/]+$/);
       if (m && OFFER_CATEGORIES[m[1]]) {
-        meta.category = OFFER_CATEGORIES[m[1]];
-        meta.validto = OFFER_VALIDTO[path] || '';
-        if (!meta.validto) console.warn(`[thaiairways-metadata] no validto known for ${path}`);
+        const entry = feedEntry(feed, path);
+        meta.category = (entry && FEED_CATEGORIES[entry.cardFilter]) || OFFER_CATEGORIES[m[1]];
+        meta.validfrom = toIsoDate(entry && entry.validFrom);
+        const sources = [
+          ['offers feed', toIsoDate(entry && entry.validTo)],
+          ['offers page capture', OFFER_VALIDTO[path] || ''],
+          ['period stated on the page', statedEnd(element)],
+        ];
+        const [source, date] = sources.find(([, d]) => d) || ['', ''];
+        meta.validto = date;
+        if (date) console.log(`[thaiairways-metadata] ${path}: valid to ${date} (${source})`);
+        else console.warn(`[thaiairways-metadata] ${path}: no end date in the feed, the capture or the page`);
       }
     }
 
@@ -276,6 +347,7 @@ export default function transform(hookName, element, payload) {
     }
     add('category', meta.category);
     add('date', meta.date);
+    add('validfrom', meta.validfrom);
     add('validto', meta.validto);
     if (!rows.length) return;
 
