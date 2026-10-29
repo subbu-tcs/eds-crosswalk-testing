@@ -1,6 +1,7 @@
 import { readBlockConfig } from '../../scripts/aem.js';
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const AIRLINE_ORIGIN = 'https://www.thaiairways.com';
 
 function element(tag, className, attrs = {}) {
   const el = document.createElement(tag);
@@ -62,6 +63,18 @@ function toFare(item) {
     currency: row.currency,
     cabin: row.cabin,
   };
+}
+
+/**
+ * A service path such as /common/calendarPricing/popular-fares is the airline's: off its domain
+ * (aem.page, aem.live, local) it is called there, which answers cross-origin. Sheets stay here.
+ * Published pages hold it as a link, which reads as an address on this host.
+ */
+function serviceUrl(source) {
+  if (!source || window.location.origin === AIRLINE_ORIGIN) return source;
+  const url = new URL(source, window.location.href);
+  if (url.origin !== window.location.origin || /\.json$/.test(url.pathname)) return source;
+  return `${AIRLINE_ORIGIN}${url.pathname}${url.search}`;
 }
 
 const cache = new Map();
@@ -147,7 +160,7 @@ function renderFare(fare, config, origin, index, idBase) {
 export default async function decorate(block) {
   const config = readBlockConfig(block);
   const origins = parseOrigins(config.origins);
-  const source = text(config.source);
+  const source = serviceUrl(text(config.source));
   const journey = text(config.journey) === 'ONE_WAY' ? 'ONE_WAY' : 'ROUND_TRIP';
   config.journey = journey;
   const limit = Number.parseInt(text(config.limit), 10);

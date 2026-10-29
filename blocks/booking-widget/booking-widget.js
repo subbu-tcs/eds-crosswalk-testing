@@ -4,15 +4,26 @@ import { loadScript } from '../../scripts/aem.js';
  * Mounts the existing Thai Airways React booking widget (the "web layer" bundle in AEM).
  * When it executes, the bundle renders into the element with id MOUNT_ID, reads every
  * data-* attribute as its configuration, and calls its backend APIs relative to the page
- * origin. It only receives live data on the production domain, where the CDN routes those
- * paths to the existing origin.
+ * origin. On the production domain the CDN routes those paths to the existing origin; on
+ * any other host (aem.page, aem.live, local) the block sends them to the airline's servers.
  */
-const BUNDLE_URL = 'https://www.thaiairways.com/content/dam/thaiairways/scripts/standalone-react/bookingwidget.bundle.min.js';
-// stylesheets the widget expects from the hosting page; loaded scoped to the widget only
+const AIRLINE_ORIGIN = 'https://www.thaiairways.com';
+const BUNDLE_URL = `${AIRLINE_ORIGIN}/content/dam/thaiairways/scripts/standalone-react/bookingwidget.bundle.min.js`;
+// stylesheets the widget expects from the hosting page; loaded scoped to the widget only.
+// The airline's clientlib-bootstrap is stock Bootstrap 5.3.3, which the CDN serves to any site
 const VENDOR_CSS = [
-  'https://www.thaiairways.com/etc.clientlibs/thaiairways/clientlibs/clientlib-bootstrap.min.css',
+  'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css',
   'https://cdn.jsdelivr.net/npm/react-datepicker/dist/react-datepicker.min.css',
 ];
+// first path segments of the widget's services (its axios baseURL is "/")
+const SERVICES = /^\/(?:common|custom_config|check-?in|loyalty|mythai|profile|adminportal|airaward[\w-]*|ancillaries|trip|order|pdf|mdm|flight|json|more-services|ereceipt|government|ticketing|refx|pss_router|promocode|osci|multi|etc\.clientlibs|content\/(?:dam|dapibooking|dapicheckin|thaiairways))(?:[/?]|$)/;
+// the widget's fonts (osci/assets/*) and the site's copies of them in /fonts
+const SITE_FONTS = {
+  'Inter-Regular.ttf': 'inter-regular-latin.woff2',
+  'Inter-Medium.ttf': 'inter-medium-latin.woff2',
+  'Inter-Bold.ttf': 'inter-bold-latin.woff2',
+  'Bellefair.ttf': 'bellefair-regular-latin.woff2',
+};
 const MOUNT_ID = 'bookFlightStandalone';
 
 // attribute values emitted by the AEM offers-bookingwidget component; the widget needs the full set
@@ -98,6 +109,52 @@ function loadScopedVendorCss() {
   return vendorCss;
 }
 
+/** The airline's address for a request to one of the widget's services on this host, else null. */
+function airlineUrl(url) {
+  try {
+    const target = new URL(url instanceof Request ? url.url : url, window.location.href);
+    if (target.origin !== window.location.origin || !SERVICES.test(target.pathname)) return null;
+    return `${AIRLINE_ORIGIN}${target.pathname}${target.search}`;
+  } catch {
+    return null;
+  }
+}
+
+let servicesRouted;
+
+/**
+ * Off the airline's domain, sends the widget's service calls (XHR, as axios makes them, and
+ * fetch) to the airline's servers instead of this site, and its fonts to the site's copies.
+ * The airline answers cross-origin calls for /common/*; its /content/* configuration needs
+ * the airline to allow this site's origins (CORS), see docs/booking-widget-hosting.md.
+ */
+function routeServicesToAirline() {
+  if (servicesRouted || window.location.origin === AIRLINE_ORIGIN) return;
+  servicesRouted = true;
+  const { open } = XMLHttpRequest.prototype;
+  XMLHttpRequest.prototype.open = function openOnAirline(method, url, ...rest) {
+    return open.call(this, method, airlineUrl(url) || url, ...rest);
+  };
+  const nativeFetch = window.fetch;
+  window.fetch = (input, init) => {
+    const url = airlineUrl(input);
+    if (!url) return nativeFetch(input, init);
+    return nativeFetch(input instanceof Request ? new Request(url, input) : url, init);
+  };
+  // the widget's @font-face rules also ask this host for the fonts; the site has the same ones
+  const fonts = `${window.hlx?.codeBasePath || ''}/fonts/`;
+  const siteFonts = (style) => {
+    if (!style.textContent.includes('osci/assets/')) return;
+    style.textContent = style.textContent.replace(
+      /url\((["']?)[^)"']*osci\/assets\/([\w-]+\.ttf)\1\)/g,
+      (rule, quote, file) => (SITE_FONTS[file] ? `url(${fonts}${SITE_FONTS[file]})` : rule),
+    );
+  };
+  new MutationObserver((mutations) => mutations.forEach(({ addedNodes }) => {
+    addedNodes.forEach((node) => { if (node.tagName === 'STYLE') siteFonts(node); });
+  })).observe(document.head, { childList: true });
+}
+
 function afterPageLoad() {
   if (document.readyState === 'complete') return Promise.resolve();
   return new Promise((resolve) => { window.addEventListener('load', resolve, { once: true }); });
@@ -144,6 +201,7 @@ async function mount(block, host) {
   await interaction;
   await whenNearViewport(block);
   await loadScopedVendorCss();
+  routeServicesToAirline();
   try {
     await loadScript(BUNDLE_URL);
   } catch (error) {
