@@ -2,7 +2,10 @@
 /*
  * Embeds the home page's content feeds in its import snapshot.
  *
- *   node tools/importer/home-feeds.mjs <snapshot.html> <feeds-dir>
+ *   node tools/importer/home-feeds.mjs <snapshot.html> <feeds-dir> [feed,feed…]
+ *
+ * With feed names, only those are embedded: offer pages get just the offers feed, which
+ * thaiairways-metadata.js reads for each offer's dates and category.
  *
  * The current home page is a React app that renders from JSON exports of AEM components. The
  * home import reads those feeds, not the rendered carousel or menus: each one is added to the
@@ -24,9 +27,10 @@ const FEEDS = {
   offers: /offers\.model\.json$/,
 };
 
-const [snapshot, dir] = process.argv.slice(2);
+const [snapshot, dir, only] = process.argv.slice(2);
+const wanted = (only || '').split(',').map((s) => s.trim()).filter(Boolean);
 if (!snapshot || !dir) {
-  console.error('usage: node tools/importer/home-feeds.mjs <snapshot.html> <feeds-dir>');
+  console.error('usage: node tools/importer/home-feeds.mjs <snapshot.html> <feeds-dir> [feed,feed…]');
   process.exit(1);
 }
 // earlier runs' feeds are replaced
@@ -37,6 +41,7 @@ const escapeHtml = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace
 const files = fs.readdirSync(dir);
 const added = [];
 Object.entries(FEEDS).forEach(([name, re]) => {
+  if (wanted.length && !wanted.includes(name)) return;
   const file = files.find((f) => re.test(f));
   if (!file) return;
   const data = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8'));
