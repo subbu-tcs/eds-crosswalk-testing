@@ -1,7 +1,8 @@
 /*
  * Loaded 3 seconds after the page (see loadDelayed in scripts.js), so none of this affects the
  * largest paint or interaction readiness. As on the current site: OneTrust cookie consent, the
- * three Google Tag Manager containers (which bring GA4 and Google Ads) and the chat widget.
+ * three Google Tag Manager containers (which bring GA4 and Google Ads; on the production
+ * domain only) and the chat widget.
  */
 
 const CONFIG = {
@@ -10,6 +11,9 @@ const CONFIG = {
     domainScript: '280ff691-ab58-4610-bccb-330a6a94ec40',
   },
   gtm: ['GTM-PDXBB9T', 'GTM-NZRTJC', 'GTM-ML57FLPX'],
+  // the containers fire the airline's production tags (GA4, Google Ads, Meta Pixel), so only
+  // the production site loads them; previews and aem.live would report into the live accounts
+  gtmHosts: ['www.thaiairways.com'],
   chat: {
     origin: 'https://genai-api.thaiairways.com',
     src: 'https://genai-api.thaiairways.com/api/tg-social/v1/omni-channel/webchat#/?token=&lang={lang}',
@@ -80,6 +84,6 @@ function loadChat() {
 
 if (!inFrame) {
   loadConsent();
-  if (!isAppWebView()) loadTagManager();
+  if (CONFIG.gtmHosts.includes(window.location.hostname) && !isAppWebView()) loadTagManager();
   loadChat();
 }

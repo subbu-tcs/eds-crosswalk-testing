@@ -415,12 +415,13 @@ Keys are matched case-insensitively and spaces count as hyphens, so `Header Open
 | Feature | Details |
 |---|---|
 | Cookie consent | OneTrust (`otSDKStub.js`, domain script `280ff691-ab58-4610-bccb-330a6a94ec40`), as on the current site; the banner and preference centre are configured in OneTrust |
-| Google Tag Manager | Containers `GTM-PDXBB9T`, `GTM-NZRTJC`, `GTM-ML57FLPX`, which bring GA4 and Google Ads. Skipped in the airline app's in-app browser, as today. Meta pixels and Salesforce Personalization (hard-coded on the current site) belong in Tag Manager |
+| Google Tag Manager | Containers `GTM-PDXBB9T`, `GTM-NZRTJC`, `GTM-ML57FLPX`, which bring GA4 and Google Ads. Loaded only on `www.thaiairways.com` (`gtmHosts`), and skipped in the airline app's in-app browser, as today. Meta pixels and Salesforce Personalization (hard-coded on the current site) belong in Tag Manager |
 | Chat | The existing chat widget (`genai-api.thaiairways.com` webchat, `lang` from the page language) as a 70px launcher bubble bottom right, kept above the back-to-top button while that shows. When the chat sends `BUBBLE_CHAT_OPENED` it grows to full screen on small screens and to a 420 × 680px panel from 900px; a `…CLOSED` message shrinks it back. Only messages from the chat's own frame and origin count |
 
 **Behaviour**
 - Nothing loads when the page is inside a frame, so Universal Editor stays free of consent banners, tags and chat.
-- They load on every domain, previews included, as chosen. OneTrust only shows its banner on domains configured for the domain script.
+- Tag Manager loads only on the production domain. Its containers fire the airline's live GA4, Google Ads and Meta Pixel tags, so on previews and `*.aem.live` they mixed test visits into the airline's data, and Meta Events Manager flagged `main--eds-crosswalk-testing--subbu-tcs.aem.live` as an unconfirmed domain. To check tags before go-live, use Tag Manager's preview mode against the production domain or a staging hostname added to `gtmHosts`.
+- Consent and chat load on every domain. OneTrust only shows its banner on domains configured for the domain script.
 - Dropped from the current site: legacy Universal Analytics (`ga.js`, `analytics.js`; Google retired it), Firebase push notifications, and the Eruda debug console loader.
 
 **To confirm with the chat team**: the desktop open size, and the close message name. The current site's handling sits inside its app bundle; only the open message was observed. Also whether `BUBBLE_CHAT_LOGIN_REQUIRED` expects the page to pass a signed-in member's token.
